@@ -6,22 +6,24 @@ package adapter;
 
 import java.sql.*;
 import model.SQLiteData;
+import view.SMGFrame;
 
 public class SMGController
 {
-
 	private SQLiteData database;
+	private SMGFrame frame;
+	private int state; //login screen, 
 
 	public void start()
 	{
-
-	}
-
-	public ResultSet test() throws ClassNotFoundException, SQLException
-	{
-		ResultSet result = null;
 		database = new SQLiteData();
-		result = database.displayUsers();
-		return result;
+		state = 0;
+		frame = new SMGFrame(this);
 	}
+	
+	public int getState()
+	{
+		return state;
+	}
+
 }
