@@ -43,7 +43,8 @@ public class SQLiteData
 			{
 				getConnection();
 			}
-			PreparedStatement preparedStatement = con.prepareStatement("SELECT ID FROM USER WHERE userName = ? AND pass = ?");
+			String query = "SELECT ID FROM USER WHERE userName = ? AND pass = ?";
+			PreparedStatement preparedStatement = con.prepareStatement(query);
 			preparedStatement.setString(1, userName);
 			preparedStatement.setString(2, pass);
 			res = preparedStatement.executeQuery();
@@ -68,21 +69,26 @@ public class SQLiteData
 		return res;
 	}
 
-	public void addUser(String userName, String pass, String firstName, String lastName, String classID, boolean teacher) throws ClassNotFoundException, SQLException
+	public void addUser(String userName, String pass, String firstName, String lastName, String classID, boolean teacher)
 	{
 		if (con == null)
 		{
 			getConnection();
 		}
-		PreparedStatement preparedStatement = con.prepareStatement("INSERT INTO USER VALUES( ?, ?, ?, ?, ?, ?, ?);");
-		preparedStatement.setString(2, userName);
-		preparedStatement.setString(3, pass);
-		preparedStatement.setString(4, firstName);
-		preparedStatement.setString(5, lastName);
-		preparedStatement.setString(6, classID);
-		preparedStatement.setBoolean(7, teacher);
-		preparedStatement.execute();
+		try 
+		{
+			PreparedStatement preparedStatement;
+			preparedStatement = con.prepareStatement("INSERT INTO USER VALUES( ?, ?, ?, ?, ?, ?, ?);");
+			preparedStatement.setString(2, userName);
+			preparedStatement.setString(3, pass);
+			preparedStatement.setString(4, firstName);
+			preparedStatement.setString(5, lastName);
+			preparedStatement.setString(6, classID);
+			preparedStatement.setBoolean(7, teacher);
+			preparedStatement.execute();
 
+		} 
+		catch (SQLException e) {e.printStackTrace();}
 	}
 
 	private void getConnection()
@@ -118,14 +124,8 @@ public class SQLiteData
 							+ "firstName VARCHAR(30)," + "lastName VARCHAR(30)," + "classID VARCHAR(5),"
 							+ "teacher BOOLEAN," + "PRIMARY KEY (ID));");
 
-					PreparedStatement prep = con.prepareStatement("INSERT INTO USER VALUES( ?, ?, ?, ?, ?, ?, ?);");
-					prep.setString(2, "root");
-					prep.setString(3, "root");
-					prep.setString(4, "Root");
-					prep.setString(5, "User");
-					prep.setString(6, "0");
-					prep.setBoolean(7, true);
-					prep.execute();
+					addUser("root", "root", "Root", "User", "0", true);
+					addUser("def", "def", "Default", "Student", "0", false);
 				}
 			}
 			catch (SQLException e){e.printStackTrace();}

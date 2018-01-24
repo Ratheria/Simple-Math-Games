@@ -31,10 +31,13 @@ public class SMGFrame extends JFrame
 	public void updateState()
 	{
 		int state = base.getState();
-		panel = new SMGLogIn(base);
+		panel = null;
 		switch (state)
 		{
-			case 0:
+			case 1:
+				panel = new SMGStudentMenu(base);
+				break;
+			default:
 				panel = new SMGLogIn(base);
 				break;
 		}

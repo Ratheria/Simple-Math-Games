@@ -16,7 +16,7 @@ public class SMGController
 {
 	private SQLiteData database;
 	private SMGFrame frame;
-	private int state; //login screen, 
+	private int state; //login screen, student menu,
 	private int currentUser;
 
 	public void start()
@@ -29,7 +29,6 @@ public class SMGController
 	
 	public void checkLogin(String userName, String pass)
 	{
-		//System.out.println("1");
 		boolean result = false;
 		ResultSet res = database.compareLogin(userName, pass);
 		try
@@ -38,8 +37,11 @@ public class SMGController
 			{
 				System.out.println("Done.");
 				state = 1;
-				currentUser = res.getInt(1);
-				//TODO change screens
+				int id = res.getInt("ID");
+				System.out.println(id);
+				currentUser = id;
+				frame.updateState();
+				//TODO fix update states
 			}
 			else
 			{
