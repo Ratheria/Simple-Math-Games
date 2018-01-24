@@ -17,6 +17,40 @@ public class SQLiteData
 		getConnection();
 		initialise();
 	}
+	
+	public ResultSet query(String SQLCommand)
+	{
+		ResultSet res = null;
+		try
+		{
+			if (con == null)
+			{
+				getConnection();
+			}
+			Statement statement = con.createStatement();
+			res = statement.executeQuery(SQLCommand);
+		}
+		catch (SQLException e){e.printStackTrace();}
+		return res;
+	}
+	
+	public ResultSet compareLogin(String userName, String pass)
+	{
+		ResultSet res = null;
+		try
+		{
+			if (con == null)
+			{
+				getConnection();
+			}
+			PreparedStatement preparedStatement = con.prepareStatement("SELECT ID FROM USER WHERE userName = ? AND pass = ?");
+			preparedStatement.setString(1, userName);
+			preparedStatement.setString(2, pass);
+			res = preparedStatement.executeQuery();
+		}
+		catch (SQLException e){e.printStackTrace();}
+		return res;
+	}
 
 	public ResultSet displayUsers()
 	{
@@ -27,8 +61,8 @@ public class SQLiteData
 			{
 				getConnection();
 			}
-			Statement state = con.createStatement();
-			res = state.executeQuery("SELECT firstName, lastName FROM USER");
+			Statement statement = con.createStatement();
+			res = statement.executeQuery("SELECT firstName, lastName FROM USER");
 		}
 		catch (SQLException e){e.printStackTrace();}
 		return res;
@@ -40,14 +74,14 @@ public class SQLiteData
 		{
 			getConnection();
 		}
-		PreparedStatement prep = con.prepareStatement("INSERT INTO USER VALUES( ?, ?, ?, ?, ?, ?, ?);");
-		prep.setString(2, userName);
-		prep.setString(3, pass);
-		prep.setString(4, firstName);
-		prep.setString(5, lastName);
-		prep.setString(6, classID);
-		prep.setBoolean(7, teacher);
-		prep.execute();
+		PreparedStatement preparedStatement = con.prepareStatement("INSERT INTO USER VALUES( ?, ?, ?, ?, ?, ?, ?);");
+		preparedStatement.setString(2, userName);
+		preparedStatement.setString(3, pass);
+		preparedStatement.setString(4, firstName);
+		preparedStatement.setString(5, lastName);
+		preparedStatement.setString(6, classID);
+		preparedStatement.setBoolean(7, teacher);
+		preparedStatement.execute();
 
 	}
 

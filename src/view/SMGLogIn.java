@@ -9,15 +9,19 @@ import adapter.SMGController;
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.border.LineBorder;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class SMGLogIn extends JPanel
 {
-
-	SMGController base;
-	private JTextField pTextField;
-	private JTextField uTextField;
+	private SMGController base;
 	private SpringLayout springLayout;
 	private JLabel usernameLabel;
+	private JLabel passwordLabel;
+	private JLabel loginLabel; 
+	private JTextField pTextField;
+	private JTextField uTextField;
+	private JButton enterButton;
 	
 	public SMGLogIn(SMGController base)
 	{	
@@ -26,38 +30,47 @@ public class SMGLogIn extends JPanel
 		setForeground(new Color(0, 0, 255));
 		setBackground(new Color(0, 0, 0));
 		springLayout = new SpringLayout();
-		setLayout(springLayout);
-		
 		usernameLabel = new JLabel("Username:");
+		passwordLabel = new JLabel("Password:");
+		loginLabel = new JLabel("LOGIN");
+		pTextField = new JTextField();
+		uTextField = new JTextField();
+		enterButton = new JButton("ENTER");
+		
+		setLayout(springLayout);
+		add(usernameLabel);
+		add(passwordLabel);
+		add(loginLabel);
+		add(pTextField);
+		add(uTextField);
+		add(enterButton);
+		
+		setUpLayout();
+		setUpListeners();
+	}
+	
+	private void setUpLayout()
+	{
 		usernameLabel.setFont(new Font("Andy", Font.PLAIN, 35));
 		usernameLabel.setForeground(new Color(0, 0, 255));
-		add(usernameLabel);
-		
-		JLabel lblPassword = new JLabel("Password:");
-		springLayout.putConstraint(SpringLayout.NORTH, lblPassword, 15, SpringLayout.SOUTH, usernameLabel);
-		springLayout.putConstraint(SpringLayout.WEST, lblPassword, 50, SpringLayout.WEST, this);
-		springLayout.putConstraint(SpringLayout.EAST, lblPassword, 200, SpringLayout.WEST, this);
-		springLayout.putConstraint(SpringLayout.WEST, usernameLabel, 0, SpringLayout.WEST, lblPassword);
-		springLayout.putConstraint(SpringLayout.EAST, usernameLabel, 0, SpringLayout.EAST, lblPassword);
-		lblPassword.setFont(new Font("Andy", Font.PLAIN, 35));
-		lblPassword.setForeground(new Color(0, 0, 255));
-		add(lblPassword);
-		
-		JLabel lblLogin = new JLabel("LOGIN");
-		springLayout.putConstraint(SpringLayout.NORTH, usernameLabel, 80, SpringLayout.SOUTH, lblLogin);
-		springLayout.putConstraint(SpringLayout.NORTH, lblLogin, 80, SpringLayout.NORTH, this);
-		springLayout.putConstraint(SpringLayout.WEST, lblLogin, 10, SpringLayout.WEST, this);
-		springLayout.putConstraint(SpringLayout.EAST, lblLogin, -10, SpringLayout.EAST, this);
-		lblLogin.setHorizontalAlignment(SwingConstants.CENTER);
-		lblLogin.setFont(new Font("Andy", Font.PLAIN, 65));
-		lblLogin.setForeground(new Color(0, 0, 255));
-		add(lblLogin);
-		
-		pTextField = new JTextField();
-		springLayout.putConstraint(SpringLayout.WEST, pTextField, 25, SpringLayout.EAST, lblPassword);
+		springLayout.putConstraint(SpringLayout.NORTH, passwordLabel, 15, SpringLayout.SOUTH, usernameLabel);
+		springLayout.putConstraint(SpringLayout.WEST, passwordLabel, 50, SpringLayout.WEST, this);
+		springLayout.putConstraint(SpringLayout.EAST, passwordLabel, 200, SpringLayout.WEST, this);
+		springLayout.putConstraint(SpringLayout.WEST, usernameLabel, 0, SpringLayout.WEST, passwordLabel);
+		springLayout.putConstraint(SpringLayout.EAST, usernameLabel, 0, SpringLayout.EAST, passwordLabel);
+		passwordLabel.setFont(new Font("Andy", Font.PLAIN, 35));
+		passwordLabel.setForeground(new Color(0, 0, 255));
+		springLayout.putConstraint(SpringLayout.NORTH, usernameLabel, 80, SpringLayout.SOUTH, loginLabel);
+		springLayout.putConstraint(SpringLayout.NORTH, loginLabel, 80, SpringLayout.NORTH, this);
+		springLayout.putConstraint(SpringLayout.WEST, loginLabel, 10, SpringLayout.WEST, this);
+		springLayout.putConstraint(SpringLayout.EAST, loginLabel, -10, SpringLayout.EAST, this);
+		loginLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		loginLabel.setFont(new Font("Andy", Font.PLAIN, 65));
+		loginLabel.setForeground(new Color(0, 0, 255));
+		springLayout.putConstraint(SpringLayout.WEST, pTextField, 25, SpringLayout.EAST, passwordLabel);
 		pTextField.setHorizontalAlignment(SwingConstants.LEFT);
-		springLayout.putConstraint(SpringLayout.NORTH, pTextField, 0, SpringLayout.NORTH, lblPassword);
-		springLayout.putConstraint(SpringLayout.SOUTH, pTextField, -3, SpringLayout.SOUTH, lblPassword);
+		springLayout.putConstraint(SpringLayout.NORTH, pTextField, 0, SpringLayout.NORTH, passwordLabel);
+		springLayout.putConstraint(SpringLayout.SOUTH, pTextField, -3, SpringLayout.SOUTH, passwordLabel);
 		pTextField.setForeground(new Color(0, 0, 255));
 		springLayout.putConstraint(SpringLayout.EAST, pTextField, -50, SpringLayout.EAST, this);
 		pTextField.setFont(new Font("Andy", Font.PLAIN, 18));
@@ -65,9 +78,6 @@ public class SMGLogIn extends JPanel
 		pTextField.setColumns(5);
 		pTextField.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLUE),
                 BorderFactory.createEmptyBorder(4, 25, 0, 0)));
-		add(pTextField);
-		
-		uTextField = new JTextField();
 		springLayout.putConstraint(SpringLayout.NORTH, uTextField, 0, SpringLayout.NORTH, usernameLabel);
 		springLayout.putConstraint(SpringLayout.WEST, uTextField, 0, SpringLayout.WEST, pTextField);
 		springLayout.putConstraint(SpringLayout.SOUTH, uTextField, -3, SpringLayout.SOUTH, usernameLabel);
@@ -76,26 +86,48 @@ public class SMGLogIn extends JPanel
 		uTextField.setForeground(new Color(0, 0, 255));
 		uTextField.setFont(new Font("Andy", Font.PLAIN, 18));
 		uTextField.setColumns(5);
-		uTextField.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLUE),				BorderFactory.createEmptyBorder(4, 25, 0, 0)));
+		uTextField.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLUE),
+				BorderFactory.createEmptyBorder(4, 25, 0, 0)));
 		uTextField.setBackground(new Color(0, 0, 0));
-		add(uTextField);
-		
-		JButton btnEnter = new JButton("ENTER");
-		springLayout.putConstraint(SpringLayout.NORTH, btnEnter, 100, SpringLayout.SOUTH, pTextField);
-		btnEnter.setFont(new Font("Andy", Font.PLAIN, 30));
-		btnEnter.setForeground(new Color(0, 0, 255));
-		btnEnter.setBackground(new Color(0, 0, 0));
-		springLayout.putConstraint(SpringLayout.EAST, btnEnter, 0, SpringLayout.EAST, pTextField);
-		btnEnter.setFocusPainted(false);
-		btnEnter.setContentAreaFilled(false);
-		btnEnter.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLUE),
+		springLayout.putConstraint(SpringLayout.NORTH, enterButton, 100, SpringLayout.SOUTH, pTextField);
+		enterButton.setFont(new Font("Andy", Font.PLAIN, 30));
+		enterButton.setForeground(new Color(0, 0, 255));
+		enterButton.setBackground(new Color(0, 0, 0));
+		springLayout.putConstraint(SpringLayout.EAST, enterButton, 0, SpringLayout.EAST, pTextField);
+		enterButton.setFocusPainted(false);
+		enterButton.setContentAreaFilled(false);
+		enterButton.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLUE),
 				BorderFactory.createEmptyBorder(5, 10, 0, 10)));
-		add(btnEnter);
-		
 	}
 	
-	private void loginSetUp()
+	private void setUpListeners()
 	{
-		
+		enterButton.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent onClick) 
+			{
+				String userName = uTextField.getText();
+				String pass = pTextField.getText();
+				int uLength = userName.length();
+				int pLength = pass.length();
+				if(uLength > 0 && pLength > 0)
+				{
+					if(uLength > 15)
+					{
+						userName = userName.substring(0, 15);
+					}
+					if(pLength > 15)
+					{
+						pass = pass.substring(0, 15);
+					}
+					base.checkLogin(userName, pass);
+				}
+				else
+				{
+					JPanel errorPanel = new JPanel();
+					JOptionPane.showMessageDialog(errorPanel, "Please enter a username and password.", "Error", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
 	}
 }
