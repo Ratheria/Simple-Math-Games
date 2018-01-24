@@ -22,7 +22,7 @@ public class SMGFrame extends JFrame
 		updateState();
 		setName("My Parents Don't Know What I Do");
 		setTitle("My Parents Don't Know What I Do");
-		setSize(850, 650);
+		setSize(950, 700);
 		setVisible(true);
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

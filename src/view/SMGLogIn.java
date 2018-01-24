@@ -51,46 +51,46 @@ public class SMGLogIn extends JPanel
 	
 	private void setUpLayout()
 	{
-		usernameLabel.setFont(new Font("Andy", Font.PLAIN, 35));
+		usernameLabel.setFont(new Font("MV Boli", Font.PLAIN, 35));
 		usernameLabel.setForeground(new Color(0, 0, 255));
 		springLayout.putConstraint(SpringLayout.NORTH, passwordLabel, 15, SpringLayout.SOUTH, usernameLabel);
 		springLayout.putConstraint(SpringLayout.WEST, passwordLabel, 50, SpringLayout.WEST, this);
-		springLayout.putConstraint(SpringLayout.EAST, passwordLabel, 200, SpringLayout.WEST, this);
+		springLayout.putConstraint(SpringLayout.EAST, passwordLabel, 225, SpringLayout.WEST, this);
 		springLayout.putConstraint(SpringLayout.WEST, usernameLabel, 0, SpringLayout.WEST, passwordLabel);
 		springLayout.putConstraint(SpringLayout.EAST, usernameLabel, 0, SpringLayout.EAST, passwordLabel);
-		passwordLabel.setFont(new Font("Andy", Font.PLAIN, 35));
+		passwordLabel.setFont(new Font("MV Boli", Font.PLAIN, 35));
 		passwordLabel.setForeground(new Color(0, 0, 255));
 		springLayout.putConstraint(SpringLayout.NORTH, usernameLabel, 80, SpringLayout.SOUTH, loginLabel);
 		springLayout.putConstraint(SpringLayout.NORTH, loginLabel, 80, SpringLayout.NORTH, this);
 		springLayout.putConstraint(SpringLayout.WEST, loginLabel, 10, SpringLayout.WEST, this);
 		springLayout.putConstraint(SpringLayout.EAST, loginLabel, -10, SpringLayout.EAST, this);
 		loginLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		loginLabel.setFont(new Font("Andy", Font.PLAIN, 65));
+		loginLabel.setFont(new Font("MV Boli", Font.PLAIN, 65));
 		loginLabel.setForeground(new Color(0, 0, 255));
+		springLayout.putConstraint(SpringLayout.SOUTH, pTextField, -3, SpringLayout.SOUTH, passwordLabel);
 		springLayout.putConstraint(SpringLayout.WEST, pTextField, 25, SpringLayout.EAST, passwordLabel);
 		pTextField.setHorizontalAlignment(SwingConstants.LEFT);
 		springLayout.putConstraint(SpringLayout.NORTH, pTextField, 0, SpringLayout.NORTH, passwordLabel);
-		springLayout.putConstraint(SpringLayout.SOUTH, pTextField, -3, SpringLayout.SOUTH, passwordLabel);
 		pTextField.setForeground(new Color(0, 0, 255));
 		springLayout.putConstraint(SpringLayout.EAST, pTextField, -50, SpringLayout.EAST, this);
-		pTextField.setFont(new Font("Andy", Font.PLAIN, 18));
+		pTextField.setFont(new Font("MV Boli", Font.PLAIN, 20));
 		pTextField.setBackground(new Color(0, 0, 0));
 		pTextField.setColumns(5);
 		pTextField.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLUE),
                 BorderFactory.createEmptyBorder(4, 25, 0, 0)));
+		springLayout.putConstraint(SpringLayout.SOUTH, uTextField, -3, SpringLayout.SOUTH, usernameLabel);
 		springLayout.putConstraint(SpringLayout.NORTH, uTextField, 0, SpringLayout.NORTH, usernameLabel);
 		springLayout.putConstraint(SpringLayout.WEST, uTextField, 0, SpringLayout.WEST, pTextField);
-		springLayout.putConstraint(SpringLayout.SOUTH, uTextField, -3, SpringLayout.SOUTH, usernameLabel);
 		springLayout.putConstraint(SpringLayout.EAST, uTextField, -50, SpringLayout.EAST, this);
 		uTextField.setHorizontalAlignment(SwingConstants.LEFT);
 		uTextField.setForeground(new Color(0, 0, 255));
-		uTextField.setFont(new Font("Andy", Font.PLAIN, 18));
+		uTextField.setFont(new Font("MV Boli", Font.PLAIN, 20));
 		uTextField.setColumns(5);
 		uTextField.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLUE),
 				BorderFactory.createEmptyBorder(4, 25, 0, 0)));
 		uTextField.setBackground(new Color(0, 0, 0));
 		springLayout.putConstraint(SpringLayout.NORTH, enterButton, 100, SpringLayout.SOUTH, pTextField);
-		enterButton.setFont(new Font("Andy", Font.PLAIN, 30));
+		enterButton.setFont(new Font("MV Boli", Font.PLAIN, 30));
 		enterButton.setForeground(new Color(0, 0, 255));
 		enterButton.setBackground(new Color(0, 0, 0));
 		springLayout.putConstraint(SpringLayout.EAST, enterButton, 0, SpringLayout.EAST, pTextField);
