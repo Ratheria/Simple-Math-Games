@@ -17,13 +17,16 @@ public class SMGController
 	private SQLiteData database;
 	private SMGFrame frame;
 	private int state; //login screen, student menu,
-	private int currentUser;
+	private int ID;
+	private String firstName;
+	private String lastName;
+	private String classID;
+	private boolean teacher;
 
 	public void start()
 	{
 		database = new SQLiteData();
-		state = 0;
-		currentUser = 0;
+		logout();
 		frame = new SMGFrame(this);
 	}
 	
@@ -37,11 +40,10 @@ public class SMGController
 			{
 				System.out.println("Done.");
 				state = 1;
-				int id = res.getInt("ID");
-				System.out.println(id);
-				currentUser = id;
+				ID = res.getInt("ID");
+				teacher = database.isTeacher(ID);
+				System.out.println(ID);
 				frame.updateState();
-				//TODO fix update states
 			}
 			else
 			{
@@ -50,6 +52,16 @@ public class SMGController
 			}
 		}
 		catch (SQLException e){}
+	}
+	
+	public void logout()
+	{
+		state = 0;
+		ID = 0;
+		firstName = "";
+		lastName = "";
+		classID = "";
+		teacher = false;
 	}
 	
 	public int getState()

@@ -52,6 +52,23 @@ public class SQLiteData
 		catch (SQLException e){e.printStackTrace();}
 		return res;
 	}
+	
+	public boolean isTeacher(int id)
+	{
+		boolean result = false;
+		ResultSet res = null;
+		PreparedStatement preparedStatement;
+		try 
+		{
+			String query = "SELECT teacher FROM USER WHERE ID = ?";
+			preparedStatement = con.prepareStatement(query);
+			preparedStatement.setInt(1, id);
+			res = preparedStatement.executeQuery();
+			result = res.getBoolean("teacher");
+		}		
+		catch (SQLException e){e.printStackTrace();}
+		return result;
+	}
 
 	public ResultSet displayUsers()
 	{
@@ -99,8 +116,8 @@ public class SQLiteData
 			Class.forName("org.sqlite.JDBC");
 			// database path, if it's new database, it will be created in the
 			// project folder
-			String dbURL = "jdbc:sqlite:C:/ProgramData/MPDKWID";
-			con = DriverManager.getConnection(dbURL);
+			String databaseFilePath = "jdbc:sqlite:C:/ProgramData/MPDKWID";
+			con = DriverManager.getConnection(databaseFilePath);
 		}
 		catch (SQLException | ClassNotFoundException e){e.printStackTrace();}
 		initialise();
@@ -125,7 +142,8 @@ public class SQLiteData
 							+ "teacher BOOLEAN," + "PRIMARY KEY (ID));");
 
 					addUser("root", "root", "Root", "User", "0", true);
-					addUser("def", "def", "Default", "Student", "0", false);
+					addUser("deft", "deft", "Default", "Teacher", "1A", true);
+					addUser("defs", "defs", "Default", "Student", "1A", false);
 				}
 			}
 			catch (SQLException e){e.printStackTrace();}

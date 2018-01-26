@@ -26,9 +26,6 @@ public class SMGLogIn extends JPanel
 	public SMGLogIn(SMGController base)
 	{	
 		this.base = base;
-		setBorder(new LineBorder(new Color(0, 0, 255), 10));
-		setForeground(new Color(0, 0, 255));
-		setBackground(new Color(0, 0, 0));
 		springLayout = new SpringLayout();
 		usernameLabel = new JLabel("Username:");
 		passwordLabel = new JLabel("Password:");
@@ -51,6 +48,9 @@ public class SMGLogIn extends JPanel
 	
 	private void setUpLayout()
 	{
+		setBorder(new LineBorder(new Color(0, 0, 255), 10));
+		setForeground(new Color(0, 0, 255));
+		setBackground(new Color(0, 0, 0));
 		usernameLabel.setFont(new Font("MV Boli", Font.PLAIN, 35));
 		usernameLabel.setForeground(new Color(0, 0, 255));
 		springLayout.putConstraint(SpringLayout.NORTH, passwordLabel, 15, SpringLayout.SOUTH, usernameLabel);
@@ -127,6 +127,8 @@ public class SMGLogIn extends JPanel
 					JPanel errorPanel = new JPanel();
 					JOptionPane.showMessageDialog(errorPanel, "Please enter a username and password.", "Error", JOptionPane.ERROR_MESSAGE);
 				}
+				uTextField.setText("");
+				pTextField.setText("");
 			}
 		});
 	}
