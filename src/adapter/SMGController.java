@@ -26,8 +26,8 @@ public class SMGController
 	public void start()
 	{
 		database = new SQLiteData();
-		logout();
 		frame = new SMGFrame(this);
+		logout();
 	}
 	
 	public void checkLogin(String userName, String pass)
@@ -39,9 +39,19 @@ public class SMGController
 			if(res.next())
 			{
 				System.out.println("Done.");
-				state = 1;
 				ID = res.getInt("ID");
 				teacher = database.isTeacher(ID);
+				firstName = database.firstName(ID);
+				lastName = database.lastName(ID);
+				classID = database.classID(ID);
+				if(teacher)
+				{
+					state = 2;
+				}
+				else
+				{
+					state = 1;
+				}
 				System.out.println(ID);
 				frame.updateState();
 			}
@@ -62,6 +72,22 @@ public class SMGController
 		lastName = "";
 		classID = "";
 		teacher = false;
+		frame.updateState();
+	}
+	
+	public String getName()
+	{
+		return firstName;
+	}
+	
+	public String getLastName()
+	{
+		return lastName;
+	}
+	
+	public String getFullName()
+	{
+		return firstName + " " + lastName;
 	}
 	
 	public int getState()

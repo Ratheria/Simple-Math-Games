@@ -69,6 +69,57 @@ public class SQLiteData
 		catch (SQLException e){e.printStackTrace();}
 		return result;
 	}
+	
+	public String firstName(int id)
+	{
+		String result = "";
+		ResultSet res = null;
+		PreparedStatement preparedStatement;
+		try 
+		{
+			String query = "SELECT firstName FROM USER WHERE ID = ?";
+			preparedStatement = con.prepareStatement(query);
+			preparedStatement.setInt(1, id);
+			res = preparedStatement.executeQuery();
+			result = res.getString("firstName");
+		}		
+		catch (SQLException e){e.printStackTrace();}
+		return result;
+	}
+	
+	public String lastName(int id)
+	{
+		String result = "";
+		ResultSet res = null;
+		PreparedStatement preparedStatement;
+		try 
+		{
+			String query = "SELECT lastName FROM USER WHERE ID = ?";
+			preparedStatement = con.prepareStatement(query);
+			preparedStatement.setInt(1, id);
+			res = preparedStatement.executeQuery();
+			result = res.getString("lastName");
+		}		
+		catch (SQLException e){e.printStackTrace();}
+		return result;
+	}
+	
+	public String classID(int id)
+	{
+		String result = "";
+		ResultSet res = null;
+		PreparedStatement preparedStatement;
+		try 
+		{
+			String query = "SELECT classID FROM USER WHERE ID = ?";
+			preparedStatement = con.prepareStatement(query);
+			preparedStatement.setInt(1, id);
+			res = preparedStatement.executeQuery();
+			result = res.getString("classID");
+		}		
+		catch (SQLException e){e.printStackTrace();}
+		return result;
+	}
 
 	public ResultSet displayUsers()
 	{

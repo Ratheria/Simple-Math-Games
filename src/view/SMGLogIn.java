@@ -102,34 +102,48 @@ public class SMGLogIn extends JPanel
 	
 	private void setUpListeners()
 	{
+		pTextField.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				login();
+			}
+		});
+		
 		enterButton.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent onClick) 
 			{
-				String userName = uTextField.getText();
-				String pass = pTextField.getText();
-				int uLength = userName.length();
-				int pLength = pass.length();
-				if(uLength > 0 && pLength > 0)
-				{
-					if(uLength > 15)
-					{
-						userName = userName.substring(0, 15);
-					}
-					if(pLength > 15)
-					{
-						pass = pass.substring(0, 15);
-					}
-					base.checkLogin(userName, pass);
-				}
-				else
-				{
-					JPanel errorPanel = new JPanel();
-					JOptionPane.showMessageDialog(errorPanel, "Please enter a username and password.", "Error", JOptionPane.ERROR_MESSAGE);
-				}
-				uTextField.setText("");
-				pTextField.setText("");
+				login();
 			}
 		});
+	}
+	
+	private void login()
+	{
+		String userName = uTextField.getText();
+		String pass = pTextField.getText();
+		int uLength = userName.length();
+		int pLength = pass.length();
+		if(uLength > 0 && pLength > 0)
+		{
+			if(uLength > 15)
+			{
+				userName = userName.substring(0, 15);
+			}
+			if(pLength > 15)
+			{
+				pass = pass.substring(0, 15);
+			}
+			base.checkLogin(userName, pass);
+		}
+		else
+		{
+			JPanel errorPanel = new JPanel();
+			JOptionPane.showMessageDialog(errorPanel, "Please enter a username and password.", "Error", JOptionPane.ERROR_MESSAGE);
+		}
+		uTextField.setText("");
+		pTextField.setText("");
 	}
 }

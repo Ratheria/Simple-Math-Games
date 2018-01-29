@@ -18,14 +18,12 @@ public class SMGFrame extends JFrame
 	private SMGController base;
 	private JPanel panel;
 	private SMGLogIn login;
-	private SMGStudentMenu studentMenu;
 	
 
 	public SMGFrame(SMGController base)
 	{
 		this.base = base;
 		login = new SMGLogIn(base);
-		studentMenu = new SMGStudentMenu(base);
 		panel = login;
 		setName("My Parents Don't Know What I Do");
 		setTitle("My Parents Don't Know What I Do");
@@ -48,6 +46,10 @@ public class SMGFrame extends JFrame
 			case 1:
 				panel.removeAll();
 				panel = new SMGStudentMenu(base);
+				break;
+			case 2:
+				panel.removeAll();
+				panel = new SMGTeacherMenu(base);
 				break;
 		}
 		setContentPane(panel);
