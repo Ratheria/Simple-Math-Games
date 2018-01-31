@@ -123,7 +123,7 @@ public class SMGLogIn extends JPanel
 	private void login()
 	{
 		String userName = uTextField.getText();
-		String pass = pTextField.getText();
+		String pass = String.valueOf(pTextField.getPassword());
 		int uLength = userName.length();
 		int pLength = pass.length();
 		if(uLength > 0 && pLength > 0)
@@ -145,5 +145,6 @@ public class SMGLogIn extends JPanel
 		}
 		uTextField.setText("");
 		pTextField.setText("");
+		uTextField.requestFocus();
 	}
 }

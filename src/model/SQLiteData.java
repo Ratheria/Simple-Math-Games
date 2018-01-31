@@ -49,7 +49,7 @@ public class SQLiteData
 			preparedStatement.setString(2, pass);
 			res = preparedStatement.executeQuery();
 		}
-		catch (SQLException e){e.printStackTrace();}
+		catch (SQLException e){}
 		return res;
 	}
 	
@@ -82,11 +82,90 @@ public class SQLiteData
 		return match;
 	}
 	
+	public void loginSuccess(String userName)
+	{
+		try
+		{
+			if (con == null)
+			{
+				getConnection();
+			}
+			String query = "UPDATE USER SET failedAttempts = ? WHERE userName = ?";
+			PreparedStatement preparedStatement = con.prepareStatement(query);
+			preparedStatement.setInt(1, 0);
+			preparedStatement.setString(2, userName);
+			preparedStatement.executeUpdate();
+			query = "UPDATE USER SET isLocked = ? WHERE userName = ?";
+			preparedStatement = con.prepareStatement(query);
+			preparedStatement.setBoolean(1, false);
+			preparedStatement.setString(2, userName);
+			preparedStatement.executeUpdate();
+		}
+		catch (SQLException e){ e.printStackTrace(); }
+	}
+	
+	public void loginFailure(String userName)
+	{
+		try
+		{
+			ResultSet res = null;
+			if (con == null)
+			{
+				getConnection();
+			}
+			String query = "SELECT failedAttempts FROM USER WHERE userName = ?";
+			PreparedStatement preparedStatement = con.prepareStatement(query);
+			preparedStatement.setString(1, userName);
+			res = preparedStatement.executeQuery();
+			int result = res.getInt("failedAttempts");
+			result += 1;
+			query = "UPDATE USER SET failedAttempts = ? WHERE userName = ?";
+			preparedStatement = con.prepareStatement(query);
+			preparedStatement.setInt(1, result);
+			preparedStatement.setString(2, userName);
+			preparedStatement.executeUpdate();
+			if (result > 5)
+			{
+				query = "UPDATE USER SET isLocked = ? WHERE userName = ?";
+				preparedStatement = con.prepareStatement(query);
+				preparedStatement.setBoolean(1, true);
+				preparedStatement.setString(2, userName);
+				preparedStatement.executeUpdate();
+			}
+		}
+		catch (SQLException e){e.printStackTrace();}
+	}
+	
+	public boolean isLocked(String userName)
+	{
+		boolean result = false;
+		ResultSet res = null;
+		PreparedStatement preparedStatement;
+		if (con == null)
+		{
+			getConnection();
+		}
+		try 
+		{
+			String query = "SELECT isLocked FROM USER WHERE userName = ?";
+			preparedStatement = con.prepareStatement(query);
+			preparedStatement.setString(1, userName);
+			res = preparedStatement.executeQuery();
+			result = res.getBoolean("isLocked");
+		}		
+		catch (SQLException e){e.printStackTrace();}
+		return result;
+	}
+	
 	public int permission(int id)
 	{
 		int result = 2;
 		ResultSet res = null;
 		PreparedStatement preparedStatement;
+		if (con == null)
+		{
+			getConnection();
+		}
 		try 
 		{
 			String query = "SELECT permission FROM USER WHERE ID = ?";
@@ -104,6 +183,10 @@ public class SQLiteData
 		String result = "";
 		ResultSet res = null;
 		PreparedStatement preparedStatement;
+		if (con == null)
+		{
+			getConnection();
+		}
 		try 
 		{
 			String query = "SELECT firstName FROM USER WHERE ID = ?";
@@ -121,6 +204,10 @@ public class SQLiteData
 		String result = "";
 		ResultSet res = null;
 		PreparedStatement preparedStatement;
+		if (con == null)
+		{
+			getConnection();
+		}
 		try 
 		{
 			String query = "SELECT lastName FROM USER WHERE ID = ?";
@@ -138,6 +225,10 @@ public class SQLiteData
 		String result = "";
 		ResultSet res = null;
 		PreparedStatement preparedStatement;
+		if (con == null)
+		{
+			getConnection();
+		}
 		try 
 		{
 			String query = "SELECT classID FROM USER WHERE ID = ?";
@@ -175,13 +266,15 @@ public class SQLiteData
 		try 
 		{
 			PreparedStatement preparedStatement;
-			preparedStatement = con.prepareStatement("INSERT INTO USER VALUES( ?, ?, ?, ?, ?, ?, ?);");
+			preparedStatement = con.prepareStatement("INSERT INTO USER VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?);");
 			preparedStatement.setString(2, userName);
 			preparedStatement.setString(3, pass);
 			preparedStatement.setString(4, firstName);
 			preparedStatement.setString(5, lastName);
 			preparedStatement.setString(6, classID);
 			preparedStatement.setInt(7, permissions);
+			preparedStatement.setInt(8, 0);
+			preparedStatement.setBoolean(9, false);
 			preparedStatement.execute();
 		} 
 		catch (SQLException e) {e.printStackTrace();}
@@ -218,7 +311,8 @@ public class SQLiteData
 					state = con.createStatement();
 					state.executeUpdate("CREATE TABLE USER(ID INTEGER," + "userName VARCHAR(15)," + "pass VARCHAR(15),"
 							+ "firstName VARCHAR(30)," + "lastName VARCHAR(30)," + "classID VARCHAR(5),"
-							+ "permission INTEGER," + "PRIMARY KEY (ID));");
+							+ "permission INTEGER," + "failedAttempts INTEGER," + "isLocked BOOLEAN,"
+							+ "PRIMARY KEY (ID));");
 
 					addUser("root", "root", "Root", "User", "0", 0);
 					addUser("deft", "deft", "Default", "Teacher", "1A", 1);

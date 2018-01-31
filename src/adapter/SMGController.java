@@ -33,10 +33,15 @@ public class SMGController
 	
 	public void checkLogin(String userName, String pass)
 	{
+		JPanel errorPanel = new JPanel();
 		ResultSet res = database.compareLogin(userName, pass);
 		try
 		{
-			if(res.next())
+			if(database.isLocked(userName))
+			{
+				JOptionPane.showMessageDialog(errorPanel, "This account has been locked due to too many failed login attempts.", "Error", JOptionPane.ERROR_MESSAGE);
+			}
+			else if(res.next())
 			{
 				System.out.println("Done.");
 				ID = res.getInt("ID");
@@ -47,14 +52,21 @@ public class SMGController
 				returnToMenu();
 				System.out.println(ID);
 				frame.updateState();
+				database.loginSuccess(userName);
 			}
 			else
 			{
-				JPanel errorPanel = new JPanel();
 				JOptionPane.showMessageDialog(errorPanel, "Incorrect username or password.", "Error", JOptionPane.ERROR_MESSAGE);
+				if(!(userName.equals("root")))
+				{
+					database.loginFailure(userName);
+				}
 			}
 		}
-		catch (SQLException e){}
+		catch (SQLException e)
+		{
+			
+		}
 	}
 	
 	public void changePassword(String pass, String newPass)
