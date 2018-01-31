@@ -45,11 +45,23 @@ public class SMGFrame extends JFrame
 				break;
 			case 1:
 				panel.removeAll();
-				panel = new SMGStudentMenu(base);
+				panel = new SMGRootMenu(base);
 				break;
 			case 2:
 				panel.removeAll();
 				panel = new SMGTeacherMenu(base);
+				break;
+			case 3:
+				panel.removeAll();
+				panel = new SMGStudentMenu(base);
+				break;
+			case 4:
+				panel.removeAll();
+				panel = new SMGSettings(base);
+				break;
+			case 5:
+				panel.removeAll();
+				panel = new SMGPassChange(base);
 				break;
 		}
 		setContentPane(panel);

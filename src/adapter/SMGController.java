@@ -16,12 +16,13 @@ public class SMGController
 {
 	private SQLiteData database;
 	private SMGFrame frame;
-	private int state; //login screen, student menu,
+	private int state; //login screen, root menu, teacher menu, student menu, settings, password change, 
+	private int lastState;
 	private int ID;
 	private String firstName;
 	private String lastName;
 	private String classID;
-	private boolean teacher;
+	private int permissions; //root, teacher, student
 
 	public void start()
 	{
@@ -32,7 +33,6 @@ public class SMGController
 	
 	public void checkLogin(String userName, String pass)
 	{
-		boolean result = false;
 		ResultSet res = database.compareLogin(userName, pass);
 		try
 		{
@@ -40,18 +40,11 @@ public class SMGController
 			{
 				System.out.println("Done.");
 				ID = res.getInt("ID");
-				teacher = database.isTeacher(ID);
+				permissions = database.permission(ID);
 				firstName = database.firstName(ID);
 				lastName = database.lastName(ID);
 				classID = database.classID(ID);
-				if(teacher)
-				{
-					state = 2;
-				}
-				else
-				{
-					state = 1;
-				}
+				returnToMenu();
 				System.out.println(ID);
 				frame.updateState();
 			}
@@ -64,14 +57,57 @@ public class SMGController
 		catch (SQLException e){}
 	}
 	
+	public void changePassword(String pass, String newPass)
+	{
+		boolean result = database.changeLogin(ID, pass, newPass);
+		if(result)
+		{
+			JPanel errorPanel = new JPanel();
+			JOptionPane.showMessageDialog(errorPanel, "Password changed.", "Done", JOptionPane.ERROR_MESSAGE);
+			changeState(lastState);
+		}
+		else
+		{
+			JPanel errorPanel = new JPanel();
+			JOptionPane.showMessageDialog(errorPanel, "Incorrect password.", "Error", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+	
+	public void returnToMenu()
+	{
+		if(permissions == 0)
+		{
+			changeState(1);
+			//root menu
+		}
+		else if(permissions == 1)
+		{
+			changeState(2);
+			//teacher menu
+		}
+		else
+		{
+			changeState(3);
+			//student menu
+		}
+	}
+	
 	public void logout()
 	{
 		state = 0;
+		lastState = 0;
 		ID = 0;
 		firstName = "";
 		lastName = "";
 		classID = "";
-		teacher = false;
+		permissions = 2;
+		frame.updateState();
+	}
+	
+	public void changeState(int nextState)
+	{
+		lastState = state;
+		state = nextState;
 		frame.updateState();
 	}
 	

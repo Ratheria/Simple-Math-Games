@@ -19,7 +19,7 @@ public class SMGLogIn extends JPanel
 	private JLabel usernameLabel;
 	private JLabel passwordLabel;
 	private JLabel loginLabel; 
-	private JTextField pTextField;
+	private JPasswordField pTextField;
 	private JTextField uTextField;
 	private JButton enterButton;
 	
@@ -30,7 +30,7 @@ public class SMGLogIn extends JPanel
 		usernameLabel = new JLabel("Username:");
 		passwordLabel = new JLabel("Password:");
 		loginLabel = new JLabel("LOGIN");
-		pTextField = new JTextField();
+		pTextField = new JPasswordField();
 		uTextField = new JTextField();
 		enterButton = new JButton("ENTER");
 		

@@ -14,7 +14,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class SMGTeacherMenu extends JPanel 
+public class SMGRootMenu extends JPanel 
 {
 	private SMGController base;
 	private SpringLayout springLayout;
@@ -22,7 +22,7 @@ public class SMGTeacherMenu extends JPanel
 	private JButton logOut;
 	private JButton settingsButton;
 	
-	public SMGTeacherMenu(SMGController base)
+	public SMGRootMenu(SMGController base)
 	{
 		this.base = base;
 		springLayout = new SpringLayout();
@@ -47,25 +47,27 @@ public class SMGTeacherMenu extends JPanel
 
 	private void setUpLayout() 
 	{
-		setBorder(new LineBorder(new Color(0, 255, 0), 10));
-		setForeground(new Color(0, 255, 0));
+		setBorder(new LineBorder(new Color(255, 255, 255), 10));
+		setForeground(new Color(255, 255, 255));
 		setBackground(new Color(0, 0, 0));
-		displayName.setForeground(new Color(0, 255, 0));
+		springLayout.putConstraint(SpringLayout.NORTH, displayName, 20, SpringLayout.NORTH, this);
+		springLayout.putConstraint(SpringLayout.WEST, displayName, 20, SpringLayout.WEST, this);
+		displayName.setForeground(new Color(255, 255, 255));
 		displayName.setFont(new Font("Sylfaen", Font.PLAIN, 30));
 		
 		logOut.setFont(new Font("MV Boli", Font.PLAIN, 30));
-		logOut.setForeground(new Color(0, 255, 0));
+		logOut.setForeground(new Color(255, 255, 255));
 		logOut.setBackground(new Color(0, 0, 0));
 		springLayout.putConstraint(SpringLayout.SOUTH, logOut, -20, SpringLayout.SOUTH, this);
 		springLayout.putConstraint(SpringLayout.EAST, logOut, -20, SpringLayout.EAST, this);
 		logOut.setFocusPainted(false);
 		logOut.setContentAreaFilled(false);
-		logOut.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.GREEN),
+		logOut.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.WHITE),
 				BorderFactory.createEmptyBorder(5, 10, 0, 10)));
 		
 		springLayout.putConstraint(SpringLayout.SOUTH, settingsButton, 0, SpringLayout.SOUTH, displayName);
-		settingsButton.setForeground(new Color(0, 255, 0));
-		settingsButton.setBackground(new Color(0, 255, 0));
+		settingsButton.setForeground(new Color(255, 255, 255));
+		settingsButton.setBackground(new Color(255, 255, 255));
 		springLayout.putConstraint(SpringLayout.NORTH, displayName, 0, SpringLayout.NORTH, settingsButton);
 		springLayout.putConstraint(SpringLayout.WEST, displayName, 20, SpringLayout.EAST, settingsButton);
 		springLayout.putConstraint(SpringLayout.NORTH, settingsButton, 20, SpringLayout.NORTH, this);
@@ -87,6 +89,7 @@ public class SMGTeacherMenu extends JPanel
 			public void actionPerformed(ActionEvent onClick) 
 			{
 				base.changeState(4);
+				//settings
 			}
 		});
 	}

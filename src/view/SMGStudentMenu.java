@@ -20,6 +20,7 @@ public class SMGStudentMenu extends JPanel
 	private SpringLayout springLayout;
 	private JLabel displayName;
 	private JButton logOut;
+	private JButton settingsButton;
 	
 	public SMGStudentMenu(SMGController base)
 	{
@@ -27,10 +28,12 @@ public class SMGStudentMenu extends JPanel
 		springLayout = new SpringLayout();
 		displayName = new JLabel(" ");
 		logOut = new JButton("Log Out");
+		settingsButton = new JButton("  ");
 		
 		setLayout(springLayout);
 		add(displayName);
 		add(logOut);
+		add(settingsButton);
 
 		setUpPanel();
 		setUpLayout();
@@ -49,7 +52,6 @@ public class SMGStudentMenu extends JPanel
 		setBackground(new Color(0, 0, 0));
 		springLayout.putConstraint(SpringLayout.NORTH, displayName, 20, SpringLayout.NORTH, this);
 		springLayout.putConstraint(SpringLayout.WEST, displayName, 20, SpringLayout.WEST, this);
-		springLayout.putConstraint(SpringLayout.EAST, displayName, 240, SpringLayout.WEST, this);
 		displayName.setForeground(new Color(0, 0, 255));
 		displayName.setFont(new Font("Sylfaen", Font.PLAIN, 30));
 		
@@ -62,6 +64,14 @@ public class SMGStudentMenu extends JPanel
 		logOut.setContentAreaFilled(false);
 		logOut.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLUE),
 				BorderFactory.createEmptyBorder(5, 10, 0, 10)));
+		
+		springLayout.putConstraint(SpringLayout.SOUTH, settingsButton, 0, SpringLayout.SOUTH, displayName);
+		settingsButton.setForeground(new Color(0, 0, 255));
+		settingsButton.setBackground(new Color(0, 0, 255));
+		springLayout.putConstraint(SpringLayout.NORTH, displayName, 0, SpringLayout.NORTH, settingsButton);
+		springLayout.putConstraint(SpringLayout.WEST, displayName, 20, SpringLayout.EAST, settingsButton);
+		springLayout.putConstraint(SpringLayout.NORTH, settingsButton, 20, SpringLayout.NORTH, this);
+		springLayout.putConstraint(SpringLayout.WEST, settingsButton, 20, SpringLayout.WEST, this);
 	}
 	
 	private void setUpListeners() 
@@ -71,6 +81,15 @@ public class SMGStudentMenu extends JPanel
 			public void actionPerformed(ActionEvent onClick) 
 			{
 				base.logout();
+			}
+		});
+		
+		settingsButton.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent onClick) 
+			{
+				base.changeState(4);
+				//settings
 			}
 		});
 	}
