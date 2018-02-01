@@ -70,7 +70,7 @@ public class SMGController
 		if(result)
 		{
 			JPanel errorPanel = new JPanel();
-			JOptionPane.showMessageDialog(errorPanel, "Password changed.", "Done", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(errorPanel, "Password changed.", "Done", JOptionPane.INFORMATION_MESSAGE);
 			changeState(lastState);
 		}
 		else
@@ -116,6 +116,23 @@ public class SMGController
 		lastState = state;
 		state = nextState;
 		frame.updateState();
+	}
+	
+	public void unlockAccount(String userName)
+	{
+		JPanel errorPanel = new JPanel();
+		if(permissions == 0)
+		{
+			database.loginSuccess(userName);
+		}
+		if(database.isLocked(userName))
+		{
+			JOptionPane.showMessageDialog(errorPanel, "Failed to unlock account.", "Error", JOptionPane.ERROR_MESSAGE);
+		}
+		else
+		{
+			JOptionPane.showMessageDialog(errorPanel, "Account successfully unlocked.", "", JOptionPane.INFORMATION_MESSAGE);
+		}
 	}
 	
 	public String getName()

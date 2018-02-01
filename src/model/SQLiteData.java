@@ -126,7 +126,7 @@ public class SQLiteData
 	
 	public boolean isLocked(String userName)
 	{
-		boolean result = false;
+		boolean result = true;
 		ResultSet res = null;
 		PreparedStatement preparedStatement;
 		if (con == null)

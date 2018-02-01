@@ -132,17 +132,13 @@ public class SMGLogIn extends JPanel
 		{
 			@Override
 			public void actionPerformed(ActionEvent e) 
-			{
-				login();
-			}
+			{	login();	}
 		});
 		
 		enterButton.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent onClick) 
-			{
-				login();
-			}
+			{	login();	}
 		});
 	}
 	
