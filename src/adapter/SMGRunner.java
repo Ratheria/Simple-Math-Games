@@ -4,8 +4,6 @@
 
 package adapter;
 
-import java.sql.ResultSet;
-
 public class SMGRunner
 {
 	public static void main(String[] args)

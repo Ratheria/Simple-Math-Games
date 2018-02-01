@@ -1,9 +1,7 @@
 /**
  *	@author Ariana Fairbanks
  */
-
 package adapter;
-
 import java.sql.*;
 
 import javax.swing.JOptionPane;
@@ -63,10 +61,7 @@ public class SMGController
 				}
 			}
 		}
-		catch (SQLException e)
-		{
-			
-		}
+		catch (SQLException e){	}
 	}
 	
 	public void changePassword(String pass, String newPass)
@@ -138,9 +133,19 @@ public class SMGController
 		return firstName + " " + lastName;
 	}
 	
+	public String getClassID()
+	{
+		return classID;
+	}
+	
 	public int getState()
 	{
 		return state;
+	}
+	
+	public int getPerms()
+	{
+		return permissions;
 	}
 
 }

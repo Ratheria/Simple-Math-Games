@@ -1,9 +1,7 @@
 /**
  *	@author Ariana Fairbanks
  */
-
 package model;
-
 import java.sql.*;
 
 public class SQLiteData
@@ -24,9 +22,7 @@ public class SQLiteData
 		try
 		{
 			if (con == null)
-			{
-				getConnection();
-			}
+			{	getConnection();	}
 			Statement statement = con.createStatement();
 			res = statement.executeQuery(SQLCommand);
 		}
@@ -40,9 +36,7 @@ public class SQLiteData
 		try
 		{
 			if (con == null)
-			{
-				getConnection();
-			}
+			{	getConnection();	}
 			String query = "SELECT ID FROM USER WHERE userName = ? AND pass = ?";
 			PreparedStatement preparedStatement = con.prepareStatement(query);
 			preparedStatement.setString(1, userName);
@@ -60,9 +54,7 @@ public class SQLiteData
 		{
 			ResultSet res = null;
 			if (con == null)
-			{
-				getConnection();
-			}
+			{	getConnection();	}
 			String query = "SELECT pass FROM USER WHERE ID = ?";
 			PreparedStatement preparedStatement = con.prepareStatement(query);
 			preparedStatement.setInt(1, ID);
@@ -87,9 +79,7 @@ public class SQLiteData
 		try
 		{
 			if (con == null)
-			{
-				getConnection();
-			}
+			{	getConnection();	}
 			String query = "UPDATE USER SET failedAttempts = ? WHERE userName = ?";
 			PreparedStatement preparedStatement = con.prepareStatement(query);
 			preparedStatement.setInt(1, 0);
@@ -110,9 +100,7 @@ public class SQLiteData
 		{
 			ResultSet res = null;
 			if (con == null)
-			{
-				getConnection();
-			}
+			{	getConnection();	}
 			String query = "SELECT failedAttempts FROM USER WHERE userName = ?";
 			PreparedStatement preparedStatement = con.prepareStatement(query);
 			preparedStatement.setString(1, userName);
@@ -142,9 +130,7 @@ public class SQLiteData
 		ResultSet res = null;
 		PreparedStatement preparedStatement;
 		if (con == null)
-		{
-			getConnection();
-		}
+		{	getConnection();	}
 		try 
 		{
 			String query = "SELECT isLocked FROM USER WHERE userName = ?";
@@ -163,9 +149,7 @@ public class SQLiteData
 		ResultSet res = null;
 		PreparedStatement preparedStatement;
 		if (con == null)
-		{
-			getConnection();
-		}
+		{	getConnection();	}
 		try 
 		{
 			String query = "SELECT permission FROM USER WHERE ID = ?";
@@ -184,9 +168,7 @@ public class SQLiteData
 		ResultSet res = null;
 		PreparedStatement preparedStatement;
 		if (con == null)
-		{
-			getConnection();
-		}
+		{	getConnection();	}
 		try 
 		{
 			String query = "SELECT firstName FROM USER WHERE ID = ?";
@@ -205,9 +187,7 @@ public class SQLiteData
 		ResultSet res = null;
 		PreparedStatement preparedStatement;
 		if (con == null)
-		{
-			getConnection();
-		}
+		{	getConnection();	}
 		try 
 		{
 			String query = "SELECT lastName FROM USER WHERE ID = ?";
@@ -226,9 +206,7 @@ public class SQLiteData
 		ResultSet res = null;
 		PreparedStatement preparedStatement;
 		if (con == null)
-		{
-			getConnection();
-		}
+		{	getConnection();	}
 		try 
 		{
 			String query = "SELECT classID FROM USER WHERE ID = ?";
@@ -247,9 +225,7 @@ public class SQLiteData
 		try
 		{
 			if (con == null)
-			{
-				getConnection();
-			}
+			{	getConnection();	}
 			Statement statement = con.createStatement();
 			res = statement.executeQuery("SELECT firstName, lastName FROM USER");
 		}
@@ -260,9 +236,7 @@ public class SQLiteData
 	public void addUser(String userName, String pass, String firstName, String lastName, String classID, int permissions)
 	{
 		if (con == null)
-		{
-			getConnection();
-		}
+		{	getConnection();	}
 		try 
 		{
 			PreparedStatement preparedStatement;
@@ -284,10 +258,9 @@ public class SQLiteData
 	{
 		try
 		{
-			// sqlite driver
 			Class.forName("org.sqlite.JDBC");
-			// database path, if it's new database, it will be created in the
-			// project folder
+			//database path
+			//if there is no database there a new one will be created
 			String databaseFilePath = "jdbc:sqlite:C:/ProgramData/MPDKWID";
 			con = DriverManager.getConnection(databaseFilePath);
 		}
@@ -314,7 +287,7 @@ public class SQLiteData
 							+ "permission INTEGER," + "failedAttempts INTEGER," + "isLocked BOOLEAN,"
 							+ "PRIMARY KEY (ID));");
 
-					addUser("root", "root", "Root", "User", "0", 0);
+					addUser("root", "root", "Root", "User", "00", 0);
 					addUser("deft", "deft", "Default", "Teacher", "1A", 1);
 					addUser("defs", "defs", "Default", "Student", "1A", 2);
 				}

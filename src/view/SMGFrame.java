@@ -1,23 +1,20 @@
 /**
  *	@author Ariana Fairbanks
  */
-
 package view;
-
-import java.awt.Container;
+import java.awt.Dimension;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-
 import adapter.SMGController;
 
 public class SMGFrame extends JFrame
 {
-	private static final long serialVersionUID = 1L;
-	@SuppressWarnings("unused")
+	private static final long serialVersionUID = -2248105492340561524L;
 	private SMGController base;
 	private JPanel panel;
 	private SMGLogIn login;
+	private Dimension minSize;
 	
 
 	public SMGFrame(SMGController base)
@@ -25,11 +22,13 @@ public class SMGFrame extends JFrame
 		this.base = base;
 		login = new SMGLogIn(base);
 		panel = login;
+		minSize = new Dimension(700, 500);
 		setName("My Parents Don't Know What I Do");
 		setTitle("My Parents Don't Know What I Do");
-		setSize(950, 700);
+		setSize(900, 650);
+		setMinimumSize(minSize);
 		setVisible(true);
-		setResizable(false);
+		setResizable(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setContentPane(panel);
 	}

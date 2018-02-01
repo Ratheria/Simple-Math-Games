@@ -1,50 +1,45 @@
 /**
  *	@author Ariana Fairbanks
  */
-
 package view;
-
 import javax.swing.*;
 import adapter.SMGController;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 public class SMGPassChange extends JPanel
 {
+	private static final long serialVersionUID = -105254438804479292L;
 	private SMGController base;
-	private SpringLayout springLayout;
+	private GridBagLayout layout;
 	private JLabel oldPassLabel;
 	private JLabel newPassLabel;
 	private JLabel headLabel; 
-	private JTextField nPTextField;
 	private JTextField oPTextField;
+	private JTextField nPTextField;
 	private JButton enterButton;
 	private JButton backButton;
 	
 	public SMGPassChange(SMGController base)
 	{	
 		this.base = base;
-		springLayout = new SpringLayout();
-		oldPassLabel = new JLabel("Old Pass:");
-		newPassLabel = new JLabel("New Pass:");
+		layout = new GridBagLayout();
+		oldPassLabel = new JLabel("Old Pass: ");
+		newPassLabel = new JLabel("New Pass: ");
 		headLabel = new JLabel("CHANGE PASSWORD");
-		nPTextField = new JTextField();
 		oPTextField = new JTextField();
+		nPTextField = new JTextField();
 		enterButton = new JButton("ENTER");
 		backButton = new JButton("BACK");
-		
-		
-		setLayout(springLayout);
-		add(oldPassLabel);
-		add(newPassLabel);
-		add(headLabel);
-		add(nPTextField);
-		add(oPTextField);
-		add(enterButton);
-		add(backButton);
 		
 		setUpLayout();
 		setUpListeners();
@@ -52,65 +47,99 @@ public class SMGPassChange extends JPanel
 	
 	private void setUpLayout()
 	{
-		setBorder(new LineBorder(new Color(255, 0, 0), 10));
-		setForeground(new Color(0, 0, 255));
+		layout.columnWidths = new int[]{0, 0};
+		layout.rowHeights = new int[]{0, 0, 36, 0, 47};
+		layout.columnWeights = new double[]{0.0, 1.0};
+		layout.rowWeights = new double[]{0.0, 1.0, 0.0, 0.0, 1.0};
+		setLayout(layout);
+		setBorder(new LineBorder(new Color(70, 130, 180), 10));
+		setForeground(new Color(135, 206, 235));
 		setBackground(new Color(0, 0, 0));
-		oldPassLabel.setFont(new Font("MV Boli", Font.PLAIN, 35));
-		oldPassLabel.setForeground(new Color(255, 0, 0));
-		springLayout.putConstraint(SpringLayout.NORTH, newPassLabel, 15, SpringLayout.SOUTH, oldPassLabel);
-		springLayout.putConstraint(SpringLayout.WEST, newPassLabel, 50, SpringLayout.WEST, this);
-		springLayout.putConstraint(SpringLayout.EAST, newPassLabel, 225, SpringLayout.WEST, this);
-		springLayout.putConstraint(SpringLayout.WEST, oldPassLabel, 0, SpringLayout.WEST, newPassLabel);
-		springLayout.putConstraint(SpringLayout.EAST, oldPassLabel, 0, SpringLayout.EAST, newPassLabel);
-		newPassLabel.setFont(new Font("MV Boli", Font.PLAIN, 35));
-		newPassLabel.setForeground(new Color(255, 0, 0));
-		springLayout.putConstraint(SpringLayout.NORTH, oldPassLabel, 80, SpringLayout.SOUTH, headLabel);
-		springLayout.putConstraint(SpringLayout.NORTH, headLabel, 80, SpringLayout.NORTH, this);
-		springLayout.putConstraint(SpringLayout.WEST, headLabel, 10, SpringLayout.WEST, this);
-		springLayout.putConstraint(SpringLayout.EAST, headLabel, -10, SpringLayout.EAST, this);
+
+		oldPassLabel.setFont(new Font("MV Boli", Font.PLAIN, 40));
+		oldPassLabel.setForeground(new Color(135, 206, 235));
+		GridBagConstraints gbc_usernameLabel = new GridBagConstraints();
+		gbc_usernameLabel.anchor = GridBagConstraints.WEST;
+		gbc_usernameLabel.insets = new Insets(5, 40, 5, 5);
+		gbc_usernameLabel.gridx = 0;
+		gbc_usernameLabel.gridy = 2;
+				
+		newPassLabel.setFont(new Font("MV Boli", Font.PLAIN, 40));
+		newPassLabel.setForeground(new Color(135, 206, 235));
+		GridBagConstraints gbc_passwordLabel = new GridBagConstraints();
+		gbc_passwordLabel.anchor = GridBagConstraints.WEST;
+		gbc_passwordLabel.insets = new Insets(15, 40, 5, 5);
+		gbc_passwordLabel.gridx = 0;
+		gbc_passwordLabel.gridy = 3;
+
 		headLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		headLabel.setFont(new Font("MV Boli", Font.PLAIN, 65));
-		headLabel.setForeground(new Color(255, 0, 0));
-		springLayout.putConstraint(SpringLayout.SOUTH, nPTextField, -3, SpringLayout.SOUTH, newPassLabel);
-		springLayout.putConstraint(SpringLayout.WEST, nPTextField, 25, SpringLayout.EAST, newPassLabel);
+		headLabel.setFont(new Font("MV Boli", Font.PLAIN, 60));
+		headLabel.setForeground(new Color(135, 206, 250));
+		GridBagConstraints gbc_loginLabel = new GridBagConstraints();
+		gbc_loginLabel.gridwidth = 3;
+		gbc_loginLabel.fill = GridBagConstraints.HORIZONTAL;
+		gbc_loginLabel.insets = new Insets(30, 5, 5, 5);
+		gbc_loginLabel.gridx = 0;
+		gbc_loginLabel.gridy = 1;
+
+		oPTextField.setHorizontalAlignment(SwingConstants.LEADING);
+		oPTextField.setForeground(new Color(135, 206, 250));
+		oPTextField.setFont(new Font("MV Boli", Font.PLAIN, 25));
+		oPTextField.setBackground(new Color(0, 0, 0));
+		oPTextField.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(30, 144, 255)),
+                BorderFactory.createEmptyBorder(0, 25, 0, 0)));
+		GridBagConstraints gbc_uTextField = new GridBagConstraints();
+		gbc_uTextField.gridwidth = 2;
+		gbc_uTextField.fill = GridBagConstraints.HORIZONTAL;
+		gbc_uTextField.insets = new Insets(5, 5, 5, 40);
+		gbc_uTextField.gridx = 1;
+		gbc_uTextField.gridy = 2;
+		
 		nPTextField.setHorizontalAlignment(SwingConstants.LEFT);
-		springLayout.putConstraint(SpringLayout.NORTH, nPTextField, 0, SpringLayout.NORTH, newPassLabel);
-		nPTextField.setForeground(new Color(255, 0, 0));
-		springLayout.putConstraint(SpringLayout.EAST, nPTextField, -50, SpringLayout.EAST, this);
-		nPTextField.setFont(new Font("MV Boli", Font.PLAIN, 20));
+		nPTextField.setForeground(new Color(135, 206, 235));
+		nPTextField.setFont(new Font("MV Boli", Font.PLAIN, 25));
 		nPTextField.setBackground(new Color(0, 0, 0));
 		nPTextField.setColumns(5);
-		nPTextField.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.RED),
-                BorderFactory.createEmptyBorder(4, 25, 0, 0)));
-		springLayout.putConstraint(SpringLayout.SOUTH, oPTextField, -3, SpringLayout.SOUTH, oldPassLabel);
-		springLayout.putConstraint(SpringLayout.NORTH, oPTextField, 0, SpringLayout.NORTH, oldPassLabel);
-		springLayout.putConstraint(SpringLayout.WEST, oPTextField, 0, SpringLayout.WEST, nPTextField);
-		springLayout.putConstraint(SpringLayout.EAST, oPTextField, -50, SpringLayout.EAST, this);
-		oPTextField.setHorizontalAlignment(SwingConstants.LEFT);
-		oPTextField.setForeground(new Color(255, 0, 0));
-		oPTextField.setFont(new Font("MV Boli", Font.PLAIN, 20));
-		oPTextField.setColumns(5);
-		oPTextField.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.RED),
-				BorderFactory.createEmptyBorder(4, 25, 0, 0)));
-		oPTextField.setBackground(new Color(0, 0, 0));
-		springLayout.putConstraint(SpringLayout.NORTH, enterButton, 100, SpringLayout.SOUTH, nPTextField);
+		nPTextField.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(30, 144, 255)),
+                BorderFactory.createEmptyBorder(0, 25, 0, 0)));
+		GridBagConstraints gbc_pTextField = new GridBagConstraints();
+		gbc_pTextField.gridwidth = 2;
+		gbc_pTextField.fill = GridBagConstraints.HORIZONTAL;
+		gbc_pTextField.insets = new Insets(5, 5, 5, 40);
+		gbc_pTextField.gridx = 1;
+		gbc_pTextField.gridy = 3;
+		
 		enterButton.setFont(new Font("MV Boli", Font.PLAIN, 30));
-		enterButton.setForeground(new Color(255, 0, 0));
+		enterButton.setForeground(new Color(135, 206, 250));
 		enterButton.setBackground(new Color(0, 0, 0));
-		springLayout.putConstraint(SpringLayout.EAST, enterButton, 0, SpringLayout.EAST, nPTextField);
 		enterButton.setFocusPainted(false);
 		enterButton.setContentAreaFilled(false);
-		enterButton.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.RED),
-				BorderFactory.createEmptyBorder(5, 10, 0, 10)));
+		enterButton.setBorder(new CompoundBorder(new LineBorder(new Color(30, 144, 255)), new EmptyBorder(5, 10, 0, 10)));
+		GridBagConstraints gbc_enterButton = new GridBagConstraints();
+		gbc_enterButton.fill = GridBagConstraints.HORIZONTAL;
+		gbc_enterButton.insets = new Insets(5, 5, 40, 40);
+		gbc_enterButton.gridx = 2;
+		gbc_enterButton.gridy = 4;
+		
 		backButton.setFont(new Font("MV Boli", Font.PLAIN, 30));
-		backButton.setForeground(new Color(255, 0, 0));
+		backButton.setForeground(new Color(135, 206, 250));
 		backButton.setBackground(new Color(0, 0, 0));
 		backButton.setFocusPainted(false);
 		backButton.setContentAreaFilled(false);
-		springLayout.putConstraint(SpringLayout.NORTH, backButton, 10, SpringLayout.NORTH, this);
-		springLayout.putConstraint(SpringLayout.WEST, backButton, 0, SpringLayout.WEST, headLabel);
-		backButton.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.RED),
-				BorderFactory.createEmptyBorder(5, 10, 0, 10)));
+		backButton.setBorder(new CompoundBorder(new LineBorder(new Color(30, 144, 255)), new EmptyBorder(5, 10, 0, 10)));
+		GridBagConstraints gbc_backButton = new GridBagConstraints();
+		gbc_backButton.anchor = GridBagConstraints.NORTHWEST;
+		gbc_backButton.insets = new Insets(20, 20, 5, 5);
+		gbc_backButton.gridx = 0;
+		gbc_backButton.gridy = 0;
+		add(backButton, gbc_backButton);
+		
+		add(oldPassLabel, gbc_usernameLabel);
+		add(newPassLabel, gbc_passwordLabel);
+		add(headLabel, gbc_loginLabel);
+		add(oPTextField, gbc_uTextField);
+		add(nPTextField, gbc_pTextField);
+		add(enterButton, gbc_enterButton);
 	}
 	
 	private void setUpListeners()
@@ -119,17 +148,13 @@ public class SMGPassChange extends JPanel
 		{
 			@Override
 			public void actionPerformed(ActionEvent e) 
-			{
-				changePass();
-			}
+			{	changePass();	}
 		});
 		
 		enterButton.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent onClick) 
-			{
-				changePass();
-			}
+			{	changePass();	}
 		});
 		
 		backButton.addActionListener(new ActionListener() 
@@ -137,6 +162,7 @@ public class SMGPassChange extends JPanel
 			public void actionPerformed(ActionEvent onClick) 
 			{
 				base.changeState(4);
+				//settings
 			}
 		});
 	}

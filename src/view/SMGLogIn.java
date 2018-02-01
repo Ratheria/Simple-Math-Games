@@ -1,9 +1,7 @@
 /**
  *	@author Ariana Fairbanks
  */
-
 package view;
-
 import javax.swing.*;
 import adapter.SMGController;
 import java.awt.Color;
@@ -11,36 +9,34 @@ import java.awt.Font;
 import javax.swing.border.LineBorder;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
 
 public class SMGLogIn extends JPanel
 {
+	private static final long serialVersionUID = 5053139107195686875L;
 	private SMGController base;
-	private SpringLayout springLayout;
+	private GridBagLayout layout;
 	private JLabel usernameLabel;
 	private JLabel passwordLabel;
 	private JLabel loginLabel; 
-	private JPasswordField pTextField;
 	private JTextField uTextField;
+	private JPasswordField pTextField;
 	private JButton enterButton;
 	
 	public SMGLogIn(SMGController base)
 	{	
 		this.base = base;
-		springLayout = new SpringLayout();
-		usernameLabel = new JLabel("Username:");
-		passwordLabel = new JLabel("Password:");
+		layout = new GridBagLayout();
+		usernameLabel = new JLabel("Username: ");
+		passwordLabel = new JLabel("Password: ");
 		loginLabel = new JLabel("LOGIN");
-		pTextField = new JPasswordField();
 		uTextField = new JTextField();
+		pTextField = new JPasswordField();
 		enterButton = new JButton("ENTER");
-		
-		setLayout(springLayout);
-		add(usernameLabel);
-		add(passwordLabel);
-		add(loginLabel);
-		add(pTextField);
-		add(uTextField);
-		add(enterButton);
 		
 		setUpLayout();
 		setUpListeners();
@@ -48,56 +44,86 @@ public class SMGLogIn extends JPanel
 	
 	private void setUpLayout()
 	{
-		setBorder(new LineBorder(new Color(0, 0, 255), 10));
-		setForeground(new Color(0, 0, 255));
+		layout.columnWidths = new int[]{0, 0};
+		layout.rowHeights = new int[]{0, 36, 0, 47};
+		layout.columnWeights = new double[]{0.0, 1.0};
+		layout.rowWeights = new double[]{1.0, 0.0, 0.0, 1.0};
+		setLayout(layout);
+		setBorder(new LineBorder(new Color(70, 130, 180), 10));
+		setForeground(new Color(135, 206, 235));
 		setBackground(new Color(0, 0, 0));
-		usernameLabel.setFont(new Font("MV Boli", Font.PLAIN, 35));
-		usernameLabel.setForeground(new Color(0, 0, 255));
-		springLayout.putConstraint(SpringLayout.NORTH, passwordLabel, 15, SpringLayout.SOUTH, usernameLabel);
-		springLayout.putConstraint(SpringLayout.WEST, passwordLabel, 50, SpringLayout.WEST, this);
-		springLayout.putConstraint(SpringLayout.EAST, passwordLabel, 225, SpringLayout.WEST, this);
-		springLayout.putConstraint(SpringLayout.WEST, usernameLabel, 0, SpringLayout.WEST, passwordLabel);
-		springLayout.putConstraint(SpringLayout.EAST, usernameLabel, 0, SpringLayout.EAST, passwordLabel);
-		passwordLabel.setFont(new Font("MV Boli", Font.PLAIN, 35));
-		passwordLabel.setForeground(new Color(0, 0, 255));
-		springLayout.putConstraint(SpringLayout.NORTH, usernameLabel, 80, SpringLayout.SOUTH, loginLabel);
-		springLayout.putConstraint(SpringLayout.NORTH, loginLabel, 80, SpringLayout.NORTH, this);
-		springLayout.putConstraint(SpringLayout.WEST, loginLabel, 10, SpringLayout.WEST, this);
-		springLayout.putConstraint(SpringLayout.EAST, loginLabel, -10, SpringLayout.EAST, this);
+
+		usernameLabel.setFont(new Font("MV Boli", Font.PLAIN, 40));
+		usernameLabel.setForeground(new Color(135, 206, 235));
+		GridBagConstraints gbc_usernameLabel = new GridBagConstraints();
+		gbc_usernameLabel.anchor = GridBagConstraints.WEST;
+		gbc_usernameLabel.insets = new Insets(5, 40, 5, 5);
+		gbc_usernameLabel.gridx = 0;
+		gbc_usernameLabel.gridy = 1;
+				
+		passwordLabel.setFont(new Font("MV Boli", Font.PLAIN, 40));
+		passwordLabel.setForeground(new Color(135, 206, 235));
+		GridBagConstraints gbc_passwordLabel = new GridBagConstraints();
+		gbc_passwordLabel.anchor = GridBagConstraints.WEST;
+		gbc_passwordLabel.insets = new Insets(15, 40, 5, 5);
+		gbc_passwordLabel.gridx = 0;
+		gbc_passwordLabel.gridy = 2;
+
 		loginLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		loginLabel.setFont(new Font("MV Boli", Font.PLAIN, 65));
-		loginLabel.setForeground(new Color(0, 0, 255));
-		springLayout.putConstraint(SpringLayout.SOUTH, pTextField, -3, SpringLayout.SOUTH, passwordLabel);
-		springLayout.putConstraint(SpringLayout.WEST, pTextField, 25, SpringLayout.EAST, passwordLabel);
+		loginLabel.setFont(new Font("MV Boli", Font.PLAIN, 85));
+		loginLabel.setForeground(new Color(135, 206, 250));
+		GridBagConstraints gbc_loginLabel = new GridBagConstraints();
+		gbc_loginLabel.gridwidth = 3;
+		gbc_loginLabel.fill = GridBagConstraints.HORIZONTAL;
+		gbc_loginLabel.insets = new Insets(40, 5, 5, 5);
+		gbc_loginLabel.gridx = 0;
+		gbc_loginLabel.gridy = 0;
+
+		uTextField.setHorizontalAlignment(SwingConstants.LEADING);
+		uTextField.setForeground(new Color(135, 206, 250));
+		uTextField.setFont(new Font("MV Boli", Font.PLAIN, 25));
+		uTextField.setBackground(new Color(0, 0, 0));
+		uTextField.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(30, 144, 255)),
+                BorderFactory.createEmptyBorder(0, 25, 0, 0)));
+		GridBagConstraints gbc_uTextField = new GridBagConstraints();
+		gbc_uTextField.gridwidth = 2;
+		gbc_uTextField.fill = GridBagConstraints.HORIZONTAL;
+		gbc_uTextField.insets = new Insets(5, 5, 5, 40);
+		gbc_uTextField.gridx = 1;
+		gbc_uTextField.gridy = 1;
+		
 		pTextField.setHorizontalAlignment(SwingConstants.LEFT);
-		springLayout.putConstraint(SpringLayout.NORTH, pTextField, 0, SpringLayout.NORTH, passwordLabel);
-		pTextField.setForeground(new Color(0, 0, 255));
-		springLayout.putConstraint(SpringLayout.EAST, pTextField, -50, SpringLayout.EAST, this);
-		pTextField.setFont(new Font("MV Boli", Font.PLAIN, 20));
+		pTextField.setForeground(new Color(135, 206, 235));
+		pTextField.setFont(new Font("MV Boli", Font.PLAIN, 25));
 		pTextField.setBackground(new Color(0, 0, 0));
 		pTextField.setColumns(5);
-		pTextField.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLUE),
-                BorderFactory.createEmptyBorder(4, 25, 0, 0)));
-		springLayout.putConstraint(SpringLayout.SOUTH, uTextField, -3, SpringLayout.SOUTH, usernameLabel);
-		springLayout.putConstraint(SpringLayout.NORTH, uTextField, 0, SpringLayout.NORTH, usernameLabel);
-		springLayout.putConstraint(SpringLayout.WEST, uTextField, 0, SpringLayout.WEST, pTextField);
-		springLayout.putConstraint(SpringLayout.EAST, uTextField, -50, SpringLayout.EAST, this);
-		uTextField.setHorizontalAlignment(SwingConstants.LEFT);
-		uTextField.setForeground(new Color(0, 0, 255));
-		uTextField.setFont(new Font("MV Boli", Font.PLAIN, 20));
-		uTextField.setColumns(5);
-		uTextField.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLUE),
-				BorderFactory.createEmptyBorder(4, 25, 0, 0)));
-		uTextField.setBackground(new Color(0, 0, 0));
-		springLayout.putConstraint(SpringLayout.NORTH, enterButton, 100, SpringLayout.SOUTH, pTextField);
+		pTextField.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(30, 144, 255)),
+                BorderFactory.createEmptyBorder(0, 25, 0, 0)));
+		GridBagConstraints gbc_pTextField = new GridBagConstraints();
+		gbc_pTextField.gridwidth = 2;
+		gbc_pTextField.fill = GridBagConstraints.HORIZONTAL;
+		gbc_pTextField.insets = new Insets(5, 5, 5, 40);
+		gbc_pTextField.gridx = 1;
+		gbc_pTextField.gridy = 2;
+		
 		enterButton.setFont(new Font("MV Boli", Font.PLAIN, 30));
-		enterButton.setForeground(new Color(0, 0, 255));
+		enterButton.setForeground(new Color(135, 206, 250));
 		enterButton.setBackground(new Color(0, 0, 0));
-		springLayout.putConstraint(SpringLayout.EAST, enterButton, 0, SpringLayout.EAST, pTextField);
 		enterButton.setFocusPainted(false);
 		enterButton.setContentAreaFilled(false);
-		enterButton.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.BLUE),
-				BorderFactory.createEmptyBorder(5, 10, 0, 10)));
+		enterButton.setBorder(new CompoundBorder(new LineBorder(new Color(30, 144, 255)), new EmptyBorder(5, 10, 0, 10)));
+		GridBagConstraints gbc_enterButton = new GridBagConstraints();
+		gbc_enterButton.fill = GridBagConstraints.HORIZONTAL;
+		gbc_enterButton.insets = new Insets(5, 5, 40, 40);
+		gbc_enterButton.gridx = 2;
+		gbc_enterButton.gridy = 3;
+		
+		add(usernameLabel, gbc_usernameLabel);
+		add(passwordLabel, gbc_passwordLabel);
+		add(loginLabel, gbc_loginLabel);
+		add(uTextField, gbc_uTextField);
+		add(pTextField, gbc_pTextField);
+		add(enterButton, gbc_enterButton);
 	}
 	
 	private void setUpListeners()
