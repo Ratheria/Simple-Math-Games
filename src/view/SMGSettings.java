@@ -37,6 +37,16 @@ public class SMGSettings extends JPanel
 		
 		setUpLayout();
 		setUpListeners();
+		setUpPanel();
+	}
+	
+	private void setUpPanel()
+	{
+		if(base.getPerms() == 2)
+		{
+			changePassButton.setEnabled(false);
+			changePassButton.setVisible(false);
+		}
 	}
 	
 	private void setUpLayout()
