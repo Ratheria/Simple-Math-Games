@@ -22,7 +22,6 @@ public class SMGStudentMenu extends JPanel
 	private SMGController base;
 	private GridBagLayout layout;
 	private JLabel displayName;
-	private JButton logOut;
 	private JButton settingsButton;
 	
 	public SMGStudentMenu(SMGController base)
@@ -30,7 +29,6 @@ public class SMGStudentMenu extends JPanel
 		this.base = base;
 		layout = new GridBagLayout();
 		displayName = new JLabel(" ");
-		logOut = new JButton(" Log Out ");
 		settingsButton = new JButton("    ");
 
 		setUpLayout();
@@ -59,6 +57,7 @@ public class SMGStudentMenu extends JPanel
 		gbc_displayName.gridx = 1;
 		gbc_displayName.gridy = 0;
 		
+/*
 		logOut.setFont(new Font("MV Boli", Font.PLAIN, 30));
 		logOut.setForeground(new Color(135, 206, 250));
 		logOut.setBackground(new Color(0, 0, 0));
@@ -69,10 +68,13 @@ public class SMGStudentMenu extends JPanel
 		gbc_logOut.insets = new Insets(0, 0, 20, 20);
 		gbc_logOut.gridx = 3;
 		gbc_logOut.gridy = 3;
+*/
 		
 		settingsButton.setFont(new Font("MV Boli", Font.PLAIN, 25));
 		settingsButton.setForeground(new Color(135, 206, 250));
 		settingsButton.setBackground(new Color(70, 130, 180));
+		settingsButton.setFocusPainted(false);
+		settingsButton.setContentAreaFilled(false);
 		settingsButton.setBorder(new LineBorder(new Color(135, 206, 250), 2));
 		GridBagConstraints gbc_settingsButton = new GridBagConstraints();
 		gbc_settingsButton.anchor = GridBagConstraints.NORTHWEST;
@@ -81,20 +83,12 @@ public class SMGStudentMenu extends JPanel
 		gbc_settingsButton.gridy = 0;
 		
 		add(displayName, gbc_displayName);
-		add(logOut, gbc_logOut);
+//		add(logOut, gbc_logOut);
 		add(settingsButton, gbc_settingsButton);
 	}
 	
 	private void setUpListeners() 
-	{
-		logOut.addActionListener(new ActionListener() 
-		{
-			public void actionPerformed(ActionEvent onClick) 
-			{
-				base.logout();
-			}
-		});
-		
+	{	
 		settingsButton.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent onClick) 

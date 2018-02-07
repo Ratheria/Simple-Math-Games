@@ -3,14 +3,17 @@
  */
 package model;
 import java.sql.*;
+import adapter.SMGController;
 
 public class SQLiteData
 {
+	private SMGController base;
 	private static Connection con;
 	private static boolean hasData;
 
-	public SQLiteData()
+	public SQLiteData(SMGController base)
 	{
+		this.base = base;
 		hasData = false;
 		getConnection();
 		initialise();
@@ -50,29 +53,63 @@ public class SQLiteData
 	public boolean changeLogin(int ID, String pass, String newPass)
 	{
 		boolean match = false;
-		try
+		if(base.getPerms() < 3)
 		{
-			ResultSet res = null;
-			if (con == null)
-			{	getConnection();	}
-			String query = "SELECT pass FROM USER WHERE ID = ?";
-			PreparedStatement preparedStatement = con.prepareStatement(query);
-			preparedStatement.setInt(1, ID);
-			res = preparedStatement.executeQuery();
-			String result = res.getString("pass");
-			if (pass.equals(result))
+			try
 			{
-				match = true;
-				query = "UPDATE USER SET pass = ? WHERE ID = ?";
-				preparedStatement = con.prepareStatement(query);
-				preparedStatement.setString(1, newPass);
-				preparedStatement.setInt(2, ID);
-				preparedStatement.executeUpdate();
+				ResultSet res = null;
+				if (con == null)
+				{	getConnection();	}
+				String query = "SELECT pass FROM USER WHERE ID = ?";
+				PreparedStatement preparedStatement = con.prepareStatement(query);
+				preparedStatement.setInt(1, ID);
+				res = preparedStatement.executeQuery();
+				String result = res.getString("pass");
+				if (pass.equals(result))
+				{
+					match = true;
+					query = "UPDATE USER SET pass = ? WHERE ID = ?";
+					preparedStatement = con.prepareStatement(query);
+					preparedStatement.setString(1, newPass);
+					preparedStatement.setInt(2, ID);
+					preparedStatement.executeUpdate();
+				}
 			}
+			catch (SQLException e){e.printStackTrace();}
 		}
-		catch (SQLException e){e.printStackTrace();}
 		return match;
 	}
+	
+	public boolean resetPassword(String userName)
+	{
+		boolean result = true;
+		if(base.getPerms() < 2)
+		{
+			try
+			{
+				if (con == null)
+				{	getConnection();	}
+				ResultSet res = null;
+				String query = "SELECT ID FROM USER WHERE userName = ?";
+				PreparedStatement preparedStatement = con.prepareStatement(query);
+				preparedStatement.setString(1, userName);
+				res = preparedStatement.executeQuery();
+				String id = "" + res.getInt("ID");
+				query = "UPDATE USER SET pass = ? WHERE userName = ?";
+				preparedStatement = con.prepareStatement(query);
+				preparedStatement.setString(1, id);
+				preparedStatement.setString(2, userName);
+				preparedStatement.executeUpdate();
+			}
+			catch (SQLException e)
+			{
+				e.printStackTrace(); 
+				result = false;
+			}
+		}
+		return result;
+	}
+
 	
 	public void loginSuccess(String userName)
 	{
@@ -219,21 +256,7 @@ public class SQLiteData
 		return result;
 	}
 
-	public ResultSet displayUsers()
-	{
-		ResultSet res = null;
-		try
-		{
-			if (con == null)
-			{	getConnection();	}
-			Statement statement = con.createStatement();
-			res = statement.executeQuery("SELECT firstName, lastName FROM USER");
-		}
-		catch (SQLException e){e.printStackTrace();}
-		return res;
-	}
-
-	public void addUser(String userName, String pass, String firstName, String lastName, String classID, int permissions)
+	public void addUser(int id, String userName, String pass, String firstName, String lastName, String classID, int permissions)
 	{
 		if (con == null)
 		{	getConnection();	}
@@ -241,6 +264,7 @@ public class SQLiteData
 		{
 			PreparedStatement preparedStatement;
 			preparedStatement = con.prepareStatement("INSERT INTO USER VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+			preparedStatement.setInt(1, id);
 			preparedStatement.setString(2, userName);
 			preparedStatement.setString(3, pass);
 			preparedStatement.setString(4, firstName);
@@ -287,12 +311,13 @@ public class SQLiteData
 							+ "permission INTEGER," + "failedAttempts INTEGER," + "isLocked BOOLEAN,"
 							+ "PRIMARY KEY (ID));");
 
-					addUser("root", "root", "Root", "User", "00", 0);
-					addUser("deft", "deft", "Default", "Teacher", "1A", 1);
-					addUser("defs", "defs", "Default", "Student", "1A", 2);
+					addUser(000000, "root", "root", "Root", "User", "00", 0);
+					addUser(111111, "deft", "deft", "Default", "Teacher", "1A", 2);
+					addUser(222222, "defs", "defs", "Default", "Student", "1A", 3);
 				}
 			}
 			catch (SQLException e){e.printStackTrace();}
 		}
 	}
+
 }

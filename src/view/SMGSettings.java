@@ -25,6 +25,7 @@ public class SMGSettings extends JPanel
 	private GridBagLayout layout;
 	private JLabel headLabel; 
 	private JButton changePassButton;
+	private JButton logoutButton;
 	private JButton backButton;
 	
 	public SMGSettings(SMGController base)
@@ -33,6 +34,7 @@ public class SMGSettings extends JPanel
 		layout = new GridBagLayout();
 		headLabel = new JLabel(" SETTINGS ");
 		changePassButton = new JButton("Change Password");
+		logoutButton = new JButton(" Log Out ");
 		backButton = new JButton("BACK");
 		
 		setUpLayout();
@@ -42,7 +44,7 @@ public class SMGSettings extends JPanel
 	
 	private void setUpPanel()
 	{
-		if(base.getPerms() == 2)
+		if(base.getPerms() == 3)
 		{
 			changePassButton.setEnabled(false);
 			changePassButton.setVisible(false);
@@ -52,9 +54,9 @@ public class SMGSettings extends JPanel
 	private void setUpLayout()
 	{
 		layout.columnWidths = new int[]{0, 0, 0};
-		layout.rowHeights = new int[]{0, 0, 0, 20};
+		layout.rowHeights = new int[]{0, 0, 0, 0, 20};
 		layout.columnWeights = new double[]{1.0, 0.0, 1.0};
-		layout.rowWeights = new double[]{1.0, 1.0, 1.0, 1.0};
+		layout.rowWeights = new double[]{1.0, 1.0, 1.0, 1.0, 1.0};
 		setLayout(layout);
 		setBorder(new LineBorder(new Color(70, 130, 180), 10));
 		setForeground(new Color(135, 206, 235));
@@ -83,6 +85,17 @@ public class SMGSettings extends JPanel
 		gbc_changePassButton.gridx = 0;
 		gbc_changePassButton.gridy = 2;
 		
+		logoutButton.setFont(new Font("MV Boli", Font.PLAIN, 30));
+		logoutButton.setForeground(new Color(135, 206, 250));
+		logoutButton.setBackground(new Color(0, 0, 0));
+		logoutButton.setBorder(new LineBorder(new Color(70, 130, 180), 2, true));
+		GridBagConstraints gbc_logoutButton = new GridBagConstraints();
+		gbc_logoutButton.anchor = GridBagConstraints.NORTH;
+		gbc_logoutButton.insets = new Insets(20, 5, 5, 5);
+		gbc_logoutButton.gridwidth = 3;
+		gbc_logoutButton.gridx = 0;
+		gbc_logoutButton.gridy = 3;
+		
 		backButton.setFont(new Font("MV Boli", Font.PLAIN, 30));
 		backButton.setForeground(new Color(135, 206, 250));
 		backButton.setBackground(new Color(0, 0, 0));
@@ -97,6 +110,7 @@ public class SMGSettings extends JPanel
 				
 		add(headLabel, gbc_headLabel);
 		add(changePassButton, gbc_changePassButton);
+		add(logoutButton, gbc_logoutButton);
 		add(backButton, gbc_backButton);
 	}
 	
@@ -109,6 +123,14 @@ public class SMGSettings extends JPanel
 			{
 				base.changeState(5);
 				//passwordChange
+			}
+		});
+		
+		logoutButton.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent onClick) 
+			{
+				base.logout();
 			}
 		});
 		

@@ -20,11 +20,11 @@ public class SMGController
 	private String firstName;
 	private String lastName;
 	private String classID;
-	private int permissions; //root, teacher, student
+	private int permissions; //root, subroot, teacher, student
 
 	public void start()
 	{
-		database = new SQLiteData();
+		database = new SQLiteData(this);
 		frame = new SMGFrame(this);
 		logout();
 	}
@@ -82,12 +82,12 @@ public class SMGController
 	
 	public void returnToMenu()
 	{
-		if(permissions == 0)
+		if(permissions < 2)
 		{
 			changeState(1);
 			//root menu
 		}
-		else if(permissions == 1)
+		else if(permissions == 2)
 		{
 			changeState(2);
 			//teacher menu
@@ -107,7 +107,7 @@ public class SMGController
 		firstName = "";
 		lastName = "";
 		classID = "";
-		permissions = 2;
+		permissions = 3;
 		frame.updateState();
 	}
 	
@@ -121,7 +121,7 @@ public class SMGController
 	public void unlockAccount(String userName)
 	{
 		JPanel errorPanel = new JPanel();
-		if(permissions == 0)
+		if(permissions < 2)
 		{
 			database.loginSuccess(userName);
 		}
@@ -135,34 +135,40 @@ public class SMGController
 		}
 	}
 	
-	public String getName()
+	public void resetPassword(String userName)
 	{
-		return firstName;
+		JPanel errorPanel = new JPanel();
+		boolean change = false;
+		if(permissions < 2)
+		{
+			change = database.resetPassword(userName);
+		}
+		if(!change)
+		{
+			JOptionPane.showMessageDialog(errorPanel, "Password not reset.", "", JOptionPane.ERROR_MESSAGE);
+		}
+		else
+		{
+			JOptionPane.showMessageDialog(errorPanel, "Password successfully reset.", "", JOptionPane.INFORMATION_MESSAGE);
+		}
 	}
+	
+	public String getName()
+	{	return firstName;	}
 	
 	public String getLastName()
-	{
-		return lastName;
-	}
+	{	return lastName; }
 	
 	public String getFullName()
-	{
-		return firstName + " " + lastName;
-	}
+	{	return firstName + " " + lastName;	}
 	
 	public String getClassID()
-	{
-		return classID;
-	}
+	{	return classID;	}
 	
 	public int getState()
-	{
-		return state;
-	}
+	{	return state;	}
 	
 	public int getPerms()
-	{
-		return permissions;
-	}
+	{	return permissions;	}
 
 }
