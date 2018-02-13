@@ -3,7 +3,9 @@
  */
 package view;
 import javax.swing.*;
-import adapter.SMGController;
+import adapter.Controller;
+import adapter.ViewStates;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -16,10 +18,10 @@ import javax.swing.border.LineBorder;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class SMGPassChange extends JPanel
+public class PassChange extends JPanel
 {
 	private static final long serialVersionUID = -105254438804479292L;
-	private SMGController base;
+	private Controller base;
 	private GridBagLayout layout;
 	private JLabel oldPassLabel;
 	private JLabel newPassLabel;
@@ -29,7 +31,7 @@ public class SMGPassChange extends JPanel
 	private JButton enterButton;
 	private JButton backButton;
 	
-	public SMGPassChange(SMGController base)
+	public PassChange(Controller base)
 	{	
 		this.base = base;
 		layout = new GridBagLayout();
@@ -160,10 +162,7 @@ public class SMGPassChange extends JPanel
 		backButton.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent onClick) 
-			{
-				base.changeState(4);
-				//settings
-			}
+			{	base.changeState(ViewStates.settings);	}
 		});
 	}
 	

@@ -4,11 +4,11 @@
 
 package adapter;
 
-public class SMGRunner
+public class Main
 {
 	public static void main(String[] args)
 	{
-		SMGController control = new SMGController();
+		Controller control = new Controller();
 		control.start();
 	}
 }

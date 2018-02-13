@@ -5,7 +5,9 @@ package view;
 import java.awt.Color;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
-import adapter.SMGController;
+import adapter.Controller;
+import adapter.ViewStates;
+
 import javax.swing.JLabel;
 import javax.swing.JButton;
 import java.awt.Font;
@@ -19,11 +21,11 @@ import javax.swing.JTextField;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 
-public class SMGRootMenu extends JPanel 
+public class RootMenu extends JPanel 
 {
 
 	private static final long serialVersionUID = -5873415761431343161L;
-	private SMGController base;
+	private Controller base;
 	private GridBagLayout layout;
 	private JLabel displayName;
 //	private JButton logOut;
@@ -36,7 +38,7 @@ public class SMGRootMenu extends JPanel
 	private JButton resetPasswordButton;
 	private JButton manageUsersButton;
 	
-	public SMGRootMenu(SMGController base)
+	public RootMenu(Controller base)
 	{
 		this.base = base;
 		layout = new GridBagLayout();
@@ -58,7 +60,7 @@ public class SMGRootMenu extends JPanel
 	private void setUpLayout() 
 	{
 		layout.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
-		layout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0};
+		layout.rowWeights = new double[]{0.0, 0.4, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0};
 		layout.columnWidths = new int[]{0, 0, 0, 0, 0};
 		layout.columnWeights = new double[]{0.0, 0.0, 1.0, 1.0, 0.0};
 		setLayout(layout);
@@ -169,17 +171,18 @@ public class SMGRootMenu extends JPanel
 		gbc_resetPasswordButton.gridx = 4;
 		gbc_resetPasswordButton.gridy = 5;
 		
-		manageUsersButton.setFont(new Font("MV Boli", Font.PLAIN, 15));
-		manageUsersButton.setForeground(new Color(211, 211, 211));
-		manageUsersButton.setBackground(new Color(0, 0, 0));
-		manageUsersButton.setFocusPainted(false);
+  		manageUsersButton.setFont(new Font("MV Boli", Font.PLAIN, 30));
+  		manageUsersButton.setForeground(new Color(220, 220, 220));
+  		manageUsersButton.setBackground(new Color(0, 0, 0));
+  		manageUsersButton.setFocusPainted(false);
 		manageUsersButton.setContentAreaFilled(false);
-		manageUsersButton.setBorder(new LineBorder(new Color(105, 105, 105), 2, true));
+  		manageUsersButton.setBorder(new LineBorder(new Color(105, 105, 105), 2, true));
 		GridBagConstraints gbc_manageUsersButton = new GridBagConstraints();
-		gbc_manageUsersButton.fill = GridBagConstraints.HORIZONTAL;
-		gbc_manageUsersButton.insets = new Insets(0, 10, 5, 40);
-		gbc_manageUsersButton.gridx = 0;
-		gbc_manageUsersButton.gridy = 5;
+		gbc_manageUsersButton.gridwidth = 2;
+		gbc_manageUsersButton.anchor = GridBagConstraints.EAST;
+		gbc_manageUsersButton.insets = new Insets(0, 0, 20, 20);
+		gbc_manageUsersButton.gridx = 3;
+		gbc_manageUsersButton.gridy = 7;
 		
 		add(displayName, gbc_displayName);
 //		add(logOut, gbc_logOut);
@@ -190,6 +193,7 @@ public class SMGRootMenu extends JPanel
 		add(resetPasswordLabel, gbc_resetPasswordLabel);
 		add(resetPasswordTextField, gbc_resetPasswordTextField);
 		add(resetPasswordButton, gbc_resetPasswordButton);
+		add(manageUsersButton, gbc_manageUsersButton);
 	}
 	
 	private void setUpListeners() 
@@ -199,8 +203,7 @@ public class SMGRootMenu extends JPanel
 		{
 			public void actionPerformed(ActionEvent onClick) 
 			{
-				base.changeState(4);
-				//settings
+				base.changeState(ViewStates.settings);
 			}
 		});
 		
@@ -223,6 +226,24 @@ public class SMGRootMenu extends JPanel
 		});
 		
 		resetPasswordButton.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent onClick) 
+			{
+				String userName = resetPasswordTextField.getText();
+				int length = userName.length();
+				if(length > 1)
+				{
+					if(length > 15)
+					{
+						userName = userName.substring(0, 15);
+					}
+					base.resetPassword(userName);
+				}
+				resetPasswordTextField.setText("");
+			}
+		});
+		
+		manageUsersButton.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent onClick) 
 			{

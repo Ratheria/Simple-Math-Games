@@ -8,14 +8,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import model.SQLiteData;
-import view.SMGFrame;
+import view.Frame;
 
-public class SMGController
+public class Controller
 {
 	private SQLiteData database;
-	private SMGFrame frame;
-	private int state; //login screen, root menu, teacher menu, student menu, settings, password change, 
-	private int lastState;
+	private Frame frame;
+	private ViewStates state;
+	private ViewStates lastState;
 	private int ID;
 	private String firstName;
 	private String lastName;
@@ -25,7 +25,7 @@ public class SMGController
 	public void start()
 	{
 		database = new SQLiteData(this);
-		frame = new SMGFrame(this);
+		frame = new Frame(this);
 		logout();
 	}
 	
@@ -83,26 +83,17 @@ public class SMGController
 	public void returnToMenu()
 	{
 		if(permissions < 2)
-		{
-			changeState(1);
-			//root menu
-		}
+		{	changeState(ViewStates.rootMenu);	}
 		else if(permissions == 2)
-		{
-			changeState(2);
-			//teacher menu
-		}
+		{	changeState(ViewStates.teacherMenu);	}
 		else
-		{
-			changeState(3);
-			//student menu
-		}
+		{	changeState(ViewStates.studentMenu);	}
 	}
 	
 	public void logout()
 	{
-		state = 0;
-		lastState = 0;
+		state = ViewStates.login;
+		lastState = ViewStates.login;
 		ID = 0;
 		firstName = "";
 		lastName = "";
@@ -111,7 +102,7 @@ public class SMGController
 		frame.updateState();
 	}
 	
-	public void changeState(int nextState)
+	public void changeState(ViewStates nextState)
 	{
 		lastState = state;
 		state = nextState;
@@ -165,7 +156,7 @@ public class SMGController
 	public String getClassID()
 	{	return classID;	}
 	
-	public int getState()
+	public ViewStates getState()
 	{	return state;	}
 	
 	public int getPerms()

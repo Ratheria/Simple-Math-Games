@@ -3,15 +3,15 @@
  */
 package model;
 import java.sql.*;
-import adapter.SMGController;
+import adapter.Controller;
 
 public class SQLiteData
 {
-	private SMGController base;
+	private Controller base;
 	private static Connection con;
 	private static boolean hasData;
 
-	public SQLiteData(SMGController base)
+	public SQLiteData(Controller base)
 	{
 		this.base = base;
 		hasData = false;

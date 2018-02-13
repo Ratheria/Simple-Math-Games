@@ -5,7 +5,9 @@
 package view;
 
 import javax.swing.*;
-import adapter.SMGController;
+import adapter.Controller;
+import adapter.ViewStates;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -18,17 +20,17 @@ import javax.swing.border.LineBorder;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class SMGSettings extends JPanel
+public class Settings extends JPanel
 {
 	private static final long serialVersionUID = 1212500511996392234L;
-	private SMGController base;
+	private Controller base;
 	private GridBagLayout layout;
 	private JLabel headLabel; 
 	private JButton changePassButton;
 	private JButton logoutButton;
 	private JButton backButton;
 	
-	public SMGSettings(SMGController base)
+	public Settings(Controller base)
 	{	
 		this.base = base;
 		layout = new GridBagLayout();
@@ -120,26 +122,19 @@ public class SMGSettings extends JPanel
 		changePassButton.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent onClick) 
-			{
-				base.changeState(5);
-				//passwordChange
-			}
+			{	base.changeState(ViewStates.manageUsers);	}
 		});
 		
 		logoutButton.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent onClick) 
-			{
-				base.logout();
-			}
+			{	base.logout();	}
 		});
 		
 		backButton.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent onClick) 
-			{
-				base.returnToMenu();
-			}
+			{	base.returnToMenu();	}
 		});
 	}
 	

@@ -6,7 +6,9 @@ import java.awt.Color;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
-import adapter.SMGController;
+import adapter.Controller;
+import adapter.ViewStates;
+
 import javax.swing.JLabel;
 import javax.swing.JButton;
 import java.awt.Font;
@@ -16,15 +18,15 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class SMGStudentMenu extends JPanel 
+public class StudentMenu extends JPanel 
 {
 	private static final long serialVersionUID = -9125821110680618384L;
-	private SMGController base;
+	private Controller base;
 	private GridBagLayout layout;
 	private JLabel displayName;
 	private JButton settingsButton;
 	
-	public SMGStudentMenu(SMGController base)
+	public StudentMenu(Controller base)
 	{
 		this.base = base;
 		layout = new GridBagLayout();
@@ -93,8 +95,7 @@ public class SMGStudentMenu extends JPanel
 		{
 			public void actionPerformed(ActionEvent onClick) 
 			{
-				base.changeState(4);
-				//settings
+				base.changeState(ViewStates.settings);
 			}
 		});
 	}

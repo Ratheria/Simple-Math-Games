@@ -5,21 +5,22 @@ package view;
 import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import adapter.SMGController;
+import adapter.Controller;
+import adapter.ViewStates;
 
-public class SMGFrame extends JFrame
+public class Frame extends JFrame
 {
 	private static final long serialVersionUID = -2248105492340561524L;
-	private SMGController base;
+	private Controller base;
 	private JPanel panel;
-	private SMGLogIn login;
+	private Login login;
 	private Dimension minSize;
 	
 
-	public SMGFrame(SMGController base)
+	public Frame(Controller base)
 	{
 		this.base = base;
-		login = new SMGLogIn(base);
+		login = new Login(base);
 		panel = login;
 		minSize = new Dimension(700, 500);
 		setName("My Parents Don't Know What I Do");
@@ -34,32 +35,36 @@ public class SMGFrame extends JFrame
 	
 	public void updateState()
 	{
-		int state = base.getState();
+		ViewStates state = base.getState();
 		switch (state)
 		{
-			case 0:
+			case login:
 				panel.removeAll();
-				panel = new SMGLogIn(base);
+				panel = new Login(base);
 				break;
-			case 1:
+			case rootMenu:
 				panel.removeAll();
-				panel = new SMGRootMenu(base);
+				panel = new RootMenu(base);
 				break;
-			case 2:
+			case teacherMenu:
 				panel.removeAll();
-				panel = new SMGTeacherMenu(base);
+				panel = new TeacherMenu(base);
 				break;
-			case 3:
+			case studentMenu:
 				panel.removeAll();
-				panel = new SMGStudentMenu(base);
+				panel = new StudentMenu(base);
 				break;
-			case 4:
+			case settings:
 				panel.removeAll();
-				panel = new SMGSettings(base);
+				panel = new Settings(base);
 				break;
-			case 5:
+			case passwordChange:
 				panel.removeAll();
-				panel = new SMGPassChange(base);
+				panel = new PassChange(base);
+				break;
+			case manageUsers:
+				panel.removeAll();
+				panel = new ManageUsers();
 				break;
 		}
 		setContentPane(panel);
