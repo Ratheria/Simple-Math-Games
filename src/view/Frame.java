@@ -64,7 +64,7 @@ public class Frame extends JFrame
 				break;
 			case manageUsers:
 				panel.removeAll();
-				panel = new ManageUsers();
+				panel = new ManageUsers(base);
 				break;
 		}
 		setContentPane(panel);

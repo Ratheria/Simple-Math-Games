@@ -2,6 +2,11 @@
  *	@author Ariana Fairbanks
  */
 package model;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.*;
 import adapter.Controller;
 
@@ -255,8 +260,53 @@ public class SQLiteData
 		catch (SQLException e){e.printStackTrace();}
 		return result;
 	}
+	
+	public boolean importUsers(File csvFile)
+	{
+		boolean result = false;
+        BufferedReader br = null;
+        String line = "";
+        String cvsSplitBy = ",";
 
-	public void addUser(int id, String userName, String pass, String firstName, String lastName, String classID, int permissions)
+        try 
+        {
+
+            br = new BufferedReader(new FileReader(csvFile));
+            while ((line = br.readLine()) != null) 
+            {
+                String[] currentRow = line.split(cvsSplitBy);
+
+
+            }
+
+        } 
+        catch (FileNotFoundException e) 
+        {
+            e.printStackTrace();
+        } 
+        catch (IOException e) 
+        {
+            e.printStackTrace();
+        } 
+        finally 
+        {
+            if (br != null) 
+            {
+                try 
+                {
+                    br.close();
+                } 
+                catch (IOException e) 
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return false;
+
+    }
+
+	private void addUser(int id, String userName, String pass, String firstName, String lastName, String classID, int permissions)
 	{
 		if (con == null)
 		{	getConnection();	}
@@ -277,6 +327,7 @@ public class SQLiteData
 		} 
 		catch (SQLException e) {e.printStackTrace();}
 	}
+	
 
 	private void getConnection()
 	{

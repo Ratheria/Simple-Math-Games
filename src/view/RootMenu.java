@@ -23,7 +23,6 @@ import javax.swing.border.EmptyBorder;
 
 public class RootMenu extends JPanel 
 {
-
 	private static final long serialVersionUID = -5873415761431343161L;
 	private Controller base;
 	private GridBagLayout layout;

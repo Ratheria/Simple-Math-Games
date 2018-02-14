@@ -2,6 +2,7 @@
  *	@author Ariana Fairbanks
  */
 package adapter;
+import java.io.File;
 import java.sql.*;
 
 import javax.swing.JOptionPane;
@@ -12,6 +13,7 @@ import view.Frame;
 
 public class Controller
 {
+	private JPanel errorPanel;
 	private SQLiteData database;
 	private Frame frame;
 	private ViewStates state;
@@ -24,6 +26,7 @@ public class Controller
 
 	public void start()
 	{
+		errorPanel = new JPanel();
 		database = new SQLiteData(this);
 		frame = new Frame(this);
 		logout();
@@ -69,13 +72,11 @@ public class Controller
 		boolean result = database.changeLogin(ID, pass, newPass);
 		if(result)
 		{
-			JPanel errorPanel = new JPanel();
 			JOptionPane.showMessageDialog(errorPanel, "Password changed.", "Done", JOptionPane.INFORMATION_MESSAGE);
 			changeState(lastState);
 		}
 		else
 		{
-			JPanel errorPanel = new JPanel();
 			JOptionPane.showMessageDialog(errorPanel, "Incorrect password.", "Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
@@ -128,7 +129,6 @@ public class Controller
 	
 	public void resetPassword(String userName)
 	{
-		JPanel errorPanel = new JPanel();
 		boolean change = false;
 		if(permissions < 2)
 		{
@@ -143,6 +143,9 @@ public class Controller
 			JOptionPane.showMessageDialog(errorPanel, "Password successfully reset.", "", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
+	
+	public void importUsers(File file)
+	{	database.importUsers(file);	}
 	
 	public String getName()
 	{	return firstName;	}
