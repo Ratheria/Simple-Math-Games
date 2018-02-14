@@ -345,7 +345,8 @@ public class SQLiteData
 			try
 			{
 				Class.forName("org.sqlite.JDBC");
-				String databaseFilePath = "jdbc:sqlite:/etc/MPDKWID";
+				File homedir = new File(System.getProperty("user.home"));
+				String databaseFilePath = "jdbc:sqlite:" + homedir + "/MPDKWID";
 				con = DriverManager.getConnection(databaseFilePath);
 			}
 			catch (SQLException | ClassNotFoundException e2)
