@@ -339,7 +339,22 @@ public class SQLiteData
 			String databaseFilePath = "jdbc:sqlite:C:/ProgramData/MPDKWID";
 			con = DriverManager.getConnection(databaseFilePath);
 		}
-		catch (SQLException | ClassNotFoundException e){e.printStackTrace();}
+		catch (SQLException | ClassNotFoundException e)
+		{
+			e.printStackTrace();
+			try
+			{
+				Class.forName("org.sqlite.JDBC");
+				File homedir = new File(System.getProperty("user.home"));
+				String databaseFilePath = "jdbc:sqlite:" + homedir + "/MPDKWID";
+				con = DriverManager.getConnection(databaseFilePath);
+			}
+			catch (SQLException | ClassNotFoundException e2)
+			{
+				System.out.println("linux fix didn't work");
+			}
+			
+		}
 		initialise();
 	}
 
