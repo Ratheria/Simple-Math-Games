@@ -4,6 +4,7 @@
 package adapter;
 import java.io.File;
 import java.sql.*;
+import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -19,10 +20,12 @@ public class Controller
 	private ViewStates state;
 	private ViewStates lastState;
 	private int ID;
+	private int permissions; //root, subroot, teacher, student
+	private int frequency;
 	private String firstName;
 	private String lastName;
 	private String classID;
-	private int permissions; //root, subroot, teacher, student
+	private ArrayList<String> customEquations;
 
 	public void start()
 	{
@@ -38,18 +41,23 @@ public class Controller
 		ResultSet res = database.compareLogin(userName, pass);
 		try
 		{
-			if(database.isLocked(userName))
+			boolean hasRes = res.next();
+			if(database.isLocked(userName) && hasRes)
 			{
 				JOptionPane.showMessageDialog(errorPanel, "This account has been locked due to too many failed login attempts.", "Error", JOptionPane.ERROR_MESSAGE);
 			}
-			else if(res.next())
+			else if(hasRes)
 			{
 				System.out.println("Done.");
 				ID = res.getInt("ID");
 				permissions = database.permission(ID);
 				firstName = database.firstName(ID);
 				lastName = database.lastName(ID);
-				classID = database.classID(ID);
+				classID = database.getClassID(ID);
+				if(permissions > 1)
+				{
+					customEquations = getCustomEquations(classID);
+				}
 				returnToMenu();
 				System.out.println(ID);
 				frame.updateState();
@@ -100,6 +108,8 @@ public class Controller
 		lastName = "";
 		classID = "";
 		permissions = 3;
+		frequency = 5;
+		customEquations = null;
 		frame.updateState();
 	}
 	
@@ -165,4 +175,19 @@ public class Controller
 	public int getPerms()
 	{	return permissions;	}
 
+	private ArrayList<String> getCustomEquations(String classID)
+	{
+		ArrayList<String> result = null;
+		try
+		{
+			ResultSet res = database.getCustomEquation(classID);
+			res.next();
+		}
+		catch (SQLException e)
+		{
+			
+		}
+		return result;
+	}
+	
 }
