@@ -25,6 +25,7 @@ public class TeacherMenu extends JPanel
 	private GridBagLayout layout;
 	private JLabel displayName;
 	private JButton settingsButton;
+	private JButton viewRecordsButton;
 	
 	public TeacherMenu(Controller base)
 	{
@@ -32,6 +33,7 @@ public class TeacherMenu extends JPanel
 		layout = new GridBagLayout();
 		displayName = new JLabel(" ");
 		settingsButton = new JButton("    ");
+		viewRecordsButton = new JButton("    ");
 
 		setUpLayout();
 		setUpListeners();
@@ -71,8 +73,21 @@ public class TeacherMenu extends JPanel
 		gbc_settingsButton.gridx = 0;
 		gbc_settingsButton.gridy = 0;
 		
+		viewRecordsButton.setFont(new Font("MV Boli", Font.PLAIN, 25));
+		viewRecordsButton.setForeground(new Color(135, 06, 50));
+		viewRecordsButton.setBackground(new Color(70, 130, 180));
+		viewRecordsButton.setFocusPainted(false);
+		viewRecordsButton.setContentAreaFilled(false);
+		viewRecordsButton.setBorder(new LineBorder(new Color(135, 206, 250), 2));
+		GridBagConstraints gbc_viewRecordsButton = new GridBagConstraints();
+		gbc_viewRecordsButton.anchor = GridBagConstraints.NORTHWEST;
+		gbc_viewRecordsButton.insets = new Insets(20, 25, 5, 5);
+		gbc_viewRecordsButton.gridx = 0;
+		gbc_viewRecordsButton.gridy = 0;
+		
 		add(displayName, gbc_displayName);
-		add(settingsButton, gbc_settingsButton);
+		//add(settingsButton, gbc_settingsButton);
+		add(viewRecordsButton, gbc_viewRecordsButton);
 	}
 	
 	private void setUpListeners() 
@@ -81,6 +96,12 @@ public class TeacherMenu extends JPanel
 		{
 			public void actionPerformed(ActionEvent onClick) 
 			{	base.changeState(ViewStates.settings);	}
+		});
+		
+		viewRecordsButton.addActionListener(new ActionListener()
+		{ 
+			public void actionPerformed(ActionEvent onClick)
+			{	base.changeState(ViewStates.viewRecords);	}
 		});
 	}
 }

@@ -6,5 +6,5 @@ package adapter;
 
 public enum ViewStates 
 {
-	login, rootMenu, teacherMenu, studentMenu, settings, passwordChange, manageUsers
+	login, rootMenu, teacherMenu, studentMenu, settings, passwordChange, manageUsers, viewRecords
 }

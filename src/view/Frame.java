@@ -66,6 +66,10 @@ public class Frame extends JFrame
 				panel.removeAll();
 				panel = new ManageUsers(base);
 				break;
+			case viewRecords:
+				panel.removeAll();
+				panel = new ViewRecords(base);
+				break;
 		}
 		setContentPane(panel);
 		panel.revalidate();

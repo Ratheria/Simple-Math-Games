@@ -328,6 +328,40 @@ public class SQLiteData
 		catch (SQLException e) {e.printStackTrace();}
 	}
 	
+	// maybe make this public? not sure yet
+	private void addStudentScoreRecord(int recordID, int studentID)
+	{
+		if (con == null)
+		{	getConnection();	}
+		try 
+		{
+			PreparedStatement preparedStatement;
+			preparedStatement = con.prepareStatement("INSERT INTO STUDENT_SCORE_RECORDS VALUES(?, ?);");
+			preparedStatement.setInt(1, studentID);
+			preparedStatement.setInt(2, recordID);
+			preparedStatement.execute();
+		}
+		catch (SQLException e) {e.printStackTrace();}
+	}
+	
+	// Method to retrieve the records for a student. Called from TeacherMenu/ViewRecords
+	public ResultSet selectStudentRecord(int studentID)
+	{
+		ResultSet studentRecords = null;
+		PreparedStatement preparedStatement;
+		if (con == null)
+		{	getConnection();	}
+		try 
+		{
+			String query = "SELECT * from USER WHERE ID=?";
+			preparedStatement = con.prepareStatement(query);
+			preparedStatement.setInt(1, studentID);
+			studentRecords = preparedStatement.executeQuery();
+			return studentRecords;	
+		}
+		catch (SQLException e) { e.printStackTrace(); }		
+		return studentRecords;
+	}
 
 	private void getConnection()
 	{
@@ -341,16 +375,18 @@ public class SQLiteData
 		}
 		catch (SQLException | ClassNotFoundException e)
 		{
-			e.printStackTrace();
-			try
+			// e.printStackTrace();
+			try			// maybe make this work for Mac as well???
 			{
 				Class.forName("org.sqlite.JDBC");
 				File homedir = new File(System.getProperty("user.home"));
 				String databaseFilePath = "jdbc:sqlite:" + homedir + "/MPDKWID";
 				con = DriverManager.getConnection(databaseFilePath);
+				// https://docs.oracle.com/javase/8/docs/api/java/nio/file/Files.html#setPosixFilePermissions-java.nio.file.Path-java.util.Set-
 			}
 			catch (SQLException | ClassNotFoundException e2)
 			{
+				e2.printStackTrace();
 				System.out.println("linux fix didn't work");
 			}
 			
@@ -380,6 +416,20 @@ public class SQLiteData
 					addUser(000000, "root", "root", "Root", "User", "00", 0);
 					addUser(111111, "deft", "deft", "Default", "Teacher", "1A", 2);
 					addUser(222222, "defs", "defs", "Default", "Student", "1A", 3);
+				}
+				// drop table if exists
+				state.execute("DROP TABLE IF EXISTS STUDENT_SCORE_RECORDS;");
+				ResultSet studentScoreRecords = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' " +
+						"AND name='STUDENT_SCORE_RECORDS'");
+				
+				if (!studentScoreRecords.next())
+				{
+					System.out.println("Building Student Score Records table.");
+					state = con.createStatement();
+					state.executeUpdate("CREATE TABLE STUDENT_SCORE_RECORDS(studentID INTEGER," + "recordID INTEGER," + 
+							"PRIMARY KEY (studentID, recordID)," + "FOREIGN KEY (studentID) REFERENCES USER(ID));");
+					addStudentScoreRecord(000000, 222222);
+					addStudentScoreRecord(000001, 222222);
 				}
 			}
 			catch (SQLException e){e.printStackTrace();}

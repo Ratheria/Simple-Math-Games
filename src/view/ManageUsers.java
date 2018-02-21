@@ -34,7 +34,7 @@ public class ManageUsers extends JPanel
 	{
 		this.base = base;
 		layout = new GridBagLayout();
-		header = new JLabel("Manage Users");
+		header = new JLabel(" View Student Records ");
 		backButton = new JButton(" BACK ");
 		importUsersButton = new JButton(" Users From CSV ");
 

@@ -165,4 +165,11 @@ public class Controller
 	public int getPerms()
 	{	return permissions;	}
 
+	public ResultSet lookupStudent(int studentID) //throws SQLException 
+	{
+		ResultSet studentRecords = null;
+		
+		studentRecords = database.selectStudentRecord(studentID);
+		return studentRecords;
+	}
 }
