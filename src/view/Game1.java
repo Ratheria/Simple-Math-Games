@@ -22,6 +22,15 @@ public class Game1 extends JPanel
 	private JLabel timer;
 	private JLabel question;
 	
+	//use addScore(num) to increase score. Don't just increase score, the JLabel needs to update.
+	private int score = 0;
+	String scoreString = "Score: 0";
+	JLabel labelScore = new JLabel(scoreString);
+	
+	public void updateScoreString() {
+		scoreString = ("Score: " + Integer.toString(score));
+	}
+	
 	public Game1(Controller base) 
 	{
 		this.base = base;
@@ -54,6 +63,15 @@ public class Game1 extends JPanel
 		gbc_timer.gridy = 0;
 		add(timer, gbc_timer);
 		
+		updateScoreString();
+		labelScore.setFont(new Font("MV Boli", Font.PLAIN, 35));
+		labelScore.setForeground(new Color(135, 206, 250));
+		GridBagConstraints gbc_labelScore = new GridBagConstraints();
+		gbc_labelScore.insets = new Insets(0, 0, 0, 5);
+		gbc_labelScore.gridx = 0;
+		gbc_labelScore.gridy = 2;
+		add(labelScore, gbc_labelScore);
+		
 		question.setVerticalAlignment(SwingConstants.BOTTOM);
 		question.setHorizontalAlignment(SwingConstants.CENTER);
 		question.setForeground(new Color(135, 206, 250));
@@ -64,6 +82,12 @@ public class Game1 extends JPanel
 		gbc_question.gridy = 2;
 		add(question, gbc_question);
 	
+	}
+	// Make sure you add to score using this, don't just increase score, label needs to update.
+	private void addScore(int num){
+		score += num;
+		updateScoreString();
+		labelScore.setText(scoreString);
 	}
 	
 	private void setUpListeners() 
