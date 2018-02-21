@@ -348,19 +348,11 @@ public class SQLiteData
 		catch (SQLException e) {e.printStackTrace();}
 	}
 	
-<<<<<<< HEAD
-	private void addCustomEquations(String classID, String questionList, int numberOfEquations, int frequency)
-=======
-	// maybe make this public? not sure yet
-	private void addStudentScoreRecord(int recordID, int studentID)
->>>>>>> walker
+	private void addCustomEquations(String classID, String questionList, int numberOfEquations, int frequency)	
 	{
-		if (con == null)
-		{	getConnection();	}
-		try 
+		PreparedStatement preparedStatement;
+		try
 		{
-			PreparedStatement preparedStatement;
-<<<<<<< HEAD
 			preparedStatement = con.prepareStatement("INSERT INTO CUSTOMEQUATION VALUES( ?, ?, ?, ?);");
 			preparedStatement.setString(1, classID);
 			preparedStatement.setString(2, questionList);
@@ -371,11 +363,18 @@ public class SQLiteData
 		catch (SQLException e) {e.printStackTrace();}
 	}
 	
-=======
-			preparedStatement = con.prepareStatement("INSERT INTO STUDENT_SCORE_RECORDS VALUES(?, ?);");
-			preparedStatement.setInt(1, studentID);
-			preparedStatement.setInt(2, recordID);
-			preparedStatement.execute();
+	//maybe make this public? not sure yet
+		private void addStudentScoreRecord(int recordID, int studentID)
+		{
+			PreparedStatement preparedStatement;
+			if (con == null)
+			{	getConnection();	}
+			try 
+			{			
+				preparedStatement = con.prepareStatement("INSERT INTO STUDENT_SCORE_RECORDS VALUES(?, ?);");
+				preparedStatement.setInt(1, studentID);
+				preparedStatement.setInt(2, recordID);
+				preparedStatement.execute();
 		}
 		catch (SQLException e) {e.printStackTrace();}
 	}
@@ -399,7 +398,6 @@ public class SQLiteData
 		return studentRecords;
 	}
 
->>>>>>> walker
 	private void getConnection()
 	{
 		try
