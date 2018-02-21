@@ -7,6 +7,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -16,6 +17,7 @@ import view.Frame;
 
 public class Controller
 {
+	public static Random rng;
 	private JPanel errorPanel;
 	private SQLiteData database;
 	private Frame frame;
@@ -31,6 +33,7 @@ public class Controller
 
 	public void start()
 	{
+		rng = new Random();
 		errorPanel = new JPanel();
 		database = new SQLiteData(this);
 		frame = new Frame(this);
@@ -176,6 +179,17 @@ public class Controller
 	
 	public int getPerms()
 	{	return permissions;	}
+
+	public int getFrequency()
+	{
+		return frequency;
+	}
+
+	public List<String> getEquations()
+	{
+		return customEquations;
+	}
+	
 
 	private ArrayList<String> getCustomEquations(String classID)
 	{

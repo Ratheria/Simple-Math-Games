@@ -348,11 +348,14 @@ public class SQLiteData
 		catch (SQLException e) {e.printStackTrace();}
 	}
 	
-	private void addCustomEquations(String classID, String questionList, int numberOfEquations, int frequency)	
+
+	private void addCustomEquations(String classID, String questionList, int numberOfEquations, int frequency)
 	{
-		PreparedStatement preparedStatement;
-		try
+		if (con == null)
+		{	getConnection();	}
+		try 
 		{
+			PreparedStatement preparedStatement;
 			preparedStatement = con.prepareStatement("INSERT INTO CUSTOMEQUATION VALUES( ?, ?, ?, ?);");
 			preparedStatement.setString(1, classID);
 			preparedStatement.setString(2, questionList);
@@ -363,18 +366,18 @@ public class SQLiteData
 		catch (SQLException e) {e.printStackTrace();}
 	}
 	
-	//maybe make this public? not sure yet
-		private void addStudentScoreRecord(int recordID, int studentID)
+	// maybe make this public? not sure yet
+	private void addStudentScoreRecord(int recordID, int studentID)
+	{
+		if (con == null)
+		{	getConnection();	}
+		try 
 		{
 			PreparedStatement preparedStatement;
-			if (con == null)
-			{	getConnection();	}
-			try 
-			{			
-				preparedStatement = con.prepareStatement("INSERT INTO STUDENT_SCORE_RECORDS VALUES(?, ?);");
-				preparedStatement.setInt(1, studentID);
-				preparedStatement.setInt(2, recordID);
-				preparedStatement.execute();
+			preparedStatement = con.prepareStatement("INSERT INTO STUDENT_SCORE_RECORDS VALUES(?, ?);");
+			preparedStatement.setInt(1, studentID);
+			preparedStatement.setInt(2, recordID);
+			preparedStatement.execute();
 		}
 		catch (SQLException e) {e.printStackTrace();}
 	}
