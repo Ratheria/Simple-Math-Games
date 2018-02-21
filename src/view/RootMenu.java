@@ -246,17 +246,7 @@ public class RootMenu extends JPanel
 		{
 			public void actionPerformed(ActionEvent onClick) 
 			{
-				String userName = resetPasswordTextField.getText();
-				int length = userName.length();
-				if(length > 1)
-				{
-					if(length > 15)
-					{
-						userName = userName.substring(0, 15);
-					}
-					base.resetPassword(userName);
-				}
-				resetPasswordTextField.setText("");
+
 			}
 		});
 	}

@@ -242,7 +242,7 @@ public class SQLiteData
 		return result;
 	}
 	
-	public String classID(int id)
+	public String getClassID(int id)
 	{
 		String result = "";
 		ResultSet res = null;
@@ -259,6 +259,26 @@ public class SQLiteData
 		}		
 		catch (SQLException e){e.printStackTrace();}
 		return result;
+	}
+	
+	public ResultSet getCustomEquation(String classID)
+	{
+		ResultSet res = null;
+		PreparedStatement preparedStatement;
+		if (con == null)
+		{	getConnection();	}
+		try 
+		{
+			
+			//TODO make this relevent
+			String query = "SELECT questionList FROM CUSTOMEQUATION WHERE classID = ?";
+			preparedStatement = con.prepareStatement(query);
+			preparedStatement.setString(1, classID);
+			res = preparedStatement.executeQuery();
+//			result = res.getString("classID");
+		}		
+		catch (SQLException e){e.printStackTrace();}
+		return res;
 	}
 	
 	public boolean importUsers(File csvFile)
@@ -328,7 +348,23 @@ public class SQLiteData
 		catch (SQLException e) {e.printStackTrace();}
 	}
 	
-
+	private void addCustomEquations(String classID, String questionList, int numberOfEquations, int frequency)
+	{
+		if (con == null)
+		{	getConnection();	}
+		try 
+		{
+			PreparedStatement preparedStatement;
+			preparedStatement = con.prepareStatement("INSERT INTO CUSTOMEQUATION VALUES( ?, ?, ?, ?);");
+			preparedStatement.setString(1, classID);
+			preparedStatement.setString(2, questionList);
+			preparedStatement.setInt(3, numberOfEquations);
+			preparedStatement.setInt(4, frequency);
+			preparedStatement.execute();
+		} 
+		catch (SQLException e) {e.printStackTrace();}
+	}
+	
 	private void getConnection()
 	{
 		try
@@ -376,10 +412,19 @@ public class SQLiteData
 							+ "firstName VARCHAR(30)," + "lastName VARCHAR(30)," + "classID VARCHAR(5),"
 							+ "permission INTEGER," + "failedAttempts INTEGER," + "isLocked BOOLEAN,"
 							+ "PRIMARY KEY (ID));");
+					
+					System.out.println("Building the custom equations table.");
+					state = con.createStatement();
+					state.executeUpdate("CREATE TABLE CUSTOMEQUATION(classID VARCHAR(5),"
+							+ "questionList VARCHAR(600)," + "numberOfEquations INTEGER," + "frequency INTEGER," 
+							+ "FOREIGN KEY (classID) REFERENCES USER(classID),"
+							+ "PRIMARY KEY (classID));");
 
 					addUser(000000, "root", "root", "Root", "User", "00", 0);
 					addUser(111111, "deft", "deft", "Default", "Teacher", "1A", 2);
 					addUser(222222, "defs", "defs", "Default", "Student", "1A", 3);
+					
+					addCustomEquations("1A", "5+10:7-2", 2, 5);
 				}
 			}
 			catch (SQLException e){e.printStackTrace();}

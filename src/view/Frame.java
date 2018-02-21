@@ -65,7 +65,12 @@ public class Frame extends JFrame
 			case manageUsers:
 				panel.removeAll();
 				panel = new ManageUsers(base);
+				break;			
+			case game1:
+				panel.removeAll();
+				panel = new Game1(base);
 				break;
+				
 		}
 		setContentPane(panel);
 		panel.revalidate();

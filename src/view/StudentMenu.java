@@ -25,6 +25,7 @@ public class StudentMenu extends JPanel
 	private GridBagLayout layout;
 	private JLabel displayName;
 	private JButton settingsButton;
+	private JButton btnGame;
 	
 	public StudentMenu(Controller base)
 	{
@@ -32,6 +33,7 @@ public class StudentMenu extends JPanel
 		layout = new GridBagLayout();
 		displayName = new JLabel(" ");
 		settingsButton = new JButton("    ");
+		btnGame = new JButton(" Game1 ");
 
 		setUpLayout();
 		setUpListeners();
@@ -55,7 +57,7 @@ public class StudentMenu extends JPanel
 		GridBagConstraints gbc_displayName = new GridBagConstraints();
 		gbc_displayName.anchor = GridBagConstraints.NORTHWEST;
 		gbc_displayName.gridwidth = 3;
-		gbc_displayName.insets = new Insets(15, 10, 5, 5);
+		gbc_displayName.insets = new Insets(15, 10, 5, 0);
 		gbc_displayName.gridx = 1;
 		gbc_displayName.gridy = 0;
 		
@@ -84,9 +86,22 @@ public class StudentMenu extends JPanel
 		gbc_settingsButton.gridx = 0;
 		gbc_settingsButton.gridy = 0;
 		
+		btnGame.setFont(new Font("MV Boli", Font.PLAIN, 25));
+		btnGame.setForeground(new Color(135, 206, 250));
+		btnGame.setBackground(new Color(70, 130, 180));
+		btnGame.setFocusPainted(false);
+		btnGame.setContentAreaFilled(false);
+		btnGame.setBorder(new LineBorder(new Color(135, 206, 250), 2));
+		GridBagConstraints gbc_btnGame = new GridBagConstraints();
+		gbc_btnGame.insets = new Insets(0, 0, 5, 5);
+		gbc_btnGame.gridx = 2;
+		gbc_btnGame.gridy = 2;
+		
 		add(displayName, gbc_displayName);
-//		add(logOut, gbc_logOut);
 		add(settingsButton, gbc_settingsButton);
+		add(btnGame, gbc_btnGame);
+//		add(logOut, gbc_logOut);
+
 	}
 	
 	private void setUpListeners() 
@@ -96,6 +111,14 @@ public class StudentMenu extends JPanel
 			public void actionPerformed(ActionEvent onClick) 
 			{
 				base.changeState(ViewStates.settings);
+			}
+		});
+		
+		btnGame.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent onClick) 
+			{
+				base.changeState(ViewStates.game1);
 			}
 		});
 	}

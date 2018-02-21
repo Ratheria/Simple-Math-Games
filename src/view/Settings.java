@@ -122,7 +122,7 @@ public class Settings extends JPanel
 		changePassButton.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent onClick) 
-			{	base.changeState(ViewStates.manageUsers);	}
+			{	base.changeState(ViewStates.passwordChange);	}
 		});
 		
 		logoutButton.addActionListener(new ActionListener() 
