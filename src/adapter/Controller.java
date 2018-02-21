@@ -8,10 +8,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-
 import model.SQLiteData;
 import view.Frame;
 
@@ -60,9 +58,7 @@ public class Controller
 				lastName = database.lastName(ID);
 				classID = database.getClassID(ID);
 				if(permissions > 1)
-				{
-					customEquations = getCustomEquations(classID);
-				}
+				{	customEquations = getCustomEquations(classID);	}
 				returnToMenu();
 				System.out.println(ID);
 				frame.updateState();
@@ -72,9 +68,7 @@ public class Controller
 			{
 				JOptionPane.showMessageDialog(errorPanel, "Incorrect username or password.", "Error", JOptionPane.ERROR_MESSAGE);
 				if(!(userName.equals("root")))
-				{
-					database.loginFailure(userName);
-				}
+				{	database.loginFailure(userName);	}
 			}
 		}
 		catch (SQLException e){	}
@@ -181,16 +175,18 @@ public class Controller
 	{	return permissions;	}
 
 	public int getFrequency()
-	{
-		return frequency;
-	}
+	{	return frequency;	}
 
 	public List<String> getEquations()
+	{	return customEquations;	}
+
+	public ResultSet lookupStudent(int studentID) 
 	{
-		return customEquations;
+		ResultSet result = null;
+		result = database.selectStudentRecord(studentID);
+		return result;
 	}
 	
-
 	private ArrayList<String> getCustomEquations(String classID)
 	{
 		ArrayList<String> result = null;
@@ -206,18 +202,7 @@ public class Controller
 				System.out.println(customEquations.get(0) + "");
 			}
 		}
-		catch (SQLException e)
-		{
-			
-		}
+		catch (SQLException e){	}
 		return result;
-	}
-	
-	public ResultSet lookupStudent(int studentID) //throws SQLException 
-	{
-		ResultSet studentRecords = null;
-		
-		studentRecords = database.selectStudentRecord(studentID);
-		return studentRecords;
 	}
 }

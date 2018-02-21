@@ -29,12 +29,8 @@ public class Game1 extends JPanel
 	
 	//use addScore(num) to increase score. Don't just increase score, the JLabel needs to update.
 	private int score = 0;
-	String scoreString = "Score: 0";
-	JLabel labelScore = new JLabel(scoreString);
-	
-	public void updateScoreString() {
-		scoreString = ("Score: " + Integer.toString(score));
-	}
+	private String scoreString;
+	private JLabel scoreLabel;
 	
 	public Game1(Controller base) 
 	{
@@ -45,11 +41,17 @@ public class Game1 extends JPanel
 		questionList = base.getEquations();
 		gridBagLayout = new GridBagLayout();
 		timer = new JLabel("Timer");
-		questionLabel = new JLabel("Question");
+		questionLabel = new JLabel("Question");scoreString = "Score: 0";
+		scoreLabel = new JLabel(scoreString);
 		
 		setUpLayout();
 		setUpListeners();
 		playGame();
+	}
+	
+	public void updateScoreString() 
+	{
+		scoreString = ("Score: " + Integer.toString(score));
 	}
 	
 	private void setUpLayout() 
@@ -74,13 +76,13 @@ public class Game1 extends JPanel
 		add(timer, gbc_timer);
 
 		updateScoreString();
-		labelScore.setFont(new Font("MV Boli", Font.PLAIN, 35));
-		labelScore.setForeground(new Color(135, 206, 250));
+		scoreLabel.setFont(new Font("MV Boli", Font.PLAIN, 35));
+		scoreLabel.setForeground(new Color(135, 206, 250));
 		GridBagConstraints gbc_labelScore = new GridBagConstraints();
 		gbc_labelScore.insets = new Insets(0, 0, 0, 5);
 		gbc_labelScore.gridx = 0;
 		gbc_labelScore.gridy = 2;
-		add(labelScore, gbc_labelScore);
+		add(scoreLabel, gbc_labelScore);
 		
 		questionLabel.setVerticalAlignment(SwingConstants.BOTTOM);
 		questionLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -93,11 +95,13 @@ public class Game1 extends JPanel
 		add(questionLabel, gbc_question);
 	
 	}
+	
 	// Make sure you add to score using this, don't just increase score, label needs to update.
-	private void addScore(int num){
+	private void addScore(int num)
+	{
 		score += num;
 		updateScoreString();
-		labelScore.setText(scoreString);
+		scoreLabel.setText(scoreString);
 	}
 	
 	private void setUpListeners() 
@@ -158,7 +162,6 @@ public class Game1 extends JPanel
 		int random = Controller.rng.nextInt(2);
 		if(random < 1)
 		{
-			//subtraction
 			int firstInteger = Controller.rng.nextInt(100);
 			int secondInteger = Controller.rng.nextInt(100);
 			answer = firstInteger - secondInteger;
@@ -166,7 +169,6 @@ public class Game1 extends JPanel
 		}
 		else
 		{
-			//addition
 			int firstInteger = Controller.rng.nextInt(100);
 			int secondInteger = Controller.rng.nextInt(100);
 			answer = firstInteger + secondInteger;

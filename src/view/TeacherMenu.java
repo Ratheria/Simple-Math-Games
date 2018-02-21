@@ -33,7 +33,7 @@ public class TeacherMenu extends JPanel
 		layout = new GridBagLayout();
 		displayName = new JLabel(" ");
 		settingsButton = new JButton("    ");
-		viewRecordsButton = new JButton("    ");
+		viewRecordsButton = new JButton("View Records");
 
 		setUpLayout();
 		setUpListeners();
@@ -83,10 +83,10 @@ public class TeacherMenu extends JPanel
 		gbc_viewRecordsButton.anchor = GridBagConstraints.NORTHWEST;
 		gbc_viewRecordsButton.insets = new Insets(20, 25, 5, 5);
 		gbc_viewRecordsButton.gridx = 0;
-		gbc_viewRecordsButton.gridy = 0;
+		gbc_viewRecordsButton.gridy = 1;
 		
 		add(displayName, gbc_displayName);
-		//add(settingsButton, gbc_settingsButton);
+		add(settingsButton, gbc_settingsButton);
 		add(viewRecordsButton, gbc_viewRecordsButton);
 	}
 	

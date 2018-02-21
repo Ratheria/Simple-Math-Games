@@ -283,6 +283,7 @@ public class SQLiteData
 	
 	public boolean importUsers(File csvFile)
 	{
+		//TODO finish this logic
 		boolean result = false;
         BufferedReader br = null;
         String line = "";
@@ -313,17 +314,12 @@ public class SQLiteData
             if (br != null) 
             {
                 try 
-                {
-                    br.close();
-                } 
+                {	br.close();	} 
                 catch (IOException e) 
-                {
-                    e.printStackTrace();
-                }
+                {	e.printStackTrace();	}
             }
         }
         return false;
-
     }
 
 	private void addUser(int id, String userName, String pass, String firstName, String lastName, String classID, int permissions)
@@ -413,8 +409,8 @@ public class SQLiteData
 		}
 		catch (SQLException | ClassNotFoundException e)
 		{
-			// e.printStackTrace();
-			try			// maybe make this work for Mac as well???
+			//TODO maybe make this work for Mac as well???
+			try			
 			{
 				Class.forName("org.sqlite.JDBC");
 				File homedir = new File(System.getProperty("user.home"));
@@ -427,7 +423,6 @@ public class SQLiteData
 				e2.printStackTrace();
 				System.out.println("linux fix didn't work");
 			}
-			
 		}
 		initialise();
 	}
@@ -465,6 +460,8 @@ public class SQLiteData
 					addCustomEquations("1A", "5+10:7-2", 2, 5);
 				}
 				// drop table if exists
+				//TODO Once we are done testing we want to get rid of this logic 
+				//so it doesn't reset every time you open the application.
 				state.execute("DROP TABLE IF EXISTS STUDENT_SCORE_RECORDS;");
 				ResultSet studentScoreRecords = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' " +
 						"AND name='STUDENT_SCORE_RECORDS'");
