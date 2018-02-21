@@ -70,7 +70,14 @@ public class Frame extends JFrame
 				panel.removeAll();
 				panel = new Game1(base);
 				break;
+<<<<<<< HEAD
 				
+=======
+			case viewRecords:
+				panel.removeAll();
+				panel = new ViewRecords(base);
+				break;
+>>>>>>> walker
 		}
 		setContentPane(panel);
 		panel.revalidate();

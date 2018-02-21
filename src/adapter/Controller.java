@@ -177,6 +177,7 @@ public class Controller
 	public int getPerms()
 	{	return permissions;	}
 
+<<<<<<< HEAD
 	private ArrayList<String> getCustomEquations(String classID)
 	{
 		ArrayList<String> result = null;
@@ -199,4 +200,13 @@ public class Controller
 		return result;
 	}
 	
+=======
+	public ResultSet lookupStudent(int studentID) //throws SQLException 
+	{
+		ResultSet studentRecords = null;
+		
+		studentRecords = database.selectStudentRecord(studentID);
+		return studentRecords;
+	}
+>>>>>>> walker
 }
