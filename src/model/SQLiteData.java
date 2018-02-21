@@ -269,7 +269,6 @@ public class SQLiteData
 		{	getConnection();	}
 		try 
 		{
-			
 			//TODO make this relevent
 			String query = "SELECT questionList FROM CUSTOMEQUATION WHERE classID = ?";
 			preparedStatement = con.prepareStatement(query);
@@ -281,45 +280,64 @@ public class SQLiteData
 		return res;
 	}
 	
-	public boolean importUsers(File csvFile)
+	public int importUsers(File csvFile)
 	{
-		//TODO finish this logic
-		boolean result = false;
+		//CSV file should have user ID, first name, last name, class ID, permission level, new line.
+		//Username default - first letter of first name, first letter of last name, last 3 digits of user ID 
+		//Password default - user ID
+		
+		//Username default subject to change.
+		//Duplicate users are ignored.
         BufferedReader br = null;
         String line = "";
-        String cvsSplitBy = ",";
-
-        try 
+        String delimiter = ",";
+        int currentLine = 0;
+        if(base.getPerms() < 2)
         {
-
-            br = new BufferedReader(new FileReader(csvFile));
-            while ((line = br.readLine()) != null) 
+            try 
             {
-                String[] currentRow = line.split(cvsSplitBy);
-
-
-            }
-
-        } 
-        catch (FileNotFoundException e) 
-        {
-            e.printStackTrace();
-        } 
-        catch (IOException e) 
-        {
-            e.printStackTrace();
-        } 
-        finally 
-        {
-            if (br != null) 
+                br = new BufferedReader(new FileReader(csvFile));
+                while ((line = br.readLine()) != null) 
+                {
+                	currentLine++;
+                	//TODO catch invalid input
+                    String[] values = line.split(delimiter);
+                    String idString = values[0].trim();
+                    String firstName = values[1].trim();
+                    String lastName = values[2].trim();
+                    String classID = values[3].trim();
+                    String userName = firstName.substring(0, 1) 
+                    				+ lastName.substring(0, 1) 
+                    				+ idString.substring(idString.length() - 4);
+                    System.out.println(userName);
+                    int id = Integer.parseInt(idString);
+                    if(userExists(id))
+                    {
+                    	System.out.println("User with ID " + idString + " already exists.");
+                    }
+                    else
+                    {
+                    	addUser(id, userName, idString, firstName, lastName, classID, Integer.parseInt(values[4].trim()));
+                    }
+                }
+                currentLine = -1;
+            } 
+            catch (IOException e) 
             {
-                try 
-                {	br.close();	} 
-                catch (IOException e) 
-                {	e.printStackTrace();	}
+                e.printStackTrace();
+            } 
+            finally 
+            {
+                if (br != null) 
+                {
+                    try 
+                    {	br.close();	} 
+                    catch (IOException e) 
+                    {	 e.printStackTrace();	}
+                }
             }
         }
-        return false;
+        return currentLine;
     }
 
 	private void addUser(int id, String userName, String pass, String firstName, String lastName, String classID, int permissions)
@@ -396,6 +414,24 @@ public class SQLiteData
 		catch (SQLException e) { e.printStackTrace(); }		
 		return studentRecords;
 	}
+	
+	private boolean userExists(int ID)
+	{
+		boolean result = false;
+		ResultSet res = null;
+		try
+		{
+			if (con == null)
+			{	getConnection();	}
+			String query = "SELECT ID FROM USER WHERE ID = ?";
+			PreparedStatement preparedStatement = con.prepareStatement(query);
+			preparedStatement.setInt(1, ID);
+			res = preparedStatement.executeQuery();
+			result = res.next();
+		}
+		catch (SQLException e){}
+		return result;
+	}
 
 	private void getConnection()
 	{
@@ -460,8 +496,7 @@ public class SQLiteData
 					addCustomEquations("1A", "5+10:7-2", 2, 5);
 				}
 				// drop table if exists
-				//TODO Once we are done testing we want to get rid of this logic 
-				//so it doesn't reset every time you open the application.
+				//TODO Once we are done testing we want to get rid of this logic so it doesn't reset every time you open the application.
 				state.execute("DROP TABLE IF EXISTS STUDENT_SCORE_RECORDS;");
 				ResultSet studentScoreRecords = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' " +
 						"AND name='STUDENT_SCORE_RECORDS'");

@@ -154,7 +154,17 @@ public class Controller
 	}
 	
 	public void importUsers(File file)
-	{	database.importUsers(file);	}
+	{	
+		int result = database.importUsers(file);	
+		if(result == -1)
+		{
+			JOptionPane.showMessageDialog(errorPanel, "Users successfully imported.", "", JOptionPane.INFORMATION_MESSAGE);
+		}
+		else
+		{
+			JOptionPane.showMessageDialog(errorPanel, "Something went wrong at line " + result + ".", "", JOptionPane.ERROR_MESSAGE);
+		}
+	}
 	
 	public String getName()
 	{	return firstName;	}
