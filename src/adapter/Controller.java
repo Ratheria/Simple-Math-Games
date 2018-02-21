@@ -5,6 +5,8 @@ package adapter;
 import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -25,7 +27,7 @@ public class Controller
 	private String firstName;
 	private String lastName;
 	private String classID;
-	private ArrayList<String> customEquations;
+	private List<String> customEquations;
 
 	public void start()
 	{
@@ -178,10 +180,17 @@ public class Controller
 	private ArrayList<String> getCustomEquations(String classID)
 	{
 		ArrayList<String> result = null;
+		String questionList = null;
 		try
 		{
 			ResultSet res = database.getCustomEquation(classID);
-			res.next();
+			if(res.next())
+			{
+				questionList = res.getString("questionList");
+				System.out.println(questionList);
+				List<String> customEquations = Arrays.asList(questionList.split(":"));
+				System.out.println(customEquations.get(0) + "");
+			}
 		}
 		catch (SQLException e)
 		{
