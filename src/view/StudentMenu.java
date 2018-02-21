@@ -86,10 +86,6 @@ public class StudentMenu extends JPanel
 		gbc_settingsButton.gridx = 0;
 		gbc_settingsButton.gridy = 0;
 		
-		add(displayName, gbc_displayName);
-//		add(logOut, gbc_logOut);
-		add(settingsButton, gbc_settingsButton);
-		
 		btnGame.setFont(new Font("MV Boli", Font.PLAIN, 25));
 		btnGame.setForeground(new Color(135, 206, 250));
 		btnGame.setBackground(new Color(70, 130, 180));
@@ -100,8 +96,12 @@ public class StudentMenu extends JPanel
 		gbc_btnGame.insets = new Insets(0, 0, 5, 5);
 		gbc_btnGame.gridx = 2;
 		gbc_btnGame.gridy = 2;
-		add(btnGame, gbc_btnGame);
 		
+		add(displayName, gbc_displayName);
+		add(settingsButton, gbc_settingsButton);
+		add(btnGame, gbc_btnGame);
+//		add(logOut, gbc_logOut);
+
 	}
 	
 	private void setUpListeners() 
