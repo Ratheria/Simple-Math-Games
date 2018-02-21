@@ -6,11 +6,9 @@ package view;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagLayout;
-
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
-
 import adapter.Controller;
 import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
