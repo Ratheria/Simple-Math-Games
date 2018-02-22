@@ -1,19 +1,20 @@
 /**
  *	@author Jadie Adams
+ *	@author Ariana Fairbanks
  */
 package view;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.GridBagLayout;
 import javax.swing.JPanel;
+import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import adapter.Controller;
 import javax.swing.JLabel;
-import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.util.List;
+import java.awt.Canvas;
 
 public class Game1 extends JPanel
 {
@@ -22,94 +23,74 @@ public class Game1 extends JPanel
 	private String question;
 	private int frequency;
 	private int answer;
+	private int score;
 	private List<String> questionList;
-	private GridBagLayout gridBagLayout;
-
+	private SpringLayout theLayout;
 	private JLabel timer;
 	private JLabel questionLabel;
-	
-	//use addScore(num) to increase score. Don't just increase score, the JLabel needs to update.
-	private int score = 0;
 	private String scoreString;
 	private JLabel scoreLabel;
+	private Canvas canvas;
 	
 	public Game1(Controller base) 
 	{
 		this.base = base;
-		question = null;
+		theLayout = new SpringLayout();
 		frequency = base.getFrequency();
 		answer = 0;
+		score = 0;
+		question = "Question";
 		questionList = base.getEquations();
-		gridBagLayout = new GridBagLayout();
-
-		setUpLayout();
-		setUpListeners();
-		
-		timer = new JLabel("Timer");
-		questionLabel = new JLabel("Question");scoreString = "Score: 0";
+		timer = new JLabel("Time: ");
+		questionLabel = new JLabel(question);
+		scoreString = "Score: 0";
 		scoreLabel = new JLabel(scoreString);
+		canvas = new Canvas();
 		
 		setUpLayout();
 		setUpListeners();
 		playGame();
 	}
 	
-	public void updateScoreString() 
-	{
-		scoreString = ("Score: " + Integer.toString(score));
-	}
-	
 	private void setUpLayout() 
 	{
-		gridBagLayout.columnWidths = new int[] {0, 0, 0};
-		gridBagLayout.rowHeights = new int[] {0, 0, 0};
-		gridBagLayout.columnWeights = new double[]{Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[]{Double.MIN_VALUE};
-		setLayout(gridBagLayout);
+		setLayout(theLayout);
 		setBorder(new LineBorder(new Color(70, 130, 180), 10));
 		setForeground(new Color(0, 255, 255));
 		setBackground(new Color(0, 0, 0));
 		
-		timer.setVerticalAlignment(SwingConstants.TOP);
-		timer.setHorizontalAlignment(SwingConstants.LEFT);
+		timer.setHorizontalAlignment(SwingConstants.RIGHT);
 		timer.setForeground(new Color(135, 206, 250));
-		timer.setFont(new Font("MV Boli", Font.PLAIN, 35));
-		GridBagConstraints gbc_timer = new GridBagConstraints();
-		gbc_timer.insets = new Insets(0, 0, 5, 0);
-		gbc_timer.gridx = 2;
-		gbc_timer.gridy = 0;
-		add(timer, gbc_timer);
+		timer.setFont(new Font("MV Boli", Font.PLAIN, 20));
+		theLayout.putConstraint(SpringLayout.NORTH, timer, 0, SpringLayout.NORTH, this);
 
-		updateScoreString();
-		scoreLabel.setFont(new Font("MV Boli", Font.PLAIN, 35));
+		scoreLabel.setFont(new Font("MV Boli", Font.PLAIN, 30));
 		scoreLabel.setForeground(new Color(135, 206, 250));
-		GridBagConstraints gbc_labelScore = new GridBagConstraints();
-		gbc_labelScore.insets = new Insets(0, 0, 0, 5);
-		gbc_labelScore.gridx = 0;
-		gbc_labelScore.gridy = 2;
-		add(scoreLabel, gbc_labelScore);
+		theLayout.putConstraint(SpringLayout.SOUTH, scoreLabel, 0, SpringLayout.SOUTH, this);
+		scoreLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		
-		questionLabel.setVerticalAlignment(SwingConstants.BOTTOM);
-		questionLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		questionLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		questionLabel.setForeground(new Color(135, 206, 250));
-		questionLabel.setFont(new Font("MV Boli", Font.PLAIN, 35));
-		GridBagConstraints gbc_question = new GridBagConstraints();
-		gbc_question.insets = new Insets(0, 0, 0, 5);
-		gbc_question.gridx = 1;
-		gbc_question.gridy = 2;
-		add(questionLabel, gbc_question);
-	
-	}
-	
+		questionLabel.setFont(new Font("MV Boli", Font.BOLD, 30));
+		theLayout.putConstraint(SpringLayout.SOUTH, questionLabel, 0, SpringLayout.SOUTH, this);
+		
+		theLayout.putConstraint(SpringLayout.EAST, scoreLabel, 0, SpringLayout.EAST, canvas);
+		theLayout.putConstraint(SpringLayout.SOUTH, timer, 0, SpringLayout.NORTH, canvas);
+		theLayout.putConstraint(SpringLayout.EAST, timer, 0, SpringLayout.EAST, canvas);
+		theLayout.putConstraint(SpringLayout.WEST, questionLabel, 0, SpringLayout.WEST, canvas);
+		theLayout.putConstraint(SpringLayout.NORTH, scoreLabel, 0, SpringLayout.SOUTH, canvas);
+		theLayout.putConstraint(SpringLayout.NORTH, questionLabel, 0, SpringLayout.SOUTH, canvas);
+		theLayout.putConstraint(SpringLayout.NORTH, canvas, 50, SpringLayout.NORTH, this);
+		theLayout.putConstraint(SpringLayout.WEST, canvas, 50, SpringLayout.WEST, this);
+		theLayout.putConstraint(SpringLayout.SOUTH, canvas, -100, SpringLayout.SOUTH, this);
+		theLayout.putConstraint(SpringLayout.EAST, canvas, -50, SpringLayout.EAST, this);
+		canvas.setBackground(new Color(173, 216, 230));
 
-	// Make sure you add to score using this, don't just increase score, label needs to update.
-	private void addScore(int num)
-	{
-		score += num;
-		updateScoreString();
-		scoreLabel.setText(scoreString);
+		add(timer);
+		add(scoreLabel);
+		add(questionLabel);
+		add(canvas);
 	}
-
 	
 	private void setUpListeners() 
 	{
@@ -120,26 +101,21 @@ public class Game1 extends JPanel
 	{
 		//Our Game Loop
 		getQuestion();
+		updateScore();
 	}
 	
 	private void getQuestion()
 	{
 		if(frequency > 0 && Controller.rng.nextInt(10) < frequency && questionList != null)
-		{
-			questionFromList();
-		}
+		{	questionFromList();	}
 		else
-		{
-			generateQuestion();
-		}
+		{	generateQuestion();	}
 		while(answer < 0)
 		{
 			//generates a new question if the answer is negative
 			generateQuestion();
 		}
-		removeAll();
 		questionLabel.setText(question);
-		setUpLayout();
 	}
 	
 	private void questionFromList()
@@ -152,7 +128,7 @@ public class Game1 extends JPanel
 			int firstInteger = Integer.parseInt(question.substring(0, operator));
 			int secondInteger = Integer.parseInt(question.substring(operator + 1));
 			answer = firstInteger + secondInteger;
-			question = firstInteger + " + " + secondInteger;
+			question = firstInteger + " + " + secondInteger + " = ?";
 		}
 		else
 		{
@@ -160,7 +136,7 @@ public class Game1 extends JPanel
 			int firstInteger = Integer.parseInt(question.substring(0, operator));
 			int secondInteger = Integer.parseInt(question.substring(operator + 1));
 			answer = firstInteger - secondInteger;
-			question = firstInteger + " - " + secondInteger;
+			question = firstInteger + " - " + secondInteger + " = ?";
 		}
 	}
 	
@@ -182,4 +158,11 @@ public class Game1 extends JPanel
 			question = firstInteger + " - " + secondInteger;
 		}
 	}
+	
+	//I changed this because we don't need a method call to change the score -A
+	private void updateScore() 
+	{	
+		scoreLabel.setText("Score: " + Integer.toString(score));	
+	}
+	
 }
