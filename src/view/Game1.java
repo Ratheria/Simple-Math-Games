@@ -19,18 +19,19 @@ public class Game1 extends JPanel
 	private static final long serialVersionUID = -5262708339581599541L;
 	private Controller base;
 	private GridBagLayout gridBagLayout;
-	private JLabel timer;
+	private JLabel timerLabel;
 	private JLabel question;
 	
 	public Game1(Controller base) 
 	{
 		this.base = base;
 		gridBagLayout = new GridBagLayout();
-		timer = new JLabel("Timer");
+		timerLabel = new JLabel("timerLabel");
 		question = new JLabel("Question");
 		
 		setUpLayout();
 		setUpListeners();
+		
 	}
 	
 	private void setUpLayout() 
@@ -44,15 +45,15 @@ public class Game1 extends JPanel
 		setForeground(new Color(0, 255, 255));
 		setBackground(new Color(0, 0, 0));
 		
-		timer.setVerticalAlignment(SwingConstants.TOP);
-		timer.setHorizontalAlignment(SwingConstants.LEFT);
-		timer.setForeground(new Color(135, 206, 250));
-		timer.setFont(new Font("MV Boli", Font.PLAIN, 35));
-		GridBagConstraints gbc_timer = new GridBagConstraints();
-		gbc_timer.insets = new Insets(0, 0, 5, 0);
-		gbc_timer.gridx = 2;
-		gbc_timer.gridy = 0;
-		add(timer, gbc_timer);
+		timerLabel.setVerticalAlignment(SwingConstants.TOP);
+		timerLabel.setHorizontalAlignment(SwingConstants.LEFT);
+		timerLabel.setForeground(new Color(135, 206, 250));
+		timerLabel.setFont(new Font("MV Boli", Font.PLAIN, 35));
+		GridBagConstraints gbc_timerLabel = new GridBagConstraints();
+		gbc_timerLabel.insets = new Insets(0, 0, 5, 0);
+		gbc_timerLabel.gridx = 2;
+		gbc_timerLabel.gridy = 0;
+		add(timerLabel, gbc_timerLabel);
 		
 		question.setVerticalAlignment(SwingConstants.BOTTOM);
 		question.setHorizontalAlignment(SwingConstants.CENTER);
@@ -65,6 +66,7 @@ public class Game1 extends JPanel
 		add(question, gbc_question);
 	
 	}
+	
 	
 	private void setUpListeners() 
 	{
