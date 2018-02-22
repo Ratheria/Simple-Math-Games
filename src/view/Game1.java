@@ -20,6 +20,7 @@ public class Game1 extends JPanel
 	private static final long serialVersionUID = -5262708339581599541L;
 	private Controller base;
 	private String question;
+	private int frequency;
 	private int answer;
 	private List<String> questionList;
 	private GridBagLayout gridBagLayout;
@@ -69,17 +70,6 @@ public class Game1 extends JPanel
 		setForeground(new Color(0, 255, 255));
 		setBackground(new Color(0, 0, 0));
 		
-<<<<<<< HEAD
-		timerLabel.setVerticalAlignment(SwingConstants.TOP);
-		timerLabel.setHorizontalAlignment(SwingConstants.LEFT);
-		timerLabel.setForeground(new Color(135, 206, 250));
-		timerLabel.setFont(new Font("MV Boli", Font.PLAIN, 35));
-		GridBagConstraints gbc_timerLabel = new GridBagConstraints();
-		gbc_timerLabel.insets = new Insets(0, 0, 5, 0);
-		gbc_timerLabel.gridx = 2;
-		gbc_timerLabel.gridy = 0;
-		add(timerLabel, gbc_timerLabel);
-=======
 		timer.setVerticalAlignment(SwingConstants.TOP);
 		timer.setHorizontalAlignment(SwingConstants.LEFT);
 		timer.setForeground(new Color(135, 206, 250));
@@ -98,7 +88,6 @@ public class Game1 extends JPanel
 		gbc_labelScore.gridx = 0;
 		gbc_labelScore.gridy = 2;
 		add(scoreLabel, gbc_labelScore);
->>>>>>> 489a04275678d48cefe191ae96162cd2feee05da
 		
 		questionLabel.setVerticalAlignment(SwingConstants.BOTTOM);
 		questionLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -112,8 +101,7 @@ public class Game1 extends JPanel
 	
 	}
 	
-<<<<<<< HEAD
-=======
+
 	// Make sure you add to score using this, don't just increase score, label needs to update.
 	private void addScore(int num)
 	{
@@ -121,7 +109,7 @@ public class Game1 extends JPanel
 		updateScoreString();
 		scoreLabel.setText(scoreString);
 	}
->>>>>>> 489a04275678d48cefe191ae96162cd2feee05da
+
 	
 	private void setUpListeners() 
 	{
