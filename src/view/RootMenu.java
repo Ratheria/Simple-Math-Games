@@ -246,7 +246,7 @@ public class RootMenu extends JPanel
 		{
 			public void actionPerformed(ActionEvent onClick) 
 			{
-
+				base.changeState(ViewStates.manageUsers);
 			}
 		});
 	}

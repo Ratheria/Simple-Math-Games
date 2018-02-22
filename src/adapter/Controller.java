@@ -7,15 +7,15 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
+import java.util.Random;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-
 import model.SQLiteData;
 import view.Frame;
 
 public class Controller
 {
+	public static Random rng;
 	private JPanel errorPanel;
 	private SQLiteData database;
 	private Frame frame;
@@ -31,6 +31,7 @@ public class Controller
 
 	public void start()
 	{
+		rng = new Random();
 		errorPanel = new JPanel();
 		database = new SQLiteData(this);
 		frame = new Frame(this);
@@ -57,9 +58,7 @@ public class Controller
 				lastName = database.lastName(ID);
 				classID = database.getClassID(ID);
 				if(permissions > 1)
-				{
-					customEquations = getCustomEquations(classID);
-				}
+				{	customEquations = getCustomEquations(classID);	}
 				returnToMenu();
 				System.out.println(ID);
 				frame.updateState();
@@ -69,9 +68,7 @@ public class Controller
 			{
 				JOptionPane.showMessageDialog(errorPanel, "Incorrect username or password.", "Error", JOptionPane.ERROR_MESSAGE);
 				if(!(userName.equals("root")))
-				{
-					database.loginFailure(userName);
-				}
+				{	database.loginFailure(userName);	}
 			}
 		}
 		catch (SQLException e){	}
@@ -157,7 +154,17 @@ public class Controller
 	}
 	
 	public void importUsers(File file)
-	{	database.importUsers(file);	}
+	{	
+		int result = database.importUsers(file);	
+		if(result == -1)
+		{
+			JOptionPane.showMessageDialog(errorPanel, "Users successfully imported.", "", JOptionPane.INFORMATION_MESSAGE);
+		}
+		else
+		{
+			JOptionPane.showMessageDialog(errorPanel, "Something went wrong at line " + result + ".", "", JOptionPane.ERROR_MESSAGE);
+		}
+	}
 	
 	public String getName()
 	{	return firstName;	}
@@ -177,6 +184,19 @@ public class Controller
 	public int getPerms()
 	{	return permissions;	}
 
+	public int getFrequency()
+	{	return frequency;	}
+
+	public List<String> getEquations()
+	{	return customEquations;	}
+
+	public ResultSet lookupStudent(int studentID) 
+	{
+		ResultSet result = null;
+		result = database.selectStudentRecord(studentID);
+		return result;
+	}
+	
 	private ArrayList<String> getCustomEquations(String classID)
 	{
 		ArrayList<String> result = null;
@@ -192,11 +212,7 @@ public class Controller
 				System.out.println(customEquations.get(0) + "");
 			}
 		}
-		catch (SQLException e)
-		{
-			
-		}
+		catch (SQLException e){	}
 		return result;
 	}
-	
 }
