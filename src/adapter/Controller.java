@@ -16,9 +16,9 @@ import view.Frame;
 public class Controller
 {
 	public static Random rng;
-	private JPanel errorPanel;
+	public Frame frame;
+	public JPanel errorPanel;
 	private SQLiteData database;
-	private Frame frame;
 	private ViewStates state;
 	private ViewStates lastState;
 	private int ID;
@@ -57,8 +57,7 @@ public class Controller
 				firstName = database.firstName(ID);
 				lastName = database.lastName(ID);
 				classID = database.getClassID(ID);
-				if(permissions > 1)
-				{	customEquations = getCustomEquations(classID);	}
+				customEquations = this.getCustomEquations(classID);
 				returnToMenu();
 				System.out.println(ID);
 				frame.updateState();
@@ -197,9 +196,9 @@ public class Controller
 		return result;
 	}
 	
-	private ArrayList<String> getCustomEquations(String classID)
+	private List<String> getCustomEquations(String classID)
 	{
-		ArrayList<String> result = null;
+		List<String> result = null;
 		String questionList = null;
 		try
 		{
@@ -207,9 +206,8 @@ public class Controller
 			if(res.next())
 			{
 				questionList = res.getString("questionList");
-				System.out.println(questionList);
 				List<String> customEquations = Arrays.asList(questionList.split(":"));
-				System.out.println(customEquations.get(0) + "");
+				result = customEquations;
 			}
 		}
 		catch (SQLException e){	}
