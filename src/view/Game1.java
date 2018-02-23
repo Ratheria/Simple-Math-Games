@@ -236,6 +236,8 @@ public class Game1 extends JPanel
 		if(fish.getAnswer() == answer)
 		{
 			System.out.println("Correct answer given.");
+			score++;
+			updateScore();
 			clearCurrentFish();
 			playGame();
 		}
