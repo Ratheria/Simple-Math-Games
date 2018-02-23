@@ -268,7 +268,7 @@ public class SQLiteData
 		try 
 		{
 			//TODO make this relevent
-			String query = "SELECT questionList FROM CUSTOMEQUATION WHERE classID = ?";
+			String query = "SELECT questionList FROM CUSTOM_EQUATION WHERE classID = ?";
 			preparedStatement = con.prepareStatement(query);
 			preparedStatement.setString(1, classID);
 			res = preparedStatement.executeQuery();
@@ -368,7 +368,7 @@ public class SQLiteData
 		try 
 		{
 			PreparedStatement preparedStatement;
-			preparedStatement = con.prepareStatement("INSERT INTO CUSTOMEQUATION VALUES( ?, ?, ?, ?);");
+			preparedStatement = con.prepareStatement("INSERT INTO CUSTOM_EQUATION VALUES( ?, ?, ?, ?);");		
 			preparedStatement.setString(1, classID);
 			preparedStatement.setString(2, questionList);
 			preparedStatement.setInt(3, numberOfEquations);
@@ -470,6 +470,10 @@ public class SQLiteData
 			try
 			{
 				state = con.createStatement();
+				
+				// drop table if exists
+				state.execute("DROP TABLE IF EXISTS USER;");
+				
 				ResultSet res = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='USER'");
 				if (!res.next())
 				{
@@ -480,16 +484,24 @@ public class SQLiteData
 							+ "permission INTEGER," + "failedAttempts INTEGER," + "isLocked BOOLEAN,"
 							+ "PRIMARY KEY (ID));");
 					
-					System.out.println("Building the custom equations table.");
-					state = con.createStatement();
-					state.executeUpdate("CREATE TABLE CUSTOMEQUATION(classID VARCHAR(5),"
-							+ "questionList VARCHAR(600)," + "numberOfEquations INTEGER," + "frequency INTEGER," 
-							+ "FOREIGN KEY (classID) REFERENCES USER(classID),"
-							+ "PRIMARY KEY (classID));");
-
 					addUser(000000, "root", "root", "Root", "User", "00", 0);
 					addUser(111111, "deft", "deft", "Default", "Teacher", "1A", 2);
 					addUser(222222, "defs", "defs", "Default", "Student", "1A", 3);
+				}
+				
+				state.execute("DROP TABLE IF EXISTS CUSTOMEQUATION;");			
+				state.execute("DROP TABLE IF EXISTS CUSTOM_EQUATION;");
+				
+				ResultSet customEq = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' " +
+						"AND name='CUSTOM_EQUATION'");
+				if (!customEq.next())
+				{
+					System.out.println("Building the custom equations table.");
+					state = con.createStatement();
+					state.executeUpdate("CREATE TABLE CUSTOM_EQUATION(classID VARCHAR(5),"
+							+ "questionList VARCHAR(600)," + "numberOfEquations INTEGER," + "frequency INTEGER," 
+							+ "FOREIGN KEY (classID) REFERENCES USER(classID),"
+							+ "PRIMARY KEY (classID));");
 					
 					addCustomEquations("1A", "5+10:7-2", 2, 5);
 				}
@@ -505,6 +517,7 @@ public class SQLiteData
 					state = con.createStatement();
 					state.executeUpdate("CREATE TABLE STUDENT_SCORE_RECORDS(studentID INTEGER," + "recordID INTEGER," + 
 							"PRIMARY KEY (studentID, recordID)," + "FOREIGN KEY (studentID) REFERENCES USER(ID));");
+					
 					addStudentScoreRecord(000000, 222222);
 					addStudentScoreRecord(000001, 222222);
 				}
