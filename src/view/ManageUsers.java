@@ -10,14 +10,14 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
+import javax.swing.filechooser.FileFilter;
 import adapter.Controller;
 
 public class ManageUsers extends JPanel
@@ -33,6 +33,7 @@ public class ManageUsers extends JPanel
 	public ManageUsers(Controller base)
 	{
 		this.base = base;
+		fileChoose = new JFileChooser();
 		layout = new GridBagLayout();
 		header = new JLabel(" View Student Records ");
 		backButton = new JButton(" BACK ");
@@ -101,9 +102,15 @@ public class ManageUsers extends JPanel
 			public void actionPerformed(ActionEvent onClick) 
 			{
 				JPanel temp = new JPanel();
-			    FileNameExtensionFilter filter = new FileNameExtensionFilter(
-			            "CSV Files", "csv");
-			    fileChoose.setFileFilter(filter);
+			    fileChoose.setFileFilter(new FileFilter() 
+			    {
+			        @Override
+			        public boolean accept(File f) 
+			        {	return f.getName().endsWith(".csv");	}
+			        @Override
+			        public String getDescription() 
+			        {	return "CSV files";	}
+			    });
 				int valueReturned = fileChoose.showOpenDialog(temp);
 				if(valueReturned == JFileChooser.APPROVE_OPTION)
 				{
