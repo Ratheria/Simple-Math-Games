@@ -47,6 +47,9 @@ public class Game1 extends JPanel
 	private Timer timer;
 	private int gamePeriod = 90000; //milliseconds
 	private ActionListener gameRestarter;
+	private Timer displayTime;
+	private ActionListener timeDisplayer;
+	private int sec;
 	
 	public Game1(Controller base) 
 	{
@@ -62,22 +65,41 @@ public class Game1 extends JPanel
 		theLayout = new SpringLayout();
 		question = "Question";
 		questionList = base.getEquations();
-		timerLabel = new JLabel("Time: ");
+		timerLabel = new JLabel("Time: 0:00 ");
 		questionLabel = new JLabel(question);
 		scoreLabel = new JLabel("Score: 0");
-		//timer stuff
-		gameRestarter = new ActionListener() {
-			@Override
+		//timer that displays on screen
+		sec = 1;
+        timeDisplayer = new ActionListener() {
+    		@Override
             public void actionPerformed(ActionEvent evt) {
-                base.returnToMenu();
-                System.out.println("Times up!");
+    			if((sec%60) < 10)
+    			{
+    				 timerLabel.setText("Timer: "+(sec/60)+ ":0" + (sec%60));
+    			}
+    			else
+    			{
+    			 timerLabel.setText("Timer: "+(sec/60)+ ":" + (sec%60));
+    			}
+    			sec++;
             }
         };
-        timer = new Timer(gamePeriod, gameRestarter);
-        timer.setRepeats(false);
-        timer.start();
+        displayTime = new Timer(1000, timeDisplayer);
+        displayTime.start();
+        displayTime.setRepeats(true);
+      //timer for ending game
+      		gameRestarter = new ActionListener() {
+      			@Override
+                  public void actionPerformed(ActionEvent evt) {
+                      base.returnToMenu();
+                      System.out.println("Times up!");
+                  }
+              };
+              timer = new Timer(gamePeriod, gameRestarter);
+              timer.setRepeats(false);
+              timer.start();
+ 
         
-		
 		setUpLayout();
 		//setUpListeners(); add this later if possible 
 		playGame();
@@ -111,6 +133,7 @@ public class Game1 extends JPanel
 		add(timerLabel);
 		add(scoreLabel);
 		add(questionLabel);
+		
 	}
 	
 	private void addFish()
