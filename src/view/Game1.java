@@ -19,6 +19,7 @@ import javax.swing.border.LineBorder;
 import adapter.Controller;
 import javax.imageio.ImageIO;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.Canvas;
@@ -93,6 +94,8 @@ public class Game1 extends JPanel
                   public void actionPerformed(ActionEvent evt) {
                       base.returnToMenu();
                       System.out.println("Times up!");
+                      JPanel gameOverPanel = new JPanel();
+                      JOptionPane.showMessageDialog(gameOverPanel, "Your score was " + score + ".", "Times up!", JOptionPane.PLAIN_MESSAGE);
                   }
               };
               timer = new Timer(gamePeriod, gameRestarter);
@@ -101,7 +104,7 @@ public class Game1 extends JPanel
  
         
 		setUpLayout();
-		//setUpListeners(); add this later if possible 
+		//setUpListeners(); maybe add this later if possible 
 		playGame();
 	}
 	
