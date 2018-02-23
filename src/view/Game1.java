@@ -113,10 +113,10 @@ public class Game1 extends JPanel
 		int randomPlacement = Controller.rng.nextInt(maxFishVertical);
 		for(int i = 0; i < maxFishVertical; i++)
 		{
-			int fishAnswer = Controller.rng.nextInt(200);
+			int fishAnswer = Controller.rng.nextInt(100);
 			while (fishAnswer == answer)
 			{
-				fishAnswer = Controller.rng.nextInt(200);
+				fishAnswer = Controller.rng.nextInt(100);
 			}
 			if(i == randomPlacement)
 			{
@@ -186,15 +186,15 @@ public class Game1 extends JPanel
 		int random = Controller.rng.nextInt(2);
 		if(random < 1)
 		{
-			int firstInteger = Controller.rng.nextInt(100);
-			int secondInteger = Controller.rng.nextInt(100);
+			int firstInteger = Controller.rng.nextInt(30);
+			int secondInteger = Controller.rng.nextInt(30);
 			answer = firstInteger - secondInteger;
 			question = firstInteger + " - " + secondInteger + " = ? ";
 		}
 		else
 		{
-			int firstInteger = Controller.rng.nextInt(100);
-			int secondInteger = Controller.rng.nextInt(100);
+			int firstInteger = Controller.rng.nextInt(30);
+			int secondInteger = Controller.rng.nextInt(30);
 			answer = firstInteger + secondInteger;
 			question = firstInteger + " + " + secondInteger + " = ? ";
 		}
