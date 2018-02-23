@@ -70,6 +70,7 @@ public class Game1 extends JPanel
 			@Override
             public void actionPerformed(ActionEvent evt) {
                 base.returnToMenu();
+                System.out.println("Times up!");
             }
         };
         timer = new Timer(gamePeriod, gameRestarter);
