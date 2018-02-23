@@ -84,7 +84,7 @@ public class Game1 extends JPanel
 		} catch (IOException ex) {
 			System.out.println("File fish.png is missing.");
 		}
-		fishImg = fishImg.getScaledInstance( fishImageWidth, fishImageHeight,  java.awt.Image.SCALE_SMOOTH ) ;  //rescales fish image
+		fishImg = fishImg.getScaledInstance( fishImageWidth, fishImageHeight,  java.awt.Image.SCALE_SMOOTH ) ;  //resizes fish image
 		fishIcon = new ImageIcon(fishImg);
 
 		setUpLayout();

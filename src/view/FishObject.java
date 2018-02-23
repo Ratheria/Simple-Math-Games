@@ -1,9 +1,11 @@
 /**
  *	@author Ariana Fairbanks
+*	@author Jadie Adams
  */
 
 package view;
 
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,10 +27,13 @@ public class FishObject extends JButton implements ActionListener
     public FishObject(int answer, int numberFromTop, int panelWidth, Game1 panel, ImageIcon icon)
     {
     	super((answer + ""), icon);
+    	this.setBorderPainted(false);
     	this.setOpaque(false);
     	this.setContentAreaFilled(false);
-    	this.setBorderPainted(false);
     	this.setForeground(java.awt.Color.WHITE);
+    	this.setFont(new Font("MV Boli", Font.BOLD, 10));
+    	this.setVerticalTextPosition(SwingConstants.CENTER);
+    	this.setHorizontalTextPosition(SwingConstants.CENTER);
     	
         this.panel = panel;
         onScreen = true;
