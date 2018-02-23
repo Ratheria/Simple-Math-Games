@@ -7,6 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.print.PrinterException;
 import java.sql.*;
 import java.util.Vector;
 
@@ -104,6 +105,7 @@ public class ViewRecords extends JPanel
 		add(backButton, gbc_settingsButton);
 		add(viewRecordsButton, gbc_viewRecordsButton);
 		add(studentLookupField, gbc_studentLookupField);
+
 	}
 	
 	private void setUpListeners() 
@@ -129,6 +131,7 @@ public class ViewRecords extends JPanel
 	{
 		ResultSetMetaData metaData = studentRecords.getMetaData();
 		
+//		System.out.println("");
 //		int columnsNumber = metaData.getColumnCount();
 //		while (studentRecords.next()) {
 //		    for (int i = 1; i <= columnsNumber; i++) {
@@ -152,6 +155,7 @@ public class ViewRecords extends JPanel
 	        Vector<Object> vector = new Vector<Object>();
 	        for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
 	            vector.add(studentRecords.getObject(columnIndex));
+	            System.out.println(studentRecords.getObject(columnIndex));
 	        }
 	        data.add(vector);
 	    }
@@ -171,7 +175,9 @@ public class ViewRecords extends JPanel
 		    GridBagConstraints gbc_scrollPane = new GridBagConstraints();
 		    gbc_scrollPane.gridx = 0;
 		    gbc_scrollPane.gridy = 0;
-		    add(scrollPane, gbc_scrollPane);
+			add(studentRecordsSet);
+		    //add(scrollPane, gbc_scrollPane)
+		    
 		}
 		catch (SQLException e) { e.printStackTrace(); }
 	}
