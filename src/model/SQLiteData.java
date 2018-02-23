@@ -379,7 +379,7 @@ public class SQLiteData
 	}
 	
 	// maybe make this public? not sure yet
-	private void addStudentScoreRecord(int recordID, int studentID)
+	private void addStudentScoreRecord(int studentID, int recordID)
 	{
 		if (con == null)
 		{	getConnection();	}
@@ -403,7 +403,7 @@ public class SQLiteData
 		{	getConnection();	}
 		try 
 		{
-			String query = "SELECT * from USER WHERE ID=?";
+			String query = "SELECT * from STUDENT_SCORE_RECORDS WHERE studentID=?";
 			preparedStatement = con.prepareStatement(query);
 			preparedStatement.setInt(1, studentID);
 			studentRecords = preparedStatement.executeQuery();
@@ -518,8 +518,9 @@ public class SQLiteData
 					state.executeUpdate("CREATE TABLE STUDENT_SCORE_RECORDS(studentID INTEGER," + "recordID INTEGER," + 
 							"PRIMARY KEY (studentID, recordID)," + "FOREIGN KEY (studentID) REFERENCES USER(ID));");
 					
-					addStudentScoreRecord(000000, 222222);
-					addStudentScoreRecord(000001, 222222);
+					addStudentScoreRecord(222222, 000000);
+					addStudentScoreRecord(222222, 000001);
+					addStudentScoreRecord(222222, 000002);
 				}
 			}
 			catch (SQLException e){e.printStackTrace();}
