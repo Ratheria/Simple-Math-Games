@@ -8,6 +8,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
@@ -20,6 +22,7 @@ import javax.swing.JLabel;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.Canvas;
+import javax.swing.Timer;
 
 public class Game1 extends JPanel
 {
@@ -38,9 +41,12 @@ public class Game1 extends JPanel
 	private SpringLayout theLayout;
 	private String question;
 	private List<String> questionList;
-	private JLabel timer;
+	private JLabel timerLabel;
 	private JLabel questionLabel;
 	private JLabel scoreLabel;
+	private Timer timer;
+	private int gamePeriod = 90000; //milliseconds
+	private ActionListener gameRestarter;
 	
 	public Game1(Controller base) 
 	{
@@ -56,12 +62,23 @@ public class Game1 extends JPanel
 		theLayout = new SpringLayout();
 		question = "Question";
 		questionList = base.getEquations();
-		timer = new JLabel("Time: ");
+		timerLabel = new JLabel("Time: ");
 		questionLabel = new JLabel(question);
 		scoreLabel = new JLabel("Score: 0");
+		//timer stuff
+		gameRestarter = new ActionListener() {
+			@Override
+            public void actionPerformed(ActionEvent evt) {
+                base.returnToMenu();
+            }
+        };
+        timer = new Timer(gamePeriod, gameRestarter);
+        timer.setRepeats(false);
+        timer.start();
+        
 		
 		setUpLayout();
-		setUpListeners();
+		//setUpListeners(); add this later if possible 
 		playGame();
 	}
 	
@@ -72,11 +89,11 @@ public class Game1 extends JPanel
 		setForeground(new Color(173, 216, 230));
 		setBackground(new Color(0, 0, 0));
 		
-		timer.setHorizontalAlignment(SwingConstants.RIGHT);
-		timer.setForeground(new Color(135, 206, 250));
-		timer.setFont(new Font("MV Boli", Font.PLAIN, 20));
-		theLayout.putConstraint(SpringLayout.NORTH, timer, 25, SpringLayout.NORTH, this);
-		theLayout.putConstraint(SpringLayout.EAST, timer, -50, SpringLayout.EAST, this);
+		timerLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		timerLabel.setForeground(new Color(135, 206, 250));
+		timerLabel.setFont(new Font("MV Boli", Font.PLAIN, 20));
+		theLayout.putConstraint(SpringLayout.NORTH, timerLabel, 25, SpringLayout.NORTH, this);
+		theLayout.putConstraint(SpringLayout.EAST, timerLabel, -50, SpringLayout.EAST, this);
 
 		scoreLabel.setFont(new Font("MV Boli", Font.PLAIN, 30));
 		scoreLabel.setForeground(new Color(135, 206, 250));
@@ -90,14 +107,9 @@ public class Game1 extends JPanel
 		theLayout.putConstraint(SpringLayout.WEST, questionLabel, 50, SpringLayout.WEST, this);
 		theLayout.putConstraint(SpringLayout.SOUTH, questionLabel, -25, SpringLayout.SOUTH, this);
 
-		add(timer);
+		add(timerLabel);
 		add(scoreLabel);
 		add(questionLabel);
-	}
-	
-	private void setUpListeners() 
-	{
-	
 	}
 	
 	private void addFish()
