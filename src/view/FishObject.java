@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.SwingConstants;
 
 public class FishObject extends JButton implements ActionListener
 {
@@ -23,8 +24,12 @@ public class FishObject extends JButton implements ActionListener
 	
     public FishObject(int answer, int numberFromTop, int panelWidth, Game1 panel, ImageIcon icon)
     {
-    	//ImageIcon icon = new ImageIcon("fish.png");
-        super((answer + ""), icon);
+    	super((answer + ""), icon);
+    	this.setOpaque(false);
+    	this.setContentAreaFilled(false);
+    	this.setBorderPainted(false);
+    	this.setForeground(java.awt.Color.WHITE);
+    	
         this.panel = panel;
         onScreen = true;
         this.answer = answer;

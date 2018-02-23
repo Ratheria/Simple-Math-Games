@@ -7,7 +7,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.print.PrinterException;
 import java.sql.*;
 import java.util.Vector;
 
@@ -15,12 +14,10 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
-import javax.swing.table.DefaultTableModel;
 
 import adapter.Controller;
 
@@ -34,7 +31,6 @@ public class ViewRecords extends JPanel
 	private JButton viewRecordsButton;
 	private JTextField studentLookupField;
 	private JTable studentRecordsSet;
-	private JScrollPane scrollPane;
 	
 	public ViewRecords(Controller base)
 	{
@@ -105,7 +101,6 @@ public class ViewRecords extends JPanel
 		add(backButton, gbc_settingsButton);
 		add(viewRecordsButton, gbc_viewRecordsButton);
 		add(studentLookupField, gbc_studentLookupField);
-
 	}
 	
 	private void setUpListeners() 
@@ -127,58 +122,45 @@ public class ViewRecords extends JPanel
 		
 	}
 	
-	private static DefaultTableModel buildTableModel(ResultSet studentRecords) throws SQLException 
-	{
-		ResultSetMetaData metaData = studentRecords.getMetaData();
-		
-//		System.out.println("");
-//		int columnsNumber = metaData.getColumnCount();
-//		while (studentRecords.next()) {
-//		    for (int i = 1; i <= columnsNumber; i++) {
-//		        if (i > 1) System.out.print(",  ");
-//		        String columnValue = studentRecords.getString(i);
-//		        System.out.print(columnValue + " " + metaData.getColumnName(i));
-//		    }
-//		    System.out.println("");
-//		}
-		
-	    // names of columns
-	    Vector<String> columnNames = new Vector<String>();
-	    int columnCount = metaData.getColumnCount();
-	    for (int column = 1; column <= columnCount; column++) {
-	        columnNames.add(metaData.getColumnName(column));
-	    }
-
-	    // data of the table
-	    Vector<Vector<Object>> data = new Vector<Vector<Object>>();
-	    while (studentRecords.next()) {
-	        Vector<Object> vector = new Vector<Object>();
-	        for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
-	            vector.add(studentRecords.getObject(columnIndex));
-	            System.out.println(studentRecords.getObject(columnIndex));
-	        }
-	        data.add(vector);
-	    }
-	    return new DefaultTableModel(data, columnNames);
-	}
-	
 	private void populateTable(ResultSet studentRecords)
 	{
-		try 
+		try
 		{
-		    studentRecordsSet = new JTable(buildTableModel(studentRecords));
-		    studentRecordsSet.setFillsViewportHeight(true);
-		    scrollPane = new JScrollPane(studentRecordsSet);
-		    //studentRecordsSet.setRowHeight(20);
+			ResultSetMetaData metaData = studentRecords.getMetaData();
+	
+			
+			int columnsNumber = metaData.getColumnCount();
+			while (studentRecords.next()) {
+			    for (int i = 1; i <= columnsNumber; i++) {
+			        if (i > 1) System.out.print(",  ");
+			        String columnValue = studentRecords.getString(i);
+			        System.out.print(columnValue + " " + metaData.getColumnName(i));
+			    }
+			    System.out.println("");
+			}
+			
+		    // names of columns
+		    Vector<String> columnNames = new Vector<String>();
+		    int columnCount = metaData.getColumnCount();
+		    for (int column = 1; column <= columnCount; column++) {
+		        columnNames.add(metaData.getColumnName(column));
+		    }
+	
+		    // data of the table
+		    Vector<Vector<Object>> data = new Vector<Vector<Object>>();
+		    while (studentRecords.next()) {
+		        Vector<Object> vector = new Vector<Object>();
+		        for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
+		            vector.add(studentRecords.getObject(columnIndex));
+		        }
+		        data.add(vector);
+		    }
+		    studentRecordsSet = new JTable(data, columnNames);
+		    studentRecordsSet.setRowHeight(20);
 		    // add JTable to JPanel
 		    // WHAT TO DO IF THERE IS INCORRECT ID INPUT
-		    GridBagConstraints gbc_scrollPane = new GridBagConstraints();
-		    gbc_scrollPane.gridx = 0;
-		    gbc_scrollPane.gridy = 0;
-			add(studentRecordsSet);
-		    //add(scrollPane, gbc_scrollPane)
-		    
+		    add(studentRecordsSet);
 		}
-		catch (SQLException e) { e.printStackTrace(); }
+		catch (SQLException | IllegalStateException e) { e.printStackTrace(); }
 	}
 }
