@@ -18,6 +18,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 import adapter.Controller;
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import java.util.ArrayList;
@@ -51,6 +52,7 @@ public class Game1 extends JPanel
 	private Timer displayTime;
 	private ActionListener timeDisplayer;
 	private int sec;
+	private ImageIcon fishIcon;
 	
 	public Game1(Controller base) 
 	{
@@ -102,6 +104,7 @@ public class Game1 extends JPanel
               timer.setRepeats(false);
               timer.start();
  
+        fishIcon = new ImageIcon("fish.png");
         
 		setUpLayout();
 		//setUpListeners(); maybe add this later if possible 
@@ -161,7 +164,7 @@ public class Game1 extends JPanel
 			{
 				fishAnswer = answer;
 			}
-			currentFish.add(new FishObject(fishAnswer, i, this.getWidth(), this));
+			currentFish.add(new FishObject(fishAnswer, i, this.getWidth(), this, fishIcon));
 		}
 	    for(FishObject fish : currentFish)
 	    {

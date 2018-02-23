@@ -7,6 +7,8 @@ package view;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
 public class FishObject extends JButton implements ActionListener
@@ -19,9 +21,10 @@ public class FishObject extends JButton implements ActionListener
 	private int yValue;
 	private int maxX;
 	
-    public FishObject(int answer, int numberFromTop, int panelWidth, Game1 panel)
+    public FishObject(int answer, int numberFromTop, int panelWidth, Game1 panel, ImageIcon icon)
     {
-        super(answer + "");
+    	//ImageIcon icon = new ImageIcon("fish.png");
+        super((answer + ""), icon);
         this.panel = panel;
         onScreen = true;
         this.answer = answer;
