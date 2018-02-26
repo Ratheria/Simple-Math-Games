@@ -48,7 +48,7 @@ public class Game1 extends JPanel
 	private JLabel questionLabel;
 	private JLabel scoreLabel;
 	private Timer timer;
-	private int gamePeriod = 90000; //milliseconds
+	private int gamePeriod = 90; //in seconds
 	private ActionListener gameRestarter;
 	private Timer displayTime;
 	private ActionListener timeDisplayer;
@@ -72,7 +72,7 @@ public class Game1 extends JPanel
 		theLayout = new SpringLayout();
 		question = "Question";
 		questionList = base.getEquations();
-		timerLabel = new JLabel("Time: 0:00 ");
+		timerLabel = new JLabel("Time: "+(gamePeriod/60)+":"+ (gamePeriod%60));
 		questionLabel = new JLabel(question);
 		scoreLabel = new JLabel("Score: 0");
 
@@ -123,21 +123,21 @@ public class Game1 extends JPanel
 	}
 
 	private void setUpTimers(){
-		sec = 1;
+		sec = gamePeriod -1;
 		timeDisplayer = new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				if((sec%60) < 10)
 				{
-					timerLabel.setText("Timer: "+(sec/60)+ ":0" + (sec%60));
+					timerLabel.setText("Time: "+(sec/60)+ ":0" + (sec%60));
 				}
 				else
 				{
-					timerLabel.setText("Timer: "+(sec/60)+ ":" + (sec%60));
+					timerLabel.setText("Time: "+(sec/60)+ ":" + (sec%60));
 				}
-				sec++;
+				sec--;
 			}
 		};
-		displayTime = new Timer(1000, timeDisplayer);
+		displayTime = new Timer(1000, timeDisplayer); //time parameter milliseconds
 		displayTime.start();
 		displayTime.setRepeats(true);
 
@@ -149,7 +149,7 @@ public class Game1 extends JPanel
 				JOptionPane.showMessageDialog(gameOverPanel, "Your score was " + score + ".", "Times up!", JOptionPane.PLAIN_MESSAGE);
 			}
 		};
-		timer = new Timer(gamePeriod, gameRestarter);
+		timer = new Timer(gamePeriod*1000, gameRestarter); //time parameter milliseconds
 		timer.setRepeats(false);
 		timer.start();
 	}
