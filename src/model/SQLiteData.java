@@ -365,7 +365,6 @@ public class SQLiteData
 		} 
 		catch (SQLException e) {e.printStackTrace();}
 	}
-	
 
 	private void addCustomEquations(String classID, String questionList, int numberOfEquations, int frequency)
 	{
@@ -478,7 +477,8 @@ public class SQLiteData
 				state = con.createStatement();
 				
 				// drop table if exists
-				state.execute("DROP TABLE IF EXISTS USER;");
+				//Commented out for demo
+				//state.execute("DROP TABLE IF EXISTS USER;");
 				
 				ResultSet res = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='USER'");
 				if (!res.next())
@@ -495,6 +495,7 @@ public class SQLiteData
 					addUser(222222, "defs", "defs", "Default", "Student", "1A", 3);
 				}
 				
+				//Drop table
 				state.execute("DROP TABLE IF EXISTS CUSTOMEQUATION;");			
 				state.execute("DROP TABLE IF EXISTS CUSTOM_EQUATION;");
 				
@@ -511,6 +512,7 @@ public class SQLiteData
 					
 					addCustomEquations("1A", "5+10:7-2", 2, 5);
 				}
+				
 				// drop table if exists
 				//TODO Once we are done testing we want to get rid of this logic so it doesn't reset every time you open the application.
 				state.execute("DROP TABLE IF EXISTS STUDENT_SCORE_RECORDS;");
