@@ -32,14 +32,12 @@ public class RecordsTable extends JPanel
 	private JScrollPane scrollPane;
 	private int studentID;
 	
-//	public RecordsTable(Controller base, JTable table)
 	public RecordsTable(Controller base, int studentID)
 	{
 		this.base = base;
 		layout = new GridBagLayout();
 		header = new JLabel("Student Records");
 		backButton = new JButton(" BACK ");
-//		studentRecordsSet = table;
 		this.studentID = studentID;
 
 		setUpLayout();

@@ -8,6 +8,9 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
@@ -16,10 +19,13 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 import adapter.Controller;
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.Canvas;
+import javax.swing.Timer;
 
 public class Game1 extends JPanel
 {
@@ -38,16 +44,26 @@ public class Game1 extends JPanel
 	private SpringLayout theLayout;
 	private String question;
 	private List<String> questionList;
-	private JLabel timer;
+	private JLabel timerLabel;
 	private JLabel questionLabel;
 	private JLabel scoreLabel;
-	
+	private Timer timer;
+	private int gamePeriod = 90; //in seconds
+	private ActionListener gameRestarter;
+	private Timer displayTime;
+	private ActionListener timeDisplayer;
+	private int sec;
+	private Image fishImg;
+	private ImageIcon fishIcon;
+	private int fishImageWidth;
+	private int fishImageHeight;
+
 	public Game1(Controller base) 
 	{
 		this.base = base;
 		playing = true;
 		thisFish = null;
-	    doAddFish = null;
+		doAddFish = null;
 		maxFishVertical = (base.frame.getHeight() - 250)/50;
 		frequency = base.getFrequency();
 		questionsToAsk = 10;
@@ -56,59 +72,97 @@ public class Game1 extends JPanel
 		theLayout = new SpringLayout();
 		question = "Question";
 		questionList = base.getEquations();
-		timer = new JLabel("Time: ");
+		timerLabel = new JLabel("Time: "+(gamePeriod/60)+":"+ (gamePeriod%60));
 		questionLabel = new JLabel(question);
 		scoreLabel = new JLabel("Score: 0");
-		
+
+		//setting up fish icon for answer buttons
+		fishImageWidth= (base.frame.getWidth() - 250)/10;
+		fishImageHeight = (base.frame.getHeight() - 250)/10;
+		try {                
+			fishImg = ImageIO.read(new File("fish.png"));
+		} catch (IOException ex) {
+			System.out.println("File fish.png is missing.");
+		}
+		fishImg = fishImg.getScaledInstance( fishImageWidth, fishImageHeight,  java.awt.Image.SCALE_SMOOTH ) ;  //resizes fish image
+		fishIcon = new ImageIcon(fishImg);
+
 		setUpLayout();
-		setUpListeners();
+		setUpTimers();
 		playGame();
 	}
-	
+
 	private void setUpLayout() 
 	{
 		setLayout(theLayout);
 		setBorder(new LineBorder(new Color(70, 130, 180), 10));
 		setForeground(new Color(173, 216, 230));
 		setBackground(new Color(0, 0, 0));
-		
-		timer.setHorizontalAlignment(SwingConstants.RIGHT);
-		timer.setForeground(new Color(135, 206, 250));
-		timer.setFont(new Font("MV Boli", Font.PLAIN, 20));
-		theLayout.putConstraint(SpringLayout.NORTH, timer, 25, SpringLayout.NORTH, this);
-		theLayout.putConstraint(SpringLayout.EAST, timer, -50, SpringLayout.EAST, this);
+
+		timerLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		timerLabel.setForeground(new Color(135, 206, 250));
+		timerLabel.setFont(new Font("MV Boli", Font.PLAIN, 20));
+		theLayout.putConstraint(SpringLayout.NORTH, timerLabel, 25, SpringLayout.NORTH, this);
+		theLayout.putConstraint(SpringLayout.EAST, timerLabel, -50, SpringLayout.EAST, this);
 
 		scoreLabel.setFont(new Font("MV Boli", Font.PLAIN, 30));
 		scoreLabel.setForeground(new Color(135, 206, 250));
 		scoreLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		theLayout.putConstraint(SpringLayout.SOUTH, scoreLabel, -25, SpringLayout.SOUTH, this);
 		theLayout.putConstraint(SpringLayout.EAST, scoreLabel, -50, SpringLayout.EAST, this);
-		
+
 		questionLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		questionLabel.setForeground(new Color(135, 206, 250));
 		questionLabel.setFont(new Font("MV Boli", Font.BOLD, 30));
 		theLayout.putConstraint(SpringLayout.WEST, questionLabel, 50, SpringLayout.WEST, this);
 		theLayout.putConstraint(SpringLayout.SOUTH, questionLabel, -25, SpringLayout.SOUTH, this);
 
-		add(timer);
+		add(timerLabel);
 		add(scoreLabel);
 		add(questionLabel);
 	}
-	
-	private void setUpListeners() 
-	{
-	
+
+	private void setUpTimers(){
+		sec = gamePeriod -1;
+		timeDisplayer = new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				if((sec%60) < 10)
+				{
+					timerLabel.setText("Time: "+(sec/60)+ ":0" + (sec%60));
+				}
+				else
+				{
+					timerLabel.setText("Time: "+(sec/60)+ ":" + (sec%60));
+				}
+				sec--;
+			}
+		};
+		displayTime = new Timer(1000, timeDisplayer); //time parameter milliseconds
+		displayTime.start();
+		displayTime.setRepeats(true);
+
+		gameRestarter = new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				base.returnToMenu();
+				System.out.println("Times up!");
+				JPanel gameOverPanel = new JPanel();
+				JOptionPane.showMessageDialog(gameOverPanel, "Your score was " + score + ".", "Times up!", JOptionPane.PLAIN_MESSAGE);
+			}
+		};
+		timer = new Timer(gamePeriod*1000, gameRestarter); //time parameter milliseconds
+		timer.setRepeats(false);
+		timer.start();
 	}
-	
+
 	private void addFish()
 	{
 		add(thisFish);
 	}
-	
+
 	private void playGame()
 	{
 		//Our 'Game Loop' So Far
-		
+
 		getQuestion();
 		int randomPlacement = Controller.rng.nextInt(maxFishVertical);
 		for(int i = 0; i < maxFishVertical; i++)
@@ -122,15 +176,17 @@ public class Game1 extends JPanel
 			{
 				fishAnswer = answer;
 			}
-			currentFish.add(new FishObject(fishAnswer, i, this.getWidth(), this));
+			currentFish.add(new FishObject(fishAnswer, i, this.getWidth(), this, fishIcon));
 		}
-	    for(FishObject fish : currentFish)
-	    {
-	    	add(fish);
-	    }
-	    repaint();
+		for(FishObject fish : currentFish)
+		{
+	  		fish.setFocusPainted(false);
+			fish.setContentAreaFilled(false);
+			add(fish);
+		}
+		repaint();
 
-/*
+		/*
     	doAddFish = new Runnable() 
 	    {
             public void run() 
@@ -139,9 +195,9 @@ public class Game1 extends JPanel
             }
         };
         SwingUtilities.invokeLater(doAddFish);
- */
+		 */
 	}
-	
+
 	private void getQuestion()
 	{
 		int random = Controller.rng.nextInt(10);
@@ -156,7 +212,7 @@ public class Game1 extends JPanel
 		}
 		questionLabel.setText(question);
 	}
-	
+
 	private void questionFromList()
 	{
 		//Assumes only a + or - operator
@@ -180,7 +236,7 @@ public class Game1 extends JPanel
 			question = firstInteger + " - " + secondInteger + " = ? ";
 		}
 	}
-	
+
 	private void generateQuestion()
 	{
 		int random = Controller.rng.nextInt(2);
@@ -199,20 +255,20 @@ public class Game1 extends JPanel
 			question = firstInteger + " + " + secondInteger + " = ? ";
 		}
 	}
-	
+
 	//I changed this because score is a class variable and we don't need a method to change it. -A
 	private void updateScore() 
 	{	
 		scoreLabel.setText("Score: " + Integer.toString(score));	
 	}
-	
+
 	private void removeFish(FishObject fish)
 	{
 		currentFish.remove(fish);
 		this.remove(fish);
 		repaint();
 	}
-	
+
 	private void clearCurrentFish()
 	{
 		for(FishObject fish : currentFish)
@@ -221,7 +277,7 @@ public class Game1 extends JPanel
 		}
 		currentFish = new ArrayList<FishObject>();
 	}
-	
+
 	public void wentOffScreen(FishObject fish)
 	{
 		if(fish.getAnswer() == answer)
@@ -230,7 +286,7 @@ public class Game1 extends JPanel
 			clearCurrentFish();
 		}
 	}
-	
+
 	public void selected(FishObject fish)
 	{
 		if(fish.getAnswer() == answer)

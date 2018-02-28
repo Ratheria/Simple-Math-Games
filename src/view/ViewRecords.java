@@ -14,12 +14,10 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
-import javax.swing.table.DefaultTableModel;
 
 import adapter.Controller;
 import adapter.ViewStates;
@@ -104,7 +102,6 @@ public class ViewRecords extends JPanel
 		add(backButton, gbc_settingsButton);
 		add(viewRecordsButton, gbc_viewRecordsButton);
 		add(studentLookupField, gbc_studentLookupField);
-
 	}
 	
 	private void setUpListeners() 
@@ -118,20 +115,10 @@ public class ViewRecords extends JPanel
 			}
 		});
 		
-//		viewRecordsButton.addActionListener(new ActionListener() 
-//		{
-//			public void actionPerformed(ActionEvent onClick)
-//			{	
-//				populateTable(base.lookupStudent(Integer.parseInt(studentLookupField.getText())));
-//				populateTable(base.lookupStudent(222222));
-//			}
-//		});
 		viewRecordsButton.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent onClick)
 			{
-				// base.changeState(ViewStates.recordsTable);
-				//base.recordsTableState(ViewStates.recordsTable, studentRecordsSet);
 				base.recordsTableState(ViewStates.recordsTable, Integer.parseInt(studentLookupField.getText()));
 			}
 		});

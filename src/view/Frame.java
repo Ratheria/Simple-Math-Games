@@ -2,6 +2,7 @@
  *	@author Ariana Fairbanks
  */
 package view;
+
 import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -30,7 +31,7 @@ public class Frame extends JFrame
 		setSize(900, 650);
 		setMinimumSize(minSize);
 		setVisible(true);
-		setResizable(false);
+		setResizable(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setContentPane(panel);
 	}
@@ -76,6 +77,8 @@ public class Frame extends JFrame
 				panel.removeAll();
 				panel = new ViewRecords(base);
 				break;
+			case recordsTable:
+				break;
 		}	
 
 		setContentPane(panel);
@@ -83,11 +86,9 @@ public class Frame extends JFrame
 		panel.repaint();
 	}
 	
-//	public void recordsTableState(JTable table)
 	public void recordsTableState(int studentID)
 	{
 		panel.removeAll();
-//		panel = new RecordsTable(base, table);
 		panel = new RecordsTable(base, studentID);
 		setContentPane(panel);
 	}

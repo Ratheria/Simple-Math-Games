@@ -125,12 +125,10 @@ public class Controller
 		frame.updateState();
 	}
 	
-//	public void recordsTableState(ViewStates nextState, JTable table)
 	public void recordsTableState(ViewStates nextState, int studentID)
 	{
 		lastState = state;
 		state = nextState;
-//		frame.recordsTableState(table);
 		frame.recordsTableState(studentID);
 	}
 	
