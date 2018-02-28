@@ -180,6 +180,8 @@ public class Game1 extends JPanel
 		}
 		for(FishObject fish : currentFish)
 		{
+	  		fish.setFocusPainted(false);
+			fish.setContentAreaFilled(false);
 			add(fish);
 		}
 		repaint();
