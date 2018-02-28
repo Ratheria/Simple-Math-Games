@@ -2,9 +2,12 @@
  *	@author Ariana Fairbanks
  */
 package view;
+
 import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTable;
+
 import adapter.Controller;
 import adapter.ViewStates;
 
@@ -74,10 +77,19 @@ public class Frame extends JFrame
 				panel.removeAll();
 				panel = new ViewRecords(base);
 				break;
-		}
+			case recordsTable:
+				break;
+		}	
+
 		setContentPane(panel);
 		panel.revalidate();
 		panel.repaint();
 	}
 	
+	public void recordsTableState(int studentID)
+	{
+		panel.removeAll();
+		panel = new RecordsTable(base, studentID);
+		setContentPane(panel);
+	}
 }

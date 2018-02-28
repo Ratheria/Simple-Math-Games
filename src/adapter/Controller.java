@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Random;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTable;
+
 import model.SQLiteData;
 import view.Frame;
 
@@ -97,6 +99,11 @@ public class Controller
 		{	changeState(ViewStates.studentMenu);	}
 	}
 	
+	public void returnToStudentRecords()
+	{
+		changeState(ViewStates.viewRecords);
+	}
+	
 	public void logout()
 	{
 		state = ViewStates.login;
@@ -116,6 +123,13 @@ public class Controller
 		lastState = state;
 		state = nextState;
 		frame.updateState();
+	}
+	
+	public void recordsTableState(ViewStates nextState, int studentID)
+	{
+		lastState = state;
+		state = nextState;
+		frame.recordsTableState(studentID);
 	}
 	
 	public void unlockAccount(String userName)
