@@ -48,7 +48,7 @@ public class Game1 extends JPanel
 	private JLabel questionLabel;
 	private JLabel scoreLabel;
 	private Timer timer;
-	private int gamePeriod = 90; //in seconds
+	private int gamePeriod = 45; //in seconds
 	private ActionListener gameRestarter;
 	private Timer displayTime;
 	private ActionListener timeDisplayer;

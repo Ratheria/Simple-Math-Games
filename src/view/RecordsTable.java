@@ -76,15 +76,15 @@ public class RecordsTable extends JPanel
 		gbc_settingsButton.insets = new Insets(20, 20, 5, 5);
 		gbc_settingsButton.gridx = 0;
 		gbc_settingsButton.gridy = 0;		
-		
-//		scrollPane = new JScrollPane(studentRecordsSet);
+	
 		
 		populateTable(base.lookupStudent(studentID));
+		scrollPane = new JScrollPane(studentRecordsSet);
 		
 		add(header, gbc_displayName);
 		add(backButton, gbc_settingsButton);
-		add(studentRecordsSet);
-//		add(scrollPane);
+//		add(studentRecordsSet);
+		add(scrollPane);
 	}
 	
 	private void setUpListeners() 

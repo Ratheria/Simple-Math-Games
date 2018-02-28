@@ -31,7 +31,6 @@ public class ViewRecords extends JPanel
 	private JButton backButton;
 	private JButton viewRecordsButton;
 	private JTextField studentLookupField;
-	private JTable studentRecordsSet;
 	
 	public ViewRecords(Controller base)
 	{
