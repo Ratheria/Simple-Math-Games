@@ -15,28 +15,30 @@ import adapter.ViewStates;
 
 public class Frame extends JFrame
 {
+	public static Dimension DIMENSIONS;
 	private static final long serialVersionUID = -2248105492340561524L;
 	private Controller base;
 	private JPanel panel;
 	private Login login;
 	private Dimension minSize;
-	private Dimension screenSize;
+	
 
 	public Frame(Controller base)
 	{
 		this.base = base;
 		login = new Login(base);
 		panel = login;
-		minSize = new Dimension(700, 500);
+		//minSize = new Dimension(700, 500);
 		setName("My Parents Don't Know What I Do");
 		setTitle("My Parents Don't Know What I Do");
-		screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		setSize(screenSize);
-		setMinimumSize(minSize);
+		setExtendedState(JFrame.MAXIMIZED_BOTH); 
+		//setUndecorated(true);
+		//setMinimumSize(minSize);
 		setVisible(true);
-		setResizable(true);
+		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setContentPane(panel);
+		DIMENSIONS = getSize();
 	}
 	
 	public void updateState()
@@ -80,8 +82,6 @@ public class Frame extends JFrame
 				panel.removeAll();
 				panel = new ViewRecords(base);
 				break;
-			case recordsTable:
-				break;
 		}	
 
 		setContentPane(panel);
@@ -89,10 +89,4 @@ public class Frame extends JFrame
 		panel.repaint();
 	}
 	
-	public void recordsTableState(int studentID)
-	{
-		panel.removeAll();
-		panel = new RecordsTable(base, studentID);
-		setContentPane(panel);
-	}
 }

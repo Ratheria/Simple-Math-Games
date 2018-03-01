@@ -24,11 +24,13 @@ public class Controller
 	private ViewStates state;
 	private ViewStates lastState;
 	private int ID;
-	private int permissions; //root, subroot, teacher, student
+	private int permission; //root, subroot, teacher, student
 	private int frequency;
+	private int numberOfEquations;
 	private String firstName;
 	private String lastName;
 	private String classID;
+	private String equationString;
 	private List<String> customEquations;
 
 	public void start()
@@ -48,18 +50,27 @@ public class Controller
 		{
 			boolean hasRes = res.next();
 			if(database.isLocked(userName) && hasRes)
-			{
-				JOptionPane.showMessageDialog(errorPanel, "This account has been locked due to too many failed login attempts.", "Error", JOptionPane.ERROR_MESSAGE);
-			}
+			{	JOptionPane.showMessageDialog(errorPanel, "This account has been locked due to too many failed login attempts.", "Error", JOptionPane.ERROR_MESSAGE);	}
 			else if(hasRes)
 			{
 				System.out.println("Done.");
 				ID = res.getInt("ID");
-				permissions = database.permission(ID);
-				firstName = database.firstName(ID);
-				lastName = database.lastName(ID);
-				classID = database.getClassID(ID);
-				customEquations = this.getCustomEquations(classID);
+				res = database.getUserInfo(ID);
+				if(res.next())
+				{
+					permission = res.getInt("permission");
+					firstName = res.getString("firstName");
+					lastName = res.getString("lastName");
+					classID = res.getString("classID");
+				}
+				res = database.getCustomEquationInfo(classID);
+				if(res.next())
+				{
+					equationString = res.getString("questionList");
+					customEquations = getCustomEquationList(equationString);
+					frequency = res.getInt("frequency"); 
+					numberOfEquations = res.getInt("numberOfEquations");
+				}
 				returnToMenu();
 				System.out.println(ID);
 				frame.updateState();
@@ -72,7 +83,7 @@ public class Controller
 				{	database.loginFailure(userName);	}
 			}
 		}
-		catch (SQLException e){	}
+		catch (SQLException e){ e.printStackTrace(); }
 	}
 	
 	public void changePassword(String pass, String newPass)
@@ -91,18 +102,16 @@ public class Controller
 	
 	public void returnToMenu()
 	{
-		if(permissions < 2)
+		if(permission < 2)
 		{	changeState(ViewStates.rootMenu);	}
-		else if(permissions == 2)
+		else if(permission == 2)
 		{	changeState(ViewStates.teacherMenu);	}
 		else
 		{	changeState(ViewStates.studentMenu);	}
 	}
 	
 	public void returnToStudentRecords()
-	{
-		changeState(ViewStates.viewRecords);
-	}
+	{	changeState(ViewStates.viewRecords);	}
 	
 	public void logout()
 	{
@@ -112,9 +121,11 @@ public class Controller
 		firstName = "";
 		lastName = "";
 		classID = "";
-		permissions = 3;
-		frequency = 5;
+		permission = 3;
+		frequency = 0;
+		numberOfEquations = 0;
 		customEquations = null;
+		equationString = "";
 		frame.updateState();
 	}
 	
@@ -125,58 +136,135 @@ public class Controller
 		frame.updateState();
 	}
 	
-	public void recordsTableState(ViewStates nextState, int studentID)
-	{
-		lastState = state;
-		state = nextState;
-		frame.recordsTableState(studentID);
-	}
-	
 	public void unlockAccount(String userName)
 	{
 		JPanel errorPanel = new JPanel();
-		if(permissions < 2)
-		{
-			database.loginSuccess(userName);
-		}
+		if(permission < 2)
+		{	database.loginSuccess(userName);	}
 		if(database.isLocked(userName))
-		{
-			JOptionPane.showMessageDialog(errorPanel, "Failed to unlock account.", "Error", JOptionPane.ERROR_MESSAGE);
-		}
+		{	JOptionPane.showMessageDialog(errorPanel, "Failed to unlock account.", "Error", JOptionPane.ERROR_MESSAGE);	}
 		else
-		{
-			JOptionPane.showMessageDialog(errorPanel, "Account successfully unlocked.", "", JOptionPane.INFORMATION_MESSAGE);
-		}
+		{	JOptionPane.showMessageDialog(errorPanel, "Account successfully unlocked.", "", JOptionPane.INFORMATION_MESSAGE);	}
 	}
 	
 	public void resetPassword(String userName)
 	{
 		boolean change = false;
-		if(permissions < 2)
-		{
-			change = database.resetPassword(userName);
-		}
+		if(permission < 2)
+		{	change = database.resetPassword(userName);	}
 		if(!change)
-		{
-			JOptionPane.showMessageDialog(errorPanel, "Password not reset.", "", JOptionPane.ERROR_MESSAGE);
-		}
+		{	JOptionPane.showMessageDialog(errorPanel, "Password not reset.", "", JOptionPane.ERROR_MESSAGE);	}
 		else
-		{
-			JOptionPane.showMessageDialog(errorPanel, "Password successfully reset.", "", JOptionPane.INFORMATION_MESSAGE);
-		}
+		{	JOptionPane.showMessageDialog(errorPanel, "Password successfully reset.", "", JOptionPane.INFORMATION_MESSAGE);}
 	}
 	
 	public void importUsers(File file)
 	{	
 		int result = database.importUsers(file);	
 		if(result == -1)
-		{
-			JOptionPane.showMessageDialog(errorPanel, "Users successfully imported.", "", JOptionPane.INFORMATION_MESSAGE);
-		}
+		{	JOptionPane.showMessageDialog(errorPanel, "Users successfully imported.", "", JOptionPane.INFORMATION_MESSAGE);	}
 		else
+		{	JOptionPane.showMessageDialog(errorPanel, "Something went wrong at line " + result + ".", "", JOptionPane.ERROR_MESSAGE);	}
+	}
+	
+	public void addEquation(String newEquation)
+	{
+		newEquation = newEquation.trim();
+		if(newEquation != null)
 		{
-			JOptionPane.showMessageDialog(errorPanel, "Something went wrong at line " + result + ".", "", JOptionPane.ERROR_MESSAGE);
+			int whitespace = newEquation.indexOf(" "); 
+			while(whitespace != -1)
+			{
+				int currentLength = newEquation.length();
+				newEquation = newEquation.substring(0, whitespace) + newEquation.substring(whitespace + 1, currentLength);
+				whitespace = newEquation.indexOf(" "); 
+			}
+			
+			int plusLocation = newEquation.indexOf("+");
+			int minusLocation = newEquation.indexOf("-");
+			int stringLength = newEquation.length();
+			int operators = 0;
+			
+			String tempEquation = "" + newEquation;
+			int tempPlus = plusLocation;
+			int tempMinus = minusLocation;
+			while(tempPlus > -1 || tempMinus > -1)
+			{
+				int operatorLocation = 0;
+				operatorLocation = tempPlus;
+				if(operatorLocation == -1)
+				{	operatorLocation = tempMinus;	}
+				int currentLength = tempEquation.length();
+				tempEquation = tempEquation.substring(0, operatorLocation) + tempEquation.substring(operatorLocation + 1, currentLength);
+				tempPlus = tempEquation.indexOf("+");
+				tempMinus = tempEquation.indexOf("-");
+				operators++;
+			}
+			if(operators < 1)
+			{	JOptionPane.showMessageDialog(errorPanel, "Please enter an addition or subtraction problem.", "", JOptionPane.ERROR_MESSAGE);	}
+			else if(operators > 1)
+			{	JOptionPane.showMessageDialog(errorPanel, "The problem you entered contained too many operators.", "", JOptionPane.ERROR_MESSAGE);	}
+			else if(stringLength < 3 || stringLength > 7)
+			{	JOptionPane.showMessageDialog(errorPanel, "The problem you entered was of invalid length.", "", JOptionPane.ERROR_MESSAGE);	}
+			else if(plusLocation == 0 || plusLocation == stringLength - 1 || minusLocation == 0 || minusLocation == stringLength - 1)
+			{	JOptionPane.showMessageDialog(errorPanel, "The problem you entered contained only one integer.", "", JOptionPane.ERROR_MESSAGE);	}
+			else
+			{
+				int answer = 0;
+				if(minusLocation > 0)
+				{
+					List<String> expressionHalves = Arrays.asList(newEquation.split("-"));
+					answer = Integer.parseInt(expressionHalves.get(0)) - Integer.parseInt(expressionHalves.get(1));
+				}
+				if(answer < 0)
+				{	JOptionPane.showMessageDialog(errorPanel, "Negative answer values are not supported.", "", JOptionPane.ERROR_MESSAGE);	}
+				else
+				{
+					boolean repeat = false;
+					for(String equation : customEquations)
+					{
+						if(equation.equals(newEquation))
+						{	repeat = true;	}
+					}
+					if(repeat)
+					{	JOptionPane.showMessageDialog(errorPanel, "That problem has already been added.", "", JOptionPane.ERROR_MESSAGE);	}
+					else
+					{
+						equationString = equationString + ":" + newEquation;
+						numberOfEquations++;
+						changeCustomEquations(equationString, frequency, numberOfEquations);
+						JOptionPane.showMessageDialog(errorPanel, "Equation added.", "", JOptionPane.INFORMATION_MESSAGE);
+					}
+				}
+			}
 		}
+	}
+	
+	public void changeCustomEquations(String equationString, int frequency, int numberOfEquations)
+	{
+		database.updateCustomEquations(classID, equationString, frequency, numberOfEquations);
+		ResultSet res = database.getCustomEquationInfo(classID);
+		try
+		{
+			if(res.next())
+			{
+				this.equationString = res.getString("questionList");
+				customEquations = getCustomEquationList(equationString);
+				this.frequency = res.getInt("frequency"); 
+				this.numberOfEquations = res.getInt("numberOfEquations");
+			}
+		}
+		catch(SQLException e) {	}
+		System.out.println(equationString);
+		System.out.println(this.frequency);
+		System.out.println(numberOfEquations);
+	}
+	
+	public ResultSet lookupStudent(int studentID) 
+	{
+		ResultSet result = null;
+		result = database.selectStudentRecord(studentID);
+		return result;
 	}
 	
 	public String getName()
@@ -191,40 +279,32 @@ public class Controller
 	public String getClassID()
 	{	return classID;	}
 	
+	public String getEquationString()
+	{	return equationString;	}
+	
 	public ViewStates getState()
 	{	return state;	}
 	
 	public int getPerms()
-	{	return permissions;	}
+	{	return permission;	}
 
 	public int getFrequency()
 	{	return frequency;	}
+	
+	public int getNumberOfEquations()
+	{	return numberOfEquations;	}
 
 	public List<String> getEquations()
 	{	return customEquations;	}
-
-	public ResultSet lookupStudent(int studentID) 
+	
+	private List<String> getCustomEquationList(String equationString)
 	{
-		ResultSet result = null;
-		result = database.selectStudentRecord(studentID);
+		List<String> result = null;
+		if(equationString != null)
+		{
+			result = Arrays.asList(equationString.split(":"));
+		}
 		return result;
 	}
 	
-	private List<String> getCustomEquations(String classID)
-	{
-		List<String> result = null;
-		String questionList = null;
-		try
-		{
-			ResultSet res = database.getCustomEquation(classID);
-			if(res.next())
-			{
-				questionList = res.getString("questionList");
-				List<String> customEquations = Arrays.asList(questionList.split(":"));
-				result = customEquations;
-			}
-		}
-		catch (SQLException e){	}
-		return result;
-	}
 }

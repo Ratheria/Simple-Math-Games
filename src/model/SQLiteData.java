@@ -189,99 +189,58 @@ public class SQLiteData
 		return result;
 	}
 	
-	public int permission(int id)
+	public ResultSet getUserInfo(int id)
 	{
-		int result = 2;
 		ResultSet res = null;
 		PreparedStatement preparedStatement;
 		if (con == null)
 		{	getConnection();	}
 		try 
 		{
-			String query = "SELECT permission FROM USER WHERE ID = ?";
+			String query = "SELECT firstName, lastName, permission, classID FROM USER WHERE ID = ?";
 			preparedStatement = con.prepareStatement(query);
 			preparedStatement.setInt(1, id);
 			res = preparedStatement.executeQuery();
-			result = res.getInt("permission");
-		}		
-		catch (SQLException e){e.printStackTrace();}
-		return result;
-	}
-	
-	public String firstName(int id)
-	{
-		String result = "";
-		ResultSet res = null;
-		PreparedStatement preparedStatement;
-		if (con == null)
-		{	getConnection();	}
-		try 
-		{
-			String query = "SELECT firstName FROM USER WHERE ID = ?";
-			preparedStatement = con.prepareStatement(query);
-			preparedStatement.setInt(1, id);
-			res = preparedStatement.executeQuery();
-			result = res.getString("firstName");
-		}		
-		catch (SQLException e){e.printStackTrace();}
-		return result;
-	}
-	
-	public String lastName(int id)
-	{
-		String result = "";
-		ResultSet res = null;
-		PreparedStatement preparedStatement;
-		if (con == null)
-		{	getConnection();	}
-		try 
-		{
-			String query = "SELECT lastName FROM USER WHERE ID = ?";
-			preparedStatement = con.prepareStatement(query);
-			preparedStatement.setInt(1, id);
-			res = preparedStatement.executeQuery();
-			result = res.getString("lastName");
-		}		
-		catch (SQLException e){e.printStackTrace();}
-		return result;
-	}
-	
-	public String getClassID(int id)
-	{
-		String result = "";
-		ResultSet res = null;
-		PreparedStatement preparedStatement;
-		if (con == null)
-		{	getConnection();	}
-		try 
-		{
-			String query = "SELECT classID FROM USER WHERE ID = ?";
-			preparedStatement = con.prepareStatement(query);
-			preparedStatement.setInt(1, id);
-			res = preparedStatement.executeQuery();
-			result = res.getString("classID");
-		}		
-		catch (SQLException e){e.printStackTrace();}
-		return result;
-	}
-	
-	public ResultSet getCustomEquation(String classID)
-	{
-		ResultSet res = null;
-		PreparedStatement preparedStatement;
-		if (con == null)
-		{	getConnection();	}
-		try 
-		{
-			//TODO make this relevent
-			String query = "SELECT questionList FROM CUSTOM_EQUATION WHERE classID = ?";
-			preparedStatement = con.prepareStatement(query);
-			preparedStatement.setString(1, classID);
-			res = preparedStatement.executeQuery();
-//			result = res.getString("classID");
 		}		
 		catch (SQLException e){e.printStackTrace();}
 		return res;
+	}
+	
+	public ResultSet getCustomEquationInfo(String classID)
+	{
+		ResultSet res = null;
+		PreparedStatement preparedStatement;
+		if (con == null)
+		{	getConnection();	}
+		try 
+		{
+			String query = "SELECT * FROM CUSTOM_EQUATIONS WHERE classID = ?";
+			preparedStatement = con.prepareStatement(query);
+			preparedStatement.setString(1, classID);
+			res = preparedStatement.executeQuery();
+		}		
+		catch (SQLException e){e.printStackTrace();}
+		return res;
+	}
+	
+	public void updateCustomEquations(String classID, String equationString, int frequency, int numberOfEquations)
+	{
+		try
+		{
+			if (con == null)
+			{	getConnection();	}
+			String query = "UPDATE CUSTOM_EQUATIONS SET questionList = ?, frequency = ?, numberOfEquations = ? WHERE classID = ?";
+			PreparedStatement preparedStatement = con.prepareStatement(query);
+			preparedStatement.setString(1, equationString);
+			preparedStatement.setInt(2, frequency);
+			preparedStatement.setInt(3, numberOfEquations);
+			preparedStatement.setString(4, classID);
+			preparedStatement.executeUpdate();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace(); 
+		}
 	}
 	
 	public int importUsers(File csvFile)
@@ -373,7 +332,7 @@ public class SQLiteData
 		try 
 		{
 			PreparedStatement preparedStatement;
-			preparedStatement = con.prepareStatement("INSERT INTO CUSTOM_EQUATION VALUES( ?, ?, ?, ?);");		
+			preparedStatement = con.prepareStatement("INSERT INTO CUSTOM_EQUATIONS VALUES( ?, ?, ?, ?);");		
 			preparedStatement.setString(1, classID);
 			preparedStatement.setString(2, questionList);
 			preparedStatement.setInt(3, numberOfEquations);
@@ -394,7 +353,7 @@ public class SQLiteData
 			preparedStatement = con.prepareStatement("INSERT INTO STUDENT_SCORE_RECORDS VALUES(?, ?);");
 			preparedStatement.setInt(1, studentID);
 			preparedStatement.setInt(2, recordID);
-			preparedStatement.execute();
+			preparedStatement.executeUpdate();
 		}
 		catch (SQLException e) {e.printStackTrace();}
 	}
@@ -495,17 +454,16 @@ public class SQLiteData
 					addUser(222222, "defs", "defs", "Default", "Student", "1A", 3);
 				}
 				
-				//Drop table
-				state.execute("DROP TABLE IF EXISTS CUSTOMEQUATION;");			
-				state.execute("DROP TABLE IF EXISTS CUSTOM_EQUATION;");
+				//Drop table			
+				state.execute("DROP TABLE IF EXISTS CUSTOM_EQUATIONS;");
 				
 				ResultSet customEq = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' " +
-						"AND name='CUSTOM_EQUATION'");
+						"AND name='CUSTOM_EQUATIONS'");
 				if (!customEq.next())
 				{
 					System.out.println("Building the custom equations table.");
 					state = con.createStatement();
-					state.executeUpdate("CREATE TABLE CUSTOM_EQUATION(classID VARCHAR(5),"
+					state.executeUpdate("CREATE TABLE CUSTOM_EQUATIONS(classID VARCHAR(5),"
 							+ "questionList VARCHAR(600)," + "numberOfEquations INTEGER," + "frequency INTEGER," 
 							+ "FOREIGN KEY (classID) REFERENCES USER(classID),"
 							+ "PRIMARY KEY (classID));");
@@ -531,7 +489,7 @@ public class SQLiteData
 					addStudentScoreRecord(222222, 000002);
 				}
 			}
-			catch (SQLException e){e.printStackTrace();}
+			catch (SQLException e){ e.printStackTrace(); }
 		}
 	}
 
