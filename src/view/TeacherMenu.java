@@ -101,7 +101,7 @@ public class TeacherMenu extends JPanel implements ChangeListener
 		gbc_displayName.gridx = 1;
 		gbc_displayName.gridy = 0;
 		
-		frequencyLabel.setForeground(new Color(135, 206, 250));
+		frequencyLabel.setForeground(new Color(135, 206, 235));
 		frequencyLabel.setFont(new Font("MV Boli", Font.PLAIN, 27));
 		GridBagConstraints gbc_frequencyLabel = new GridBagConstraints();
 		gbc_frequencyLabel.gridwidth = 7;
@@ -125,7 +125,7 @@ public class TeacherMenu extends JPanel implements ChangeListener
 		gbc_slider.gridx = 0;
 		gbc_slider.gridy = 3;
 		
-		addEquationsLabel.setForeground(new Color(135, 206, 250));
+		addEquationsLabel.setForeground(new Color(135, 206, 235));
 		addEquationsLabel.setFont(new Font("MV Boli", Font.PLAIN, 30));
 		GridBagConstraints gbc_addEquationsLabel = new GridBagConstraints();
 		gbc_addEquationsLabel.anchor = GridBagConstraints.WEST;
@@ -135,10 +135,10 @@ public class TeacherMenu extends JPanel implements ChangeListener
 		gbc_addEquationsLabel.gridy = 5;
 		
 		addEquationsTextField.setFont(new Font("MV Boli", Font.PLAIN, 20));
-		addEquationsTextField.setForeground(new Color(135, 206, 250));
+		addEquationsTextField.setForeground(new Color(173, 216, 230));
 		addEquationsTextField.setBackground(new Color(0, 0, 0));
 		addEquationsTextField.setToolTipText("Username");
-		addEquationsTextField.setBorder(new CompoundBorder(new LineBorder(new Color(135, 206, 250)), new EmptyBorder(0, 10, 0, 0)));
+		addEquationsTextField.setBorder(new CompoundBorder(new LineBorder(new Color(30, 144, 255)), new EmptyBorder(0, 10, 0, 0)));
 		GridBagConstraints gbc_addEquationsTextField = new GridBagConstraints();
 		gbc_addEquationsTextField.gridwidth = 3;
 		gbc_addEquationsTextField.insets = new Insets(0, 40, 5, 5);
@@ -154,7 +154,7 @@ public class TeacherMenu extends JPanel implements ChangeListener
 		addEquationsButton.setBorder(new LineBorder(new Color(70, 130, 180), 2, true));
 		GridBagConstraints gbc_addEquationsButton = new GridBagConstraints();
 		gbc_addEquationsButton.fill = GridBagConstraints.HORIZONTAL;
-		gbc_addEquationsButton.insets = new Insets(0, 10, 5, 5);
+		gbc_addEquationsButton.insets = new Insets(0, 10, 5, 0);
 		gbc_addEquationsButton.gridx = 5;
 		gbc_addEquationsButton.gridy = 6;
 		

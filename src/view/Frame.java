@@ -77,8 +77,6 @@ public class Frame extends JFrame
 				panel.removeAll();
 				panel = new ViewRecords(base);
 				break;
-			case recordsTable:
-				break;
 		}	
 
 		setContentPane(panel);
@@ -86,10 +84,4 @@ public class Frame extends JFrame
 		panel.repaint();
 	}
 	
-	public void recordsTableState(int studentID)
-	{
-		panel.removeAll();
-		panel = new RecordsTable(base, studentID);
-		setContentPane(panel);
-	}
 }

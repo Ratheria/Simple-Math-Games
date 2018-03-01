@@ -136,13 +136,6 @@ public class Controller
 		frame.updateState();
 	}
 	
-	public void recordsTableState(ViewStates nextState, int studentID)
-	{
-		lastState = state;
-		state = nextState;
-		frame.recordsTableState(studentID);
-	}
-	
 	public void unlockAccount(String userName)
 	{
 		JPanel errorPanel = new JPanel();
