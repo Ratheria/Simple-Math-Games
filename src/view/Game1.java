@@ -175,7 +175,7 @@ public class Game1 extends JPanel
 	  		fish.setFocusPainted(false);
 			fish.setContentAreaFilled(false);
 			fish.setFont(new Font("Ariel", Font.PLAIN, 20));
-			fish.setForeground(Color.BLUE);
+			fish.setForeground(Color.WHITE);
 			add(fish);
 		}
 		repaint();

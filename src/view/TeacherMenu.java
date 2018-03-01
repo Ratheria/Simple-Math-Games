@@ -49,6 +49,7 @@ public class TeacherMenu extends JPanel implements ChangeListener
 		settingsButton = new JButton("    ");
 		displayName = new JLabel(" ");
 		frequencyLabel = new JLabel("Custom Equation Frequency");
+		frequencyLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		frequencySlider = new JSlider();
 		viewRecordsButton = new JButton(" View Records ");
 		addEquationsLabel = new JLabel("Add Custom Equation");
@@ -68,10 +69,10 @@ public class TeacherMenu extends JPanel implements ChangeListener
 	
 	private void setUpLayout() 
 	{
-		layout.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-		layout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.4, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0};
-		layout.columnWidths = new int[]{0, 0, 0, 0, 0, 0};
-		layout.columnWeights = new double[]{0.0, 0.0, 0.0, 1.0, 1.0, 0.0};
+		layout.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0};
+		layout.rowWeights = new double[]{0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 5.0, 0.0};
+		layout.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 100};
+		layout.columnWeights = new double[]{0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0};
 		setLayout(layout);
 		setBorder(new LineBorder(new Color(70, 130, 180), 10));
 		setForeground(new Color(0, 255, 255));
@@ -101,12 +102,12 @@ public class TeacherMenu extends JPanel implements ChangeListener
 		gbc_displayName.gridy = 0;
 		
 		frequencyLabel.setForeground(new Color(135, 206, 250));
-		frequencyLabel.setFont(new Font("MV Boli", Font.PLAIN, 20));
+		frequencyLabel.setFont(new Font("MV Boli", Font.PLAIN, 27));
 		GridBagConstraints gbc_frequencyLabel = new GridBagConstraints();
-		gbc_frequencyLabel.gridwidth = 6;
-		gbc_frequencyLabel.insets = new Insets(0, 0, 5, 5);
+		gbc_frequencyLabel.gridwidth = 7;
+		gbc_frequencyLabel.insets = new Insets(5, 5, 5, 5);
 		gbc_frequencyLabel.gridx = 0;
-		gbc_frequencyLabel.gridy = 1;
+		gbc_frequencyLabel.gridy = 2;
 		
 		frequencySlider.setValue(baseFrequency);
 		frequencySlider.setToolTipText("Frequency");
@@ -119,21 +120,21 @@ public class TeacherMenu extends JPanel implements ChangeListener
 		frequencySlider.setBackground(new Color(0, 0, 0));
 		GridBagConstraints gbc_slider = new GridBagConstraints();
 		gbc_slider.fill = GridBagConstraints.HORIZONTAL;
-		gbc_slider.gridwidth = 6;
-		gbc_slider.insets = new Insets(5, 25, 5, 25);
+		gbc_slider.gridwidth = 7;
+		gbc_slider.insets = new Insets(0, 70, 5, 70);
 		gbc_slider.gridx = 0;
-		gbc_slider.gridy = 2;
+		gbc_slider.gridy = 3;
 		
 		addEquationsLabel.setForeground(new Color(135, 206, 250));
-		addEquationsLabel.setFont(new Font("MV Boli", Font.PLAIN, 25));
+		addEquationsLabel.setFont(new Font("MV Boli", Font.PLAIN, 30));
 		GridBagConstraints gbc_addEquationsLabel = new GridBagConstraints();
 		gbc_addEquationsLabel.anchor = GridBagConstraints.WEST;
 		gbc_addEquationsLabel.gridwidth = 3;
 		gbc_addEquationsLabel.insets = new Insets(5, 20, 5, 5);
 		gbc_addEquationsLabel.gridx = 1;
-		gbc_addEquationsLabel.gridy = 4;
+		gbc_addEquationsLabel.gridy = 5;
 		
-		addEquationsTextField.setFont(new Font("MV Boli", Font.PLAIN, 15));
+		addEquationsTextField.setFont(new Font("MV Boli", Font.PLAIN, 20));
 		addEquationsTextField.setForeground(new Color(135, 206, 250));
 		addEquationsTextField.setBackground(new Color(0, 0, 0));
 		addEquationsTextField.setToolTipText("Username");
@@ -143,9 +144,9 @@ public class TeacherMenu extends JPanel implements ChangeListener
 		gbc_addEquationsTextField.insets = new Insets(0, 40, 5, 5);
 		gbc_addEquationsTextField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_addEquationsTextField.gridx = 2;
-		gbc_addEquationsTextField.gridy = 5;
+		gbc_addEquationsTextField.gridy = 6;
 		
-		addEquationsButton.setFont(new Font("MV Boli", Font.PLAIN, 15));
+		addEquationsButton.setFont(new Font("MV Boli", Font.PLAIN, 20));
 		addEquationsButton.setForeground(new Color(135, 206, 250));
 		addEquationsButton.setBackground(new Color(70, 130, 180));
 		addEquationsButton.setFocusPainted(false);
@@ -153,9 +154,9 @@ public class TeacherMenu extends JPanel implements ChangeListener
 		addEquationsButton.setBorder(new LineBorder(new Color(70, 130, 180), 2, true));
 		GridBagConstraints gbc_addEquationsButton = new GridBagConstraints();
 		gbc_addEquationsButton.fill = GridBagConstraints.HORIZONTAL;
-		gbc_addEquationsButton.insets = new Insets(0, 10, 5, 40);
+		gbc_addEquationsButton.insets = new Insets(0, 10, 5, 5);
 		gbc_addEquationsButton.gridx = 5;
-		gbc_addEquationsButton.gridy = 5;
+		gbc_addEquationsButton.gridy = 6;
 		
   		viewRecordsButton.setFont(new Font("MV Boli", Font.PLAIN, 30));
 		viewRecordsButton.setForeground(new Color(135, 206, 250));
@@ -164,11 +165,11 @@ public class TeacherMenu extends JPanel implements ChangeListener
   		viewRecordsButton.setContentAreaFilled(false);
   		viewRecordsButton.setBorder(new LineBorder(new Color(70, 130, 180), 2, true));
 		GridBagConstraints gbc_viewRecordsButton = new GridBagConstraints();
-		gbc_viewRecordsButton.gridwidth = 2;
+		gbc_viewRecordsButton.gridwidth = 3;
 		gbc_viewRecordsButton.anchor = GridBagConstraints.EAST;
 		gbc_viewRecordsButton.insets = new Insets(0, 0, 20, 20);
 		gbc_viewRecordsButton.gridx = 4;
-		gbc_viewRecordsButton.gridy = 9;
+		gbc_viewRecordsButton.gridy = 8;
 		
 		add(settingsButton, gbc_settingsButton);
 		add(displayName, gbc_displayName);
