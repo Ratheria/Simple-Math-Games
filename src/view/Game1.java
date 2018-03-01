@@ -61,7 +61,7 @@ public class Game1 extends JPanel
 		frequency = base.getFrequency();
 		answer = 0;
 		score = 0;
-		gamePeriod = 60; //seconds
+		gamePeriod = 40; //seconds
 		theLayout = new SpringLayout();
 		question = "Question";
 		questionList = base.getEquations();

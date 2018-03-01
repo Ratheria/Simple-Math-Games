@@ -455,7 +455,7 @@ public class SQLiteData
 				}
 				
 				//Drop table			
-				state.execute("DROP TABLE IF EXISTS CUSTOM_EQUATIONS;");
+				// state.execute("DROP TABLE IF EXISTS CUSTOM_EQUATIONS;");
 				
 				ResultSet customEq = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' " +
 						"AND name='CUSTOM_EQUATIONS'");
@@ -473,7 +473,7 @@ public class SQLiteData
 				
 				// drop table if exists
 				//TODO Once we are done testing we want to get rid of this logic so it doesn't reset every time you open the application.
-				state.execute("DROP TABLE IF EXISTS STUDENT_SCORE_RECORDS;");
+				// state.execute("DROP TABLE IF EXISTS STUDENT_SCORE_RECORDS;");
 				ResultSet studentScoreRecords = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' " +
 						"AND name='STUDENT_SCORE_RECORDS'");
 				
