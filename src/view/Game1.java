@@ -64,7 +64,7 @@ public class Game1 extends JPanel
 		playing = true;
 		thisFish = null;
 		doAddFish = null;
-		maxFishVertical = (base.frame.getHeight() - 250)/50;
+		maxFishVertical = (base.frame.getHeight() - 250)/90;
 		frequency = base.getFrequency();
 		questionsToAsk = 10;
 		answer = 0;

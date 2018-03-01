@@ -4,6 +4,8 @@
 package view;
 
 import java.awt.Dimension;
+import java.awt.Toolkit;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTable;
@@ -18,7 +20,7 @@ public class Frame extends JFrame
 	private JPanel panel;
 	private Login login;
 	private Dimension minSize;
-	
+	private Dimension screenSize;
 
 	public Frame(Controller base)
 	{
@@ -28,7 +30,8 @@ public class Frame extends JFrame
 		minSize = new Dimension(700, 500);
 		setName("My Parents Don't Know What I Do");
 		setTitle("My Parents Don't Know What I Do");
-		setSize(900, 650);
+		screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		setSize(screenSize);
 		setMinimumSize(minSize);
 		setVisible(true);
 		setResizable(true);
