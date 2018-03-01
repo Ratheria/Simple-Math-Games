@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
 import adapter.Controller;
@@ -43,6 +44,7 @@ public class ViewRecords extends JPanel
 
 		setUpLayout();
 		setUpListeners();
+		studentLookupField.requestFocus();
 	}
 	
 	private void setUpLayout() 
@@ -101,6 +103,8 @@ public class ViewRecords extends JPanel
 		add(backButton, gbc_settingsButton);
 		add(viewRecordsButton, gbc_viewRecordsButton);
 		add(studentLookupField, gbc_studentLookupField);
+		
+		studentLookupField.setText("");
 	}
 	
 	private void setUpListeners() 
@@ -108,9 +112,17 @@ public class ViewRecords extends JPanel
 		
 		backButton.addActionListener(new ActionListener() 
 		{
-			public void actionPerformed(ActionEvent onClick) 	// make a new class to show records? or just update view?
+			public void actionPerformed(ActionEvent onClick)
 			{
 				base.returnToMenu();
+			}
+		});
+		
+		studentLookupField.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				base.recordsTableState(ViewStates.recordsTable, Integer.parseInt(studentLookupField.getText()));
 			}
 		});
 		

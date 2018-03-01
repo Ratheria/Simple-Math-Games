@@ -71,19 +71,27 @@ public class RecordsTable extends JPanel
 		backButton.setFocusPainted(false);
 		backButton.setContentAreaFilled(false);
 		backButton.setBorder(new LineBorder(new Color(192, 192, 192), 2));
-		GridBagConstraints gbc_settingsButton = new GridBagConstraints();
-		gbc_settingsButton.anchor = GridBagConstraints.NORTHWEST;
-		gbc_settingsButton.insets = new Insets(20, 20, 5, 5);
-		gbc_settingsButton.gridx = 0;
-		gbc_settingsButton.gridy = 0;		
+		GridBagConstraints gbc_backButton = new GridBagConstraints();
+		gbc_backButton.anchor = GridBagConstraints.NORTHWEST;
+		gbc_backButton.insets = new Insets(20, 20, 5, 5);
+		gbc_backButton.gridx = 0;
+		gbc_backButton.gridy = 0;		
 	
+		GridBagConstraints gbc_studentRecordSet = new GridBagConstraints();
+		gbc_studentRecordSet.gridx = 2;
+		gbc_studentRecordSet.gridy = 2;
+		gbc_studentRecordSet.gridheight = 3;
+		gbc_studentRecordSet.gridwidth = 3;
+		gbc_studentRecordSet.ipadx = 70;
+		gbc_studentRecordSet.ipady = 70;
+		gbc_studentRecordSet.weighty = 0.3;
 		
 		populateTable(base.lookupStudent(studentID));
 		scrollPane = new JScrollPane(studentRecordsSet);
 		
 		add(header, gbc_displayName);
-		add(backButton, gbc_settingsButton);
-//		add(studentRecordsSet);
+		add(backButton, gbc_backButton);
+		add(studentRecordsSet, gbc_studentRecordSet);
 		add(scrollPane);
 	}
 	
