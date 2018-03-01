@@ -39,7 +39,7 @@ public class FishObject extends JButton implements ActionListener
         onScreen = true;
         this.answer = answer;
         xValue = 50;
-        yValue = 100 + (numberFromTop * 50);
+        yValue = 100 + (numberFromTop * 65);
         maxX = panelWidth - 50;
         panel.add(this);
         addActionListener(this);
