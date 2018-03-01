@@ -5,6 +5,7 @@
 
 package view;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
@@ -13,6 +14,8 @@ import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
+
+import adapter.Controller;
 
 public class FishObject extends JButton implements ActionListener
 {
@@ -24,7 +27,7 @@ public class FishObject extends JButton implements ActionListener
 	private int yValue;
 	private int maxX;
 	
-    public FishObject(int answer, int numberFromTop, int panelWidth, Game1 panel, ImageIcon icon)
+    public FishObject(int answer, int numberFromTop, Game1 panel, ImageIcon icon)
     {
     	super((answer + ""), icon);
     	this.setBorderPainted(false);
@@ -38,9 +41,10 @@ public class FishObject extends JButton implements ActionListener
         this.panel = panel;
         onScreen = true;
         this.answer = answer;
-        xValue = 50;
-        yValue = 100 + (numberFromTop * 65);
-        maxX = panelWidth - 50;
+        xValue = 50; 
+        		//- (Controller.rng.nextInt(6) * 10);
+        yValue = 100 + (numberFromTop * 90);
+        maxX = Frame.DIMENSIONS.width - 200;
         panel.add(this);
         addActionListener(this);
     }
@@ -48,36 +52,22 @@ public class FishObject extends JButton implements ActionListener
     public void paint(Graphics g) 
     {
     	this.setLocation(xValue, yValue);
- //       g.translate(xValue, yValue);
         super.paint(g);
         panel.add(this);
-        panel.repaint();
+    }
+    
+    public void updateLocation()
+    {
+    	xValue += 35;
+    	if(xValue >= maxX)
+    	{	panel.wentOffScreen(this);	}
     }
     
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
 		if (e.getSource().equals(this)) 
-		{
-            panel.selected(this);
-        }
-		else
-		{
-			//TODO Movement that actually works
-			xValue += 2;
-	    	if(xValue > maxX)
-	    	{
-	    		onScreen = false;
-	    	}
-	    	if(onScreen)
-	    	{	
-	    		repaint();	
-	    	}
-	    	else
-	    	{
-	    		panel.wentOffScreen(this);
-	    	}
-		}
+		{	panel.selected(this);	}
 	}
 
 	public int getAnswer()
@@ -88,5 +78,5 @@ public class FishObject extends JButton implements ActionListener
 	
 	public int getYValue()
 	{	return yValue;	}
-	
+
 }

@@ -57,11 +57,11 @@ public class Game1 extends JPanel
 	public Game1(Controller base) 
 	{
 		this.base = base;
-		maxFishVertical = (base.frame.getHeight() - 250)/60;
+		maxFishVertical = (base.frame.getHeight() - 250)/80;
 		frequency = base.getFrequency();
 		answer = 0;
 		score = 0;
-		gamePeriod = 45; //seconds
+		gamePeriod = 60; //seconds
 		theLayout = new SpringLayout();
 		question = "Question";
 		questionList = base.getEquations();
@@ -70,8 +70,8 @@ public class Game1 extends JPanel
 		scoreLabel = new JLabel("Score: 0");
 
 		//setting up fish icon for answer buttons
-		fishImageWidth= (base.frame.getWidth() - 250)/8;
-		fishImageHeight = (base.frame.getHeight() - 250)/8;
+		fishImageWidth= (base.frame.getWidth() - 250)/10;
+		fishImageHeight = (base.frame.getHeight() - 250)/10;
 		try 
 		{	fishImg = ImageIO.read(new File("fish.png"));	} 
 		catch (IOException ex) 
@@ -130,6 +130,7 @@ public class Game1 extends JPanel
 					timerLabel.setText("Time: "+(sec/60)+ ":" + (sec%60));
 				}
 				sec--;
+				moveFish();
 			}
 		};
 		displayTime = new Timer(1000, timeDisplayer); //time parameter milliseconds
@@ -161,23 +162,12 @@ public class Game1 extends JPanel
 		{
 			int fishAnswer = Controller.rng.nextInt(100);
 			while (fishAnswer == answer)
-			{
-				fishAnswer = Controller.rng.nextInt(100);
-			}
+			{	fishAnswer = Controller.rng.nextInt(100);	}
 			if(i == randomPlacement)
-			{
-				fishAnswer = answer;
-			}
-			currentFish.add(new FishObject(fishAnswer, i, this.getWidth(), this, fishIcon));
+			{	fishAnswer = answer;	}
+			currentFish.add(new FishObject(fishAnswer, i, this, fishIcon));
 		}
-		for(FishObject fish : currentFish)
-		{
-	  		fish.setFocusPainted(false);
-			fish.setContentAreaFilled(false);
-			fish.setFont(new Font("Ariel", Font.PLAIN, 20));
-			fish.setForeground(Color.WHITE);
-			add(fish);
-		}
+		addFish();
 		repaint();
 	}
 
@@ -259,13 +249,40 @@ public class Game1 extends JPanel
 		}
 		currentFish = new ArrayList<FishObject>();
 	}
+	
+	private void moveFish()
+	{
+		removeAll();
+		setUpLayout();
+		addFish();
+		revalidate();
+		repaint();
+	}
+	
+	private void addFish()
+	{
+		for(FishObject fish : currentFish)
+		{
+	  		fish.setFocusPainted(false);
+//			fish.setContentAreaFilled(false);
+			fish.setFont(new Font("Ariel", Font.PLAIN, 20));
+			fish.setForeground(Color.WHITE);
+			fish.updateLocation();
+	    	fish.setLocation(fish.getXValue(), fish.getYValue());
+			add(fish);
+		}
+	}
 
 	public void wentOffScreen(FishObject fish)
 	{
 		if(fish.getAnswer() == answer)
 		{
 			System.out.println("Correct answer went off screen.");
+			timer.stop();
 			clearCurrentFish();
+			base.returnToMenu();
+			JPanel messagePanel = new JPanel();
+			JOptionPane.showMessageDialog(messagePanel, "The correct answer went off screen.\nYour score was " + score + ".", "Game Over", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 
