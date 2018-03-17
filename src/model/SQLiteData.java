@@ -26,7 +26,7 @@ public class SQLiteData
 		this.base = base;
 		hasData = false;
 		getConnection();
-		initialise();
+		initial();
 	}
 	
 	public ResultSet query(String SQLCommand)
@@ -422,10 +422,10 @@ public class SQLiteData
 				System.out.println("linux fix didn't work");
 			}
 		}
-		initialise();
+		initial();
 	}
 
-	private void initialise() 
+	private void initial() 
 	{
 		if (!hasData)
 		{
