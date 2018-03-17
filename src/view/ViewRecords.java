@@ -15,6 +15,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
@@ -22,6 +23,7 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 
 import adapter.Controller;
 import adapter.ViewStates;
@@ -36,6 +38,7 @@ public class ViewRecords extends JPanel
 	private JButton viewRecordsButton;
 	private JTextField studentLookupField;
 	private JTable studentRecordsSet;
+	private JScrollPane scrollPane;
 	
 	public ViewRecords(Controller base)
 	{
@@ -110,8 +113,17 @@ public class ViewRecords extends JPanel
 		
 		studentRecordsSet.setForeground(new Color(176, 224, 230));
 		studentRecordsSet.setFont(new Font("Arial", Font.PLAIN, 20));
-		studentRecordsSet.setBorder(new LineBorder(new Color(70, 130, 180), 2));
 		studentRecordsSet.setBackground(new Color(0, 0, 0));
+		JTableHeader tableHeader = studentRecordsSet.getTableHeader();
+		tableHeader.setForeground(new Color(176, 224, 230));
+		tableHeader.setFont(new Font("Arial", Font.PLAIN, 25));
+		tableHeader.setBackground(new Color(0, 0, 0));
+		tableHeader.setBorder(new LineBorder(new Color(70, 130, 180), 1));
+		scrollPane = new JScrollPane(studentRecordsSet);
+		scrollPane.getViewport().setForeground(new Color(176, 224, 230));
+		scrollPane.getViewport().setFont(new Font("Arial", Font.PLAIN, 20));
+		scrollPane.getViewport().setBackground(new Color(0, 0, 0));
+		scrollPane.setBorder(new LineBorder(new Color(70, 130, 180), 1));
 		GridBagConstraints gbc_studentRecordsSet = new GridBagConstraints();
 		gbc_studentRecordsSet.gridwidth = 5;
 		gbc_studentRecordsSet.gridy = 4;
@@ -123,7 +135,7 @@ public class ViewRecords extends JPanel
 		add(backButton, gbc_backButton);
 		add(studentLookupField, gbc_studentLookupField);
 		add(viewRecordsButton, gbc_viewRecordsButton);
-		add(studentRecordsSet, gbc_studentRecordsSet);
+		add(scrollPane, gbc_studentRecordsSet);
 	}
 	
 	private void setUpListeners() 
