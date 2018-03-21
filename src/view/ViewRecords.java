@@ -133,7 +133,6 @@ public class ViewRecords extends JPanel
 		add(header, gbc_header);
 		add(backButton, gbc_backButton);
 		add(studentLookupField, gbc_studentLookupField);
-		add(studentRecordsSet, gbc_studentRecordsSet);
 		add(scrollPane, gbc_studentRecordsSet);
 	}
 	
