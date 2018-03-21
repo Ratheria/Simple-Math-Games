@@ -11,14 +11,12 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Vector;
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.RowFilter;
-import javax.swing.RowSorter;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.border.CompoundBorder;
@@ -31,7 +29,6 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import javax.swing.table.JTableHeader;
 import adapter.Controller;
-import adapter.ViewStates;
 
 public class ViewRecords extends JPanel 
 {
@@ -189,7 +186,7 @@ public class ViewRecords extends JPanel
 	        for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) 
 	        {
 	            vector.add(studentRecords.getObject(columnIndex));
-	            //System.out.println(studentRecords.getObject(columnIndex));
+	            System.out.println(studentRecords.getObject(columnIndex));
 	        }
 	        data.add(vector);
 	    }

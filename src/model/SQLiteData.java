@@ -13,6 +13,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import adapter.Controller;
 
 public class SQLiteData
@@ -342,17 +345,20 @@ public class SQLiteData
 		catch (SQLException e) {e.printStackTrace();}
 	}
 	
-	// maybe make this public? not sure yet
-	private void addStudentScoreRecord(int studentID, int recordID)
+	public void addStudentScoreRecord(int studentID, String firstName, String lastName, String classID, String date)
 	{
+		//studentID firstName lastName classID recordID
 		if (con == null)
 		{	getConnection();	}
 		try 
 		{
 			PreparedStatement preparedStatement;
-			preparedStatement = con.prepareStatement("INSERT INTO STUDENT_SCORE_RECORDS VALUES(?, ?);");
+			preparedStatement = con.prepareStatement("INSERT INTO STUDENT_SCORE_RECORDS VALUES(?, ?, ?, ?, ?, ?);");
 			preparedStatement.setInt(1, studentID);
-			preparedStatement.setInt(2, recordID);
+			preparedStatement.setString(2, firstName);
+			preparedStatement.setString(3, lastName);
+			preparedStatement.setString(4, classID);
+			preparedStatement.setString(5, date);
 			preparedStatement.executeUpdate();
 		}
 		catch (SQLException e) {e.printStackTrace();}
@@ -415,7 +421,6 @@ public class SQLiteData
 				File homedir = new File(System.getProperty("user.home"));
 				String databaseFilePath = "jdbc:sqlite:" + homedir + "/MPDKWID";
 				con = DriverManager.getConnection(databaseFilePath);
-				// https://docs.oracle.com/javase/8/docs/api/java/nio/file/Files.html#setPosixFilePermissions-java.nio.file.Path-java.util.Set-
 			}
 			catch (SQLException | ClassNotFoundException e2)
 			{
@@ -482,12 +487,18 @@ public class SQLiteData
 				{
 					System.out.println("Building Student Score Records table.");
 					state = con.createStatement();
-					state.executeUpdate("CREATE TABLE STUDENT_SCORE_RECORDS(studentID INTEGER," + "recordID INTEGER," + 
-							"PRIMARY KEY (studentID, recordID)," + "FOREIGN KEY (studentID) REFERENCES USER(ID));");
+					state.executeUpdate("CREATE TABLE STUDENT_SCORE_RECORDS(studentID INTEGER," 
+							+ "studentFirstName VARCHAR(30)," + "studentLastName VARCHAR(30)," + "classID VARCHAR(5)," + "date VARCHAR(19)," + "recordID INTEGER,"
+							+ "PRIMARY KEY (recordID)," 
+							+ "FOREIGN KEY (studentFirstName) REFERENCES USER(firstName)," 
+							+ "FOREIGN KEY (studentLastName) REFERENCES USER(lastName)," 
+							+ "FOREIGN KEY (classID) REFERENCES USER(classID)," 
+							+ "FOREIGN KEY (studentID) REFERENCES USER(ID));");
 					
-					addStudentScoreRecord(222222, 000000);
-					addStudentScoreRecord(222222, 000001);
-					addStudentScoreRecord(222222, 000002);
+					DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+					LocalDateTime now = LocalDateTime.now(); 
+					addStudentScoreRecord(222222, "Default", "Student", "1A", dtf.format(now));
+
 				}
 			}
 			catch (SQLException e){ e.printStackTrace(); }
