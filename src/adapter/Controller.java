@@ -260,10 +260,10 @@ public class Controller
 		System.out.println(numberOfEquations);
 	}
 	
-	public ResultSet lookupStudent(int studentID) 
+	public ResultSet lookupStudent() 
 	{
 		ResultSet result = null;
-		result = database.selectStudentRecord(studentID);
+		result = database.selectStudentRecord(classID);
 		return result;
 	}
 	

@@ -359,7 +359,7 @@ public class SQLiteData
 	}
 	
 	// Method to retrieve the records for a student. Called from TeacherMenu/ViewRecords
-	public ResultSet selectStudentRecord(int studentID)
+	public ResultSet selectStudentRecord(String classID)
 	{
 		ResultSet studentRecords = null;
 		PreparedStatement preparedStatement;
@@ -367,11 +367,12 @@ public class SQLiteData
 		{	getConnection();	}
 		try 
 		{
-			String query = "SELECT * from STUDENT_SCORE_RECORDS WHERE studentID=?";
+			//TODO replace true with classID
+			String query = "SELECT * from STUDENT_SCORE_RECORDS WHERE ?";
 			preparedStatement = con.prepareStatement(query);
-			preparedStatement.setInt(1, studentID);
+			//preparedStatement.setString(1, classID);
+			preparedStatement.setBoolean(1, true);
 			studentRecords = preparedStatement.executeQuery();
-			return studentRecords;	
 		}
 		catch (SQLException e) { e.printStackTrace(); }		
 		return studentRecords;
