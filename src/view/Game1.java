@@ -57,7 +57,7 @@ public class Game1 extends JPanel
 	public Game1(Controller base) 
 	{
 		this.base = base;
-		maxFishVertical = (base.frame.getHeight() - 250)/80;
+		maxFishVertical = (base.frame.getHeight() - 250)/60;
 		frequency = base.getFrequency();
 		answer = 0;
 		score = 0;
@@ -70,8 +70,8 @@ public class Game1 extends JPanel
 		scoreLabel = new JLabel("Score: 0");
 
 		//setting up fish icon for answer buttons
-		fishImageWidth= (base.frame.getWidth() - 250)/10;
-		fishImageHeight = (base.frame.getHeight() - 250)/10;
+		fishImageWidth= (base.frame.getWidth() - 250)/8;
+		fishImageHeight = (base.frame.getHeight() - 250)/7;
 		try 
 		{	fishImg = ImageIO.read(new File("fish.png"));	} 
 		catch (IOException ex) 
@@ -89,23 +89,23 @@ public class Game1 extends JPanel
 		setLayout(theLayout);
 		setBorder(new LineBorder(new Color(70, 130, 180), 10));
 		setForeground(new Color(173, 216, 230));
-		setBackground(new Color(0, 0, 0));
+		setBackground(new Color(245, 245, 245));
 
 		timerLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		timerLabel.setForeground(new Color(135, 206, 250));
-		timerLabel.setFont(new Font("MV Boli", Font.PLAIN, 20));
+		timerLabel.setForeground(new Color(70, 130, 180));
+		timerLabel.setFont(new Font("Arial", Font.PLAIN, 20));
 		theLayout.putConstraint(SpringLayout.NORTH, timerLabel, 25, SpringLayout.NORTH, this);
 		theLayout.putConstraint(SpringLayout.EAST, timerLabel, -50, SpringLayout.EAST, this);
 
-		scoreLabel.setFont(new Font("MV Boli", Font.PLAIN, 30));
-		scoreLabel.setForeground(new Color(135, 206, 250));
+		scoreLabel.setFont(new Font("Arial", Font.PLAIN, 30));
+		scoreLabel.setForeground(new Color(70, 130, 180));
 		scoreLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		theLayout.putConstraint(SpringLayout.SOUTH, scoreLabel, -25, SpringLayout.SOUTH, this);
 		theLayout.putConstraint(SpringLayout.EAST, scoreLabel, -50, SpringLayout.EAST, this);
 
 		questionLabel.setHorizontalAlignment(SwingConstants.LEFT);
-		questionLabel.setForeground(new Color(135, 206, 250));
-		questionLabel.setFont(new Font("MV Boli", Font.BOLD, 30));
+		questionLabel.setForeground(new Color(70, 130, 180));
+		questionLabel.setFont(new Font("Arial", Font.BOLD, 30));
 		theLayout.putConstraint(SpringLayout.WEST, questionLabel, 50, SpringLayout.WEST, this);
 		theLayout.putConstraint(SpringLayout.SOUTH, questionLabel, -25, SpringLayout.SOUTH, this);
 
@@ -266,7 +266,7 @@ public class Game1 extends JPanel
 	  		fish.setFocusPainted(false);
 //			fish.setContentAreaFilled(false);
 			fish.setFont(new Font("Ariel", Font.PLAIN, 20));
-			fish.setForeground(Color.WHITE);
+			fish.setForeground(Color.BLACK);
 			fish.updateLocation();
 	    	fish.setLocation(fish.getXValue(), fish.getYValue());
 			add(fish);

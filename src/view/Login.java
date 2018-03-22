@@ -45,78 +45,78 @@ public class Login extends JPanel
 	private void setUpLayout()
 	{
 		layout.columnWidths = new int[]{0, 0};
-		layout.rowHeights = new int[]{0, 36, 0, 47};
+		layout.rowHeights = new int[]{0, 36, 0, 0, 0, 47};
 		layout.columnWeights = new double[]{0.0, 1.0};
-		layout.rowWeights = new double[]{1.0, 0.0, 0.0, 1.0};
+		layout.rowWeights = new double[]{10.0, 0.0, 1.0, 0.0, 8.0, 4.0};
 		setLayout(layout);
 		setBorder(new LineBorder(new Color(70, 130, 180), 10));
 		setForeground(new Color(135, 206, 235));
-		setBackground(new Color(0, 0, 0));
+		setBackground(new Color(245, 245, 245));
 
-		usernameLabel.setFont(new Font("MV Boli", Font.PLAIN, 40));
-		usernameLabel.setForeground(new Color(135, 206, 235));
+		usernameLabel.setFont(new Font("Arial", Font.PLAIN, 40));
+		usernameLabel.setForeground(new Color(70, 130, 180));
 		GridBagConstraints gbc_usernameLabel = new GridBagConstraints();
 		gbc_usernameLabel.anchor = GridBagConstraints.WEST;
-		gbc_usernameLabel.insets = new Insets(5, 40, 5, 5);
+		gbc_usernameLabel.insets = new Insets(5, 75, 5, 5);
 		gbc_usernameLabel.gridx = 0;
 		gbc_usernameLabel.gridy = 1;
 				
-		passwordLabel.setFont(new Font("MV Boli", Font.PLAIN, 40));
-		passwordLabel.setForeground(new Color(135, 206, 235));
+		passwordLabel.setFont(new Font("Arial", Font.PLAIN, 40));
+		passwordLabel.setForeground(new Color(70, 130, 180));
 		GridBagConstraints gbc_passwordLabel = new GridBagConstraints();
 		gbc_passwordLabel.anchor = GridBagConstraints.WEST;
-		gbc_passwordLabel.insets = new Insets(15, 40, 5, 5);
+		gbc_passwordLabel.insets = new Insets(5, 75, 5, 5);
 		gbc_passwordLabel.gridx = 0;
-		gbc_passwordLabel.gridy = 2;
+		gbc_passwordLabel.gridy = 3;
 
 		loginLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		loginLabel.setFont(new Font("MV Boli", Font.PLAIN, 85));
-		loginLabel.setForeground(new Color(135, 206, 250));
+		loginLabel.setFont(new Font("Arial", Font.PLAIN, 85));
+		loginLabel.setForeground(new Color(70, 130, 180));
 		GridBagConstraints gbc_loginLabel = new GridBagConstraints();
 		gbc_loginLabel.gridwidth = 3;
 		gbc_loginLabel.fill = GridBagConstraints.HORIZONTAL;
-		gbc_loginLabel.insets = new Insets(40, 5, 5, 5);
+		gbc_loginLabel.insets = new Insets(40, 5, 5, 0);
 		gbc_loginLabel.gridx = 0;
 		gbc_loginLabel.gridy = 0;
 
 		uTextField.setHorizontalAlignment(SwingConstants.LEADING);
-		uTextField.setForeground(new Color(135, 206, 250));
-		uTextField.setFont(new Font("MV Boli", Font.PLAIN, 25));
-		uTextField.setBackground(new Color(0, 0, 0));
-		uTextField.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(30, 144, 255)),
+		uTextField.setForeground(new Color(0, 0, 128));
+		uTextField.setFont(new Font("Arial", Font.PLAIN, 25));
+		uTextField.setBackground(new Color(240, 240, 245));
+		uTextField.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(0, 0, 128)),
                 BorderFactory.createEmptyBorder(0, 25, 0, 0)));
 		GridBagConstraints gbc_uTextField = new GridBagConstraints();
 		gbc_uTextField.gridwidth = 2;
 		gbc_uTextField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_uTextField.insets = new Insets(5, 5, 5, 40);
+		gbc_uTextField.insets = new Insets(5, 5, 5, 75);
 		gbc_uTextField.gridx = 1;
 		gbc_uTextField.gridy = 1;
 		
 		pTextField.setHorizontalAlignment(SwingConstants.LEFT);
-		pTextField.setForeground(new Color(135, 206, 235));
-		pTextField.setFont(new Font("MV Boli", Font.PLAIN, 25));
-		pTextField.setBackground(new Color(0, 0, 0));
+		pTextField.setForeground(new Color(0, 0, 128));
+		pTextField.setFont(new Font("Arial", Font.PLAIN, 25));
+		pTextField.setBackground(new Color(240, 240, 245));
 		pTextField.setColumns(5);
-		pTextField.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(30, 144, 255)),
+		pTextField.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(0, 0, 128)),
                 BorderFactory.createEmptyBorder(0, 25, 0, 0)));
 		GridBagConstraints gbc_pTextField = new GridBagConstraints();
 		gbc_pTextField.gridwidth = 2;
 		gbc_pTextField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_pTextField.insets = new Insets(5, 5, 5, 40);
+		gbc_pTextField.insets = new Insets(5, 5, 5, 75);
 		gbc_pTextField.gridx = 1;
-		gbc_pTextField.gridy = 2;
+		gbc_pTextField.gridy = 3;
 		
-		enterButton.setFont(new Font("MV Boli", Font.PLAIN, 30));
-		enterButton.setForeground(new Color(135, 206, 250));
+		enterButton.setFont(new Font("Arial", Font.PLAIN, 28));
+		enterButton.setForeground(new Color(70, 130, 180));
 		enterButton.setBackground(new Color(0, 0, 0));
 		enterButton.setFocusPainted(false);
 		enterButton.setContentAreaFilled(false);
-		enterButton.setBorder(new CompoundBorder(new LineBorder(new Color(30, 144, 255)), new EmptyBorder(5, 10, 0, 10)));
+		enterButton.setBorder(new CompoundBorder(new LineBorder(new Color(30, 144, 255)), new EmptyBorder(2, 10, 0, 10)));
 		GridBagConstraints gbc_enterButton = new GridBagConstraints();
 		gbc_enterButton.fill = GridBagConstraints.HORIZONTAL;
 		gbc_enterButton.insets = new Insets(5, 5, 40, 40);
 		gbc_enterButton.gridx = 2;
-		gbc_enterButton.gridy = 3;
+		gbc_enterButton.gridy = 5;
 		
 		add(usernameLabel, gbc_usernameLabel);
 		add(passwordLabel, gbc_passwordLabel);

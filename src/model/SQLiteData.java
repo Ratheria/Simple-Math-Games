@@ -374,7 +374,7 @@ public class SQLiteData
 		try 
 		{
 			//TODO replace true with classID
-			String query = "SELECT * from STUDENT_SCORE_RECORDS WHERE ?";
+			String query = "SELECT studentID, studentFirstName, studentLastName, date from STUDENT_SCORE_RECORDS WHERE ?";
 			preparedStatement = con.prepareStatement(query);
 			//preparedStatement.setString(1, classID);
 			preparedStatement.setBoolean(1, true);
@@ -407,14 +407,12 @@ public class SQLiteData
 		try
 		{
 			Class.forName("org.sqlite.JDBC");
-			//database path
-			//if there is no database there a new one will be created
 			String databaseFilePath = "jdbc:sqlite:C:/ProgramData/MPDKWID";
 			con = DriverManager.getConnection(databaseFilePath);
 		}
 		catch (SQLException | ClassNotFoundException e)
 		{
-			//TODO maybe make this work for Mac as well???
+			//TODO Mac?
 			try			
 			{
 				Class.forName("org.sqlite.JDBC");
@@ -442,17 +440,16 @@ public class SQLiteData
 				state = con.createStatement();
 				
 				// drop table if exists
-				//Commented out for demo
-				//state.execute("DROP TABLE IF EXISTS USER;");
+				state.execute("DROP TABLE IF EXISTS USER;");
 				
 				ResultSet res = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='USER'");
 				if (!res.next())
 				{
 					System.out.println("Building the User table.");
 					state = con.createStatement();
-					state.executeUpdate("CREATE TABLE USER(ID INTEGER," + "userName VARCHAR(15)," + "pass VARCHAR(15),"
-							+ "firstName VARCHAR(30)," + "lastName VARCHAR(30)," + "classID VARCHAR(5),"
-							+ "permission INTEGER," + "failedAttempts INTEGER," + "isLocked BOOLEAN,"
+					state.executeUpdate("CREATE TABLE USER("
+							+ "ID INTEGER," + "userName VARCHAR(15)," + "pass VARCHAR(15)," + "firstName VARCHAR(30)," + "lastName VARCHAR(30)," 
+							+ "classID VARCHAR(5)," + "permission INTEGER," + "failedAttempts INTEGER," + "isLocked BOOLEAN,"
 							+ "PRIMARY KEY (ID));");
 					
 					addUser(000000, "root", "root", "Root", "User", "00", 0);
@@ -469,8 +466,8 @@ public class SQLiteData
 				{
 					System.out.println("Building the custom equations table.");
 					state = con.createStatement();
-					state.executeUpdate("CREATE TABLE CUSTOM_EQUATIONS(classID VARCHAR(5),"
-							+ "questionList VARCHAR(600)," + "numberOfEquations INTEGER," + "frequency INTEGER," 
+					state.executeUpdate("CREATE TABLE CUSTOM_EQUATIONS("
+							+ "classID VARCHAR(5)," + "questionList VARCHAR(600)," + "numberOfEquations INTEGER," + "frequency INTEGER," 
 							+ "FOREIGN KEY (classID) REFERENCES USER(classID),"
 							+ "PRIMARY KEY (classID));");
 					
@@ -487,8 +484,8 @@ public class SQLiteData
 				{
 					System.out.println("Building Student Score Records table.");
 					state = con.createStatement();
-					state.executeUpdate("CREATE TABLE STUDENT_SCORE_RECORDS(studentID INTEGER," 
-							+ "studentFirstName VARCHAR(30)," + "studentLastName VARCHAR(30)," + "classID VARCHAR(5)," + "date VARCHAR(19)," + "recordID INTEGER,"
+					state.executeUpdate("CREATE TABLE STUDENT_SCORE_RECORDS("
+							+ "studentID INTEGER," + "studentFirstName VARCHAR(30)," + "studentLastName VARCHAR(30)," + "classID VARCHAR(5)," + "date VARCHAR(19)," + "recordID INTEGER,"
 							+ "PRIMARY KEY (recordID)," 
 							+ "FOREIGN KEY (studentFirstName) REFERENCES USER(firstName)," 
 							+ "FOREIGN KEY (studentLastName) REFERENCES USER(lastName)," 

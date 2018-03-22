@@ -52,11 +52,11 @@ public class ManageUsers extends JPanel
 		setLayout(layout);
 		setBorder(new LineBorder(new Color(128, 128, 128), 10));
 		setForeground(new Color(105, 105, 105));
-		setBackground(new Color(0, 0, 0));
+		setBackground(new Color(245, 245, 245));
 		
 		header.setVerticalAlignment(SwingConstants.TOP);
-		header.setForeground(new Color(220, 220, 220));
-		header.setFont(new Font("MV Boli", Font.PLAIN, 35));
+		header.setForeground(new Color(105, 105, 105));
+		header.setFont(new Font("Arial", Font.PLAIN, 35));
 		GridBagConstraints gbc_displayName = new GridBagConstraints();
 		gbc_displayName.anchor = GridBagConstraints.NORTHWEST;
 		gbc_displayName.gridwidth = 4;
@@ -64,12 +64,12 @@ public class ManageUsers extends JPanel
 		gbc_displayName.gridx = 1;
 		gbc_displayName.gridy = 0;
 		
-		backButton.setFont(new Font("MV Boli", Font.PLAIN, 25));
-		backButton.setForeground(new Color(192, 192, 192));
+		backButton.setFont(new Font("Arial", Font.PLAIN, 25));
+		backButton.setForeground(new Color(105, 105, 105));
 		backButton.setBackground(new Color(105, 105, 105));
 		backButton.setFocusPainted(false);
 		backButton.setContentAreaFilled(false);
-		backButton.setBorder(new LineBorder(new Color(192, 192, 192), 2));
+		backButton.setBorder(new LineBorder(new Color(105, 105, 105), 2));
 		GridBagConstraints gbc_settingsButton = new GridBagConstraints();
 		gbc_settingsButton.anchor = GridBagConstraints.NORTHWEST;
 		gbc_settingsButton.insets = new Insets(20, 20, 5, 5);

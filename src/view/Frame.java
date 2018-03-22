@@ -28,14 +28,15 @@ public class Frame extends JFrame
 		this.base = base;
 		login = new Login(base);
 		panel = login;
-		minSize = new Dimension(700, 500);
+		minSize = new Dimension(950, 600);
 		setName("My Parents Don't Know What I Do");
 		setTitle("My Parents Don't Know What I Do");
-		setExtendedState(JFrame.MAXIMIZED_BOTH); 
+		//setExtendedState(JFrame.MAXIMIZED_BOTH); 
 		//setUndecorated(true);
+		setSize(minSize);
 		setMinimumSize(minSize);
 		setVisible(true);
-		setResizable(true);
+		//setResizable(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setContentPane(panel);
 		DIMENSIONS = getSize();

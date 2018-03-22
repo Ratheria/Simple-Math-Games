@@ -48,11 +48,11 @@ public class StudentMenu extends JPanel
 		setLayout(layout);
 		setBorder(new LineBorder(new Color(70, 130, 180), 10));
 		setForeground(new Color(0, 255, 255));
-		setBackground(new Color(0, 0, 0));
+		setBackground(new Color(245, 245, 245));
 		
 		displayName.setVerticalAlignment(SwingConstants.BOTTOM);
-		displayName.setForeground(new Color(135, 206, 250));
-		displayName.setFont(new Font("MV Boli", Font.PLAIN, 35));
+		displayName.setForeground(new Color(70, 130, 180));
+		displayName.setFont(new Font("Arial", Font.PLAIN, 35));
 		displayName.setText(base.getFullName());
 		GridBagConstraints gbc_displayName = new GridBagConstraints();
 		gbc_displayName.anchor = GridBagConstraints.NORTHWEST;
@@ -62,7 +62,7 @@ public class StudentMenu extends JPanel
 		gbc_displayName.gridy = 0;
 		
 /*
-		logOut.setFont(new Font("MV Boli", Font.PLAIN, 30));
+		logOut.setFont(new Font("Arial", Font.PLAIN, 30));
 		logOut.setForeground(new Color(135, 206, 250));
 		logOut.setBackground(new Color(0, 0, 0));
 		logOut.setFocusPainted(false);
@@ -74,20 +74,19 @@ public class StudentMenu extends JPanel
 		gbc_logOut.gridy = 3;
 */
 		
-		settingsButton.setFont(new Font("MV Boli", Font.PLAIN, 25));
+		settingsButton.setFont(new Font("Arial", Font.PLAIN, 25));
 		settingsButton.setForeground(new Color(135, 206, 250));
-		settingsButton.setBackground(new Color(70, 130, 180));
+		settingsButton.setBackground(new Color(240, 240, 245));
 		settingsButton.setFocusPainted(false);
-		settingsButton.setContentAreaFilled(false);
-		settingsButton.setBorder(new LineBorder(new Color(135, 206, 250), 2));
+		settingsButton.setBorder(new LineBorder(new Color(70, 130, 180), 2));
 		GridBagConstraints gbc_settingsButton = new GridBagConstraints();
 		gbc_settingsButton.anchor = GridBagConstraints.NORTHWEST;
 		gbc_settingsButton.insets = new Insets(20, 25, 5, 5);
 		gbc_settingsButton.gridx = 0;
 		gbc_settingsButton.gridy = 0;
 		
-		btnGame.setFont(new Font("MV Boli", Font.PLAIN, 25));
-		btnGame.setForeground(new Color(135, 206, 250));
+		btnGame.setFont(new Font("Arial", Font.PLAIN, 25));
+		btnGame.setForeground(new Color(70, 130, 180));
 		btnGame.setBackground(new Color(70, 130, 180));
 		btnGame.setFocusPainted(false);
 		btnGame.setContentAreaFilled(false);

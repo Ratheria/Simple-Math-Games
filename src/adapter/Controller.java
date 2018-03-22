@@ -18,6 +18,7 @@ import view.Frame;
 public class Controller
 {
 	public static Random rng;
+	public static String[] studentRecordsHeader = {"Student ID", "First Name", "Last Name", "Date"};
 	public Frame frame;
 	public JPanel errorPanel;
 	private SQLiteData database;
