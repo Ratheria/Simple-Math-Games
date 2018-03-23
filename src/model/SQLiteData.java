@@ -373,11 +373,9 @@ public class SQLiteData
 		{	getConnection();	}
 		try 
 		{
-			//TODO replace true with classID
-			String query = "SELECT studentID, studentFirstName, studentLastName, date from STUDENT_SCORE_RECORDS WHERE ?";
+			String query = "SELECT studentID, studentFirstName, studentLastName, date from STUDENT_SCORE_RECORDS WHERE classID = ?";
 			preparedStatement = con.prepareStatement(query);
-			//preparedStatement.setString(1, classID);
-			preparedStatement.setBoolean(1, true);
+			preparedStatement.setString(1, classID);
 			studentRecords = preparedStatement.executeQuery();
 		}
 		catch (SQLException e) { e.printStackTrace(); }		

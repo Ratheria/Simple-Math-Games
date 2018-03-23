@@ -2,6 +2,7 @@
  *	@author Jadie Adams
  *	@author Ariana Fairbanks
  */
+
 package view;
 
 import java.awt.Color;
