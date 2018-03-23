@@ -306,7 +306,7 @@ public class SQLiteData
         return currentLine;
     }
 
-	private void addUser(int id, String userName, String pass, String firstName, String lastName, String classID, int permissions)
+	public void addUser(int id, String userName, String pass, String firstName, String lastName, String classID, int permissions)
 	{
 		if (con == null)
 		{	getConnection();	}
