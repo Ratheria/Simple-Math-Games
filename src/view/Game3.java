@@ -1,6 +1,5 @@
 /**
- *	@author Jadie Adams
- *	@author Ariana Fairbanks
+ *	@author Walker Flocker
  */
 package view;
 
@@ -27,19 +26,19 @@ import java.util.List;
 import java.awt.Canvas;
 import javax.swing.Timer;
 
-public class Game1 extends JPanel
+public class Game3 extends JPanel
 {
-	private static final long serialVersionUID = -5262708339581599541L;
+	private static final long serialVersionUID = 8585306608329719982L;
 	private Controller base;
-	private List<FishObject> currentFish = new ArrayList<FishObject>();
-	private int maxFishVertical;
+	private SharkObject shark;
+	private int maxSharkVertical;
 	private int frequency;
 	private int answer;
 	private int score;
 	private int gamePeriod;
 	private int sec;
-	private int fishImageWidth;
-	private int fishImageHeight;
+	private int sharkImageWidth;
+	private int sharkImageHeight;
 	private SpringLayout theLayout;
 	private String question;
 	private List<String> questionList;
@@ -50,13 +49,13 @@ public class Game1 extends JPanel
 	private Timer displayTime;
 	private ActionListener gameRestarter;
 	private ActionListener timeDisplayer;
-	private Image fishImg;
-	private ImageIcon fishIcon;
+	private Image sharkImg;
+	private ImageIcon sharkIcon;
 
-	public Game1(Controller base) 
+	public Game3(Controller base) 
 	{
 		this.base = base;
-		maxFishVertical = (base.frame.getHeight() - 250)/80;
+		maxSharkVertical = (base.frame.getHeight() - 250)/80;
 		frequency = base.getFrequency();
 		answer = 0;
 		score = 0;
@@ -69,14 +68,18 @@ public class Game1 extends JPanel
 		scoreLabel = new JLabel("Score: 0");
 
 		//setting up fish icon for answer buttons
-		fishImageWidth= (base.frame.getWidth() - 250)/10;
-		fishImageHeight = (base.frame.getHeight() - 250)/10;
+		sharkImageWidth= (base.frame.getWidth() - 250)/10;
+		sharkImageHeight = (base.frame.getHeight() - 250)/10;
 		try 
-		{	fishImg = ImageIO.read(new File("fish.png"));	} 
+		{	
+			sharkImg = ImageIO.read(new File("shark.png"));
+		} 
 		catch (IOException ex) 
-		{	System.out.println("File fish.png is missing.");	}
-		fishImg = fishImg.getScaledInstance( fishImageWidth, fishImageHeight,  java.awt.Image.SCALE_SMOOTH ) ;  //resizes fish image
-		fishIcon = new ImageIcon(fishImg);
+		{	
+			System.out.println("File \"shark.png\" is missing.");
+		}
+		sharkImg = sharkImg.getScaledInstance( sharkImageWidth, sharkImageHeight,  java.awt.Image.SCALE_SMOOTH ) ;  //resizes fish image
+		sharkIcon = new ImageIcon(sharkImg);
 
 		setUpLayout();
 		setUpTimers();
@@ -153,23 +156,31 @@ public class Game1 extends JPanel
 
 	private void playGame()
 	{
-		//Our 'Game Loop' So Far
+		/** TODO
+		 * Shark appears on left side of screen
+		 * Answers appear on right side of screen
+		 * When user uses arrow keys to move shark, repaint screen with shark in new location
+		 * Use a grid???
+		 * When shark has reached an answer, how do we check for correctness?
+		 * What to do for incorrect answer? Re-spawn shark on the left side of screen
+		 */
 
 		getQuestion();
-		int randomPlacement = Controller.rng.nextInt(maxFishVertical);
-		for(int i = 0; i < maxFishVertical; i++)
+		int randomPlacement = Controller.rng.nextInt(maxSharkVertical);
+		for(int i = 0; i < maxSharkVertical; i++)
 		{
 			int fishAnswer = Controller.rng.nextInt(100);
 			while (fishAnswer == answer)
 			{	fishAnswer = Controller.rng.nextInt(100);	}
 			if(i == randomPlacement)
 			{	fishAnswer = answer;	}
-			currentFish.add(new FishObject(fishAnswer, i, this, fishIcon));
+			currentFish.add(new SharkObject(fishAnswer, i, this, sharkIcon));
 		}
 		addFish();
 		repaint();
 	}
 
+	//TODO will need to get answers here instead of questions
 	private void getQuestion()
 	{
 		int random = Controller.rng.nextInt(10);
@@ -185,6 +196,7 @@ public class Game1 extends JPanel
 		questionLabel.setText(question);
 	}
 
+	//TODO Will need to generate answers here instead of questions
 	private void questionFromList()
 	{
 		//Assumes only a + or - operator
@@ -209,6 +221,7 @@ public class Game1 extends JPanel
 		}
 	}
 
+	//TODO also need questions about place value
 	private void generateQuestion()
 	{
 		int random = Controller.rng.nextInt(2);
@@ -233,31 +246,22 @@ public class Game1 extends JPanel
 		scoreLabel.setText("Score: " + Integer.toString(score));	
 	}
 
-	private void removeFish(FishObject fish)
+	private void clearCurrentShark()
 	{
-		currentFish.remove(fish);
-		this.remove(fish);
-		repaint();
-	}
-
-	private void clearCurrentFish()
-	{
-		for(FishObject fish : currentFish)
-		{
-			this.remove(fish);
-		}
-		currentFish = new ArrayList<FishObject>();
+		this.remove(shark);
+//		shark = new ArrayList<FishObject>();
 	}
 	
-	private void moveFish()
+	private void moveShark()
 	{
-		removeAll();
+//		removeAll();
 		setUpLayout();
 		addFish();
 		revalidate();
 		repaint();
 	}
 	
+	//TODO Need this? Will probably add a shark after after a correct answer
 	private void addFish()
 	{
 		for(FishObject fish : currentFish)
@@ -272,6 +276,7 @@ public class Game1 extends JPanel
 		}
 	}
 
+	//TODO Modify this to make sure the shark cannot move off the screen
 	public void wentOffScreen(FishObject fish)
 	{
 		if(fish.getAnswer() == answer)
@@ -285,9 +290,10 @@ public class Game1 extends JPanel
 		}
 	}
 
-	public void selected(FishObject fish)
+	//TODO will be where checking shark location is on the correct answer
+	public void selected(SharkObject shark)
 	{
-		if(fish.getAnswer() == answer)
+		if(shark.getQuestion() == answer)
 		{
 			System.out.println("Correct answer given.");
 			score += 10;
@@ -298,7 +304,7 @@ public class Game1 extends JPanel
 		else
 		{
 			System.out.println("Incorrect answer.");
-			removeFish(fish);
+			removeShark(shark);
 			score--;
 			//TODO maybe limit the number of times they can answer incorrectly
 		}

@@ -87,7 +87,7 @@ public class ViewRecords extends JPanel
 		studentLookupField.setFont(new Font("MV Boli", Font.PLAIN, 20));
 		studentLookupField.setForeground(new Color(135, 206, 250));
 		studentLookupField.setBackground(new Color(0, 0, 0));
-		studentLookupField.setToolTipText("Username");
+		studentLookupField.setToolTipText("Student ID");
 		studentLookupField.setBorder(new CompoundBorder(new LineBorder(new Color(30, 144, 255)), new EmptyBorder(0, 10, 0, 0)));
 		GridBagConstraints gbc_studentLookupField = new GridBagConstraints();
 		gbc_studentLookupField.gridwidth = 4;
@@ -134,6 +134,21 @@ public class ViewRecords extends JPanel
 			{	base.returnToMenu();	}
 		});
 		
+		studentLookupField.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent onEnter)
+			{
+				int studentID = Integer.parseInt(studentLookupField.getText());
+				ResultSet res = base.lookupStudent(studentID);
+				try 
+				{	studentRecordsSet = new JTable(buildTableModel(res));	}
+				catch (SQLException e) { e.printStackTrace(); }
+				removeAll();
+				setUpLayout();
+				revalidate();
+				repaint();
+			}
+		});
 		viewRecordsButton.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent onClick)
