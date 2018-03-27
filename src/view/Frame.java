@@ -83,6 +83,10 @@ public class Frame extends JFrame
 				panel.removeAll();
 				panel = new ViewRecords(base);
 				break;
+			case game2:
+				panel.removeAll();
+				panel = new Game2(base);
+				break;
 		}	
 
 		setContentPane(panel);

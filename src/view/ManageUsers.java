@@ -266,7 +266,7 @@ public class ManageUsers extends JPanel
 		int idLength = idString.length();
 		if(firstLength > 0 && lastLength > 0 && idLength > 0)
 		{
-		base.addStudent(firstName, lastName, idString);		
+		base.addStudent(firstName, lastName, idString);	
 		}
 		else
 		{

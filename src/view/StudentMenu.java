@@ -26,6 +26,7 @@ public class StudentMenu extends JPanel
 	private JLabel displayName;
 	private JButton settingsButton;
 	private JButton btnGame;
+	private JButton btnGame2;
 	
 	public StudentMenu(Controller base)
 	{
@@ -33,7 +34,8 @@ public class StudentMenu extends JPanel
 		layout = new GridBagLayout();
 		displayName = new JLabel(" ");
 		settingsButton = new JButton("    ");
-		btnGame = new JButton(" Game1 ");
+		btnGame = new JButton(" Game 1 ");
+		btnGame2 = new JButton(" Game 2 ");
 
 		setUpLayout();
 		setUpListeners();
@@ -93,12 +95,24 @@ public class StudentMenu extends JPanel
 		btnGame.setBorder(new LineBorder(new Color(135, 206, 250), 2));
 		GridBagConstraints gbc_btnGame = new GridBagConstraints();
 		gbc_btnGame.insets = new Insets(0, 0, 5, 5);
-		gbc_btnGame.gridx = 2;
+		gbc_btnGame.gridx = 1;
 		gbc_btnGame.gridy = 2;
+		
+		btnGame2.setFont(new Font("Arial", Font.PLAIN, 25));
+		btnGame2.setForeground(new Color(70, 130, 180));
+		btnGame2.setBackground(new Color(70, 130, 180));
+		btnGame2.setFocusPainted(false);
+		btnGame2.setContentAreaFilled(false);
+		btnGame2.setBorder(new LineBorder(new Color(135, 206, 250), 2));
+		GridBagConstraints gbc_btnGame2 = new GridBagConstraints();
+		gbc_btnGame2.insets = new Insets(0, 0, 5, 5);
+		gbc_btnGame2.gridx = 2;
+		gbc_btnGame2.gridy = 2;
 		
 		add(displayName, gbc_displayName);
 		add(settingsButton, gbc_settingsButton);
 		add(btnGame, gbc_btnGame);
+		add(btnGame2, gbc_btnGame2);
 //		add(logOut, gbc_logOut);
 
 	}
@@ -118,6 +132,14 @@ public class StudentMenu extends JPanel
 			public void actionPerformed(ActionEvent onClick) 
 			{
 				base.changeState(ViewStates.game1);
+			}
+		});
+		
+		btnGame2.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent onClick) 
+			{
+				base.changeState(ViewStates.game2);
 			}
 		});
 	}
