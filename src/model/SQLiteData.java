@@ -13,6 +13,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import adapter.Controller;
 
 public class SQLiteData
@@ -26,7 +29,7 @@ public class SQLiteData
 		this.base = base;
 		hasData = false;
 		getConnection();
-		initialise();
+		initial();
 	}
 	
 	public ResultSet query(String SQLCommand)
@@ -189,99 +192,58 @@ public class SQLiteData
 		return result;
 	}
 	
-	public int permission(int id)
+	public ResultSet getUserInfo(int id)
 	{
-		int result = 2;
 		ResultSet res = null;
 		PreparedStatement preparedStatement;
 		if (con == null)
 		{	getConnection();	}
 		try 
 		{
-			String query = "SELECT permission FROM USER WHERE ID = ?";
+			String query = "SELECT firstName, lastName, permission, classID FROM USER WHERE ID = ?";
 			preparedStatement = con.prepareStatement(query);
 			preparedStatement.setInt(1, id);
 			res = preparedStatement.executeQuery();
-			result = res.getInt("permission");
-		}		
-		catch (SQLException e){e.printStackTrace();}
-		return result;
-	}
-	
-	public String firstName(int id)
-	{
-		String result = "";
-		ResultSet res = null;
-		PreparedStatement preparedStatement;
-		if (con == null)
-		{	getConnection();	}
-		try 
-		{
-			String query = "SELECT firstName FROM USER WHERE ID = ?";
-			preparedStatement = con.prepareStatement(query);
-			preparedStatement.setInt(1, id);
-			res = preparedStatement.executeQuery();
-			result = res.getString("firstName");
-		}		
-		catch (SQLException e){e.printStackTrace();}
-		return result;
-	}
-	
-	public String lastName(int id)
-	{
-		String result = "";
-		ResultSet res = null;
-		PreparedStatement preparedStatement;
-		if (con == null)
-		{	getConnection();	}
-		try 
-		{
-			String query = "SELECT lastName FROM USER WHERE ID = ?";
-			preparedStatement = con.prepareStatement(query);
-			preparedStatement.setInt(1, id);
-			res = preparedStatement.executeQuery();
-			result = res.getString("lastName");
-		}		
-		catch (SQLException e){e.printStackTrace();}
-		return result;
-	}
-	
-	public String getClassID(int id)
-	{
-		String result = "";
-		ResultSet res = null;
-		PreparedStatement preparedStatement;
-		if (con == null)
-		{	getConnection();	}
-		try 
-		{
-			String query = "SELECT classID FROM USER WHERE ID = ?";
-			preparedStatement = con.prepareStatement(query);
-			preparedStatement.setInt(1, id);
-			res = preparedStatement.executeQuery();
-			result = res.getString("classID");
-		}		
-		catch (SQLException e){e.printStackTrace();}
-		return result;
-	}
-	
-	public ResultSet getCustomEquation(String classID)
-	{
-		ResultSet res = null;
-		PreparedStatement preparedStatement;
-		if (con == null)
-		{	getConnection();	}
-		try 
-		{
-			//TODO make this relevent
-			String query = "SELECT questionList FROM CUSTOM_EQUATION WHERE classID = ?";
-			preparedStatement = con.prepareStatement(query);
-			preparedStatement.setString(1, classID);
-			res = preparedStatement.executeQuery();
-//			result = res.getString("classID");
 		}		
 		catch (SQLException e){e.printStackTrace();}
 		return res;
+	}
+	
+	public ResultSet getCustomEquationInfo(String classID)
+	{
+		ResultSet res = null;
+		PreparedStatement preparedStatement;
+		if (con == null)
+		{	getConnection();	}
+		try 
+		{
+			String query = "SELECT * FROM CUSTOM_EQUATIONS WHERE classID = ?";
+			preparedStatement = con.prepareStatement(query);
+			preparedStatement.setString(1, classID);
+			res = preparedStatement.executeQuery();
+		}		
+		catch (SQLException e){e.printStackTrace();}
+		return res;
+	}
+	
+	public void updateCustomEquations(String classID, String equationString, int frequency, int numberOfEquations)
+	{
+		try
+		{
+			if (con == null)
+			{	getConnection();	}
+			String query = "UPDATE CUSTOM_EQUATIONS SET questionList = ?, frequency = ?, numberOfEquations = ? WHERE classID = ?";
+			PreparedStatement preparedStatement = con.prepareStatement(query);
+			preparedStatement.setString(1, equationString);
+			preparedStatement.setInt(2, frequency);
+			preparedStatement.setInt(3, numberOfEquations);
+			preparedStatement.setString(4, classID);
+			preparedStatement.executeUpdate();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace(); 
+		}
 	}
 	
 	public int importUsers(File csvFile)
@@ -344,7 +306,7 @@ public class SQLiteData
         return currentLine;
     }
 
-	private void addUser(int id, String userName, String pass, String firstName, String lastName, String classID, int permissions)
+	public void addUser(int id, String userName, String pass, String firstName, String lastName, String classID, int permissions)
 	{
 		if (con == null)
 		{	getConnection();	}
@@ -365,7 +327,6 @@ public class SQLiteData
 		} 
 		catch (SQLException e) {e.printStackTrace();}
 	}
-	
 
 	private void addCustomEquations(String classID, String questionList, int numberOfEquations, int frequency)
 	{
@@ -374,7 +335,7 @@ public class SQLiteData
 		try 
 		{
 			PreparedStatement preparedStatement;
-			preparedStatement = con.prepareStatement("INSERT INTO CUSTOM_EQUATION VALUES( ?, ?, ?, ?);");		
+			preparedStatement = con.prepareStatement("INSERT INTO CUSTOM_EQUATIONS VALUES( ?, ?, ?, ?);");		
 			preparedStatement.setString(1, classID);
 			preparedStatement.setString(2, questionList);
 			preparedStatement.setInt(3, numberOfEquations);
@@ -384,36 +345,40 @@ public class SQLiteData
 		catch (SQLException e) {e.printStackTrace();}
 	}
 	
-	// maybe make this public? not sure yet
-	private void addStudentScoreRecord(int studentID, int recordID)
+	public void addStudentScoreRecord(int studentID, String firstName, String lastName, String classID, String date)
 	{
+		//studentID firstName lastName classID recordID
 		if (con == null)
 		{	getConnection();	}
 		try 
 		{
 			PreparedStatement preparedStatement;
-			preparedStatement = con.prepareStatement("INSERT INTO STUDENT_SCORE_RECORDS VALUES(?, ?);");
+			preparedStatement = con.prepareStatement("INSERT INTO STUDENT_SCORE_RECORDS VALUES(?, ?, ?, ?, ?, ?);");
 			preparedStatement.setInt(1, studentID);
-			preparedStatement.setInt(2, recordID);
-			preparedStatement.execute();
+			preparedStatement.setString(2, firstName);
+			preparedStatement.setString(3, lastName);
+			preparedStatement.setString(4, classID);
+			preparedStatement.setString(5, date);
+			preparedStatement.executeUpdate();
 		}
 		catch (SQLException e) {e.printStackTrace();}
 	}
 	
 	// Method to retrieve the records for a student. Called from TeacherMenu/ViewRecords
-	public ResultSet selectStudentRecord(int studentID)
+	public ResultSet selectStudentRecord(String classID)
 	{
 		ResultSet studentRecords = null;
 		PreparedStatement preparedStatement;
 		if (con == null)
-		{	getConnection();	}
+		{	
+			getConnection();	
+		}
 		try 
 		{
-			String query = "SELECT * from STUDENT_SCORE_RECORDS WHERE studentID=?";
+			String query = "SELECT studentID, studentFirstName, studentLastName, date from STUDENT_SCORE_RECORDS WHERE classID = ?";
 			preparedStatement = con.prepareStatement(query);
-			preparedStatement.setInt(1, studentID);
+			preparedStatement.setString(1, classID);
 			studentRecords = preparedStatement.executeQuery();
-			return studentRecords;	
 		}
 		catch (SQLException e) { e.printStackTrace(); }		
 		return studentRecords;
@@ -442,21 +407,18 @@ public class SQLiteData
 		try
 		{
 			Class.forName("org.sqlite.JDBC");
-			//database path
-			//if there is no database there a new one will be created
 			String databaseFilePath = "jdbc:sqlite:C:/ProgramData/MPDKWID";
 			con = DriverManager.getConnection(databaseFilePath);
 		}
 		catch (SQLException | ClassNotFoundException e)
 		{
-			//TODO maybe make this work for Mac as well???
+			//TODO Mac?
 			try			
 			{
 				Class.forName("org.sqlite.JDBC");
 				File homedir = new File(System.getProperty("user.home"));
 				String databaseFilePath = "jdbc:sqlite:" + homedir + "/MPDKWID";
 				con = DriverManager.getConnection(databaseFilePath);
-				// https://docs.oracle.com/javase/8/docs/api/java/nio/file/Files.html#setPosixFilePermissions-java.nio.file.Path-java.util.Set-
 			}
 			catch (SQLException | ClassNotFoundException e2)
 			{
@@ -464,10 +426,10 @@ public class SQLiteData
 				System.out.println("linux fix didn't work");
 			}
 		}
-		initialise();
+		initial();
 	}
 
-	private void initialise() 
+	private void initial() 
 	{
 		if (!hasData)
 		{
@@ -485,9 +447,9 @@ public class SQLiteData
 				{
 					System.out.println("Building the User table.");
 					state = con.createStatement();
-					state.executeUpdate("CREATE TABLE USER(ID INTEGER," + "userName VARCHAR(15)," + "pass VARCHAR(15),"
-							+ "firstName VARCHAR(30)," + "lastName VARCHAR(30)," + "classID VARCHAR(5),"
-							+ "permission INTEGER," + "failedAttempts INTEGER," + "isLocked BOOLEAN,"
+					state.executeUpdate("CREATE TABLE USER("
+							+ "ID INTEGER," + "userName VARCHAR(15)," + "pass VARCHAR(15)," + "firstName VARCHAR(30)," + "lastName VARCHAR(30)," 
+							+ "classID VARCHAR(5)," + "permission INTEGER," + "failedAttempts INTEGER," + "isLocked BOOLEAN,"
 							+ "PRIMARY KEY (ID));");
 					
 					addUser(000000, "root", "root", "Root", "User", "00", 0);
@@ -495,25 +457,26 @@ public class SQLiteData
 					addUser(222222, "defs", "defs", "Default", "Student", "1A", 3);
 				}
 				
-				state.execute("DROP TABLE IF EXISTS CUSTOMEQUATION;");			
-				state.execute("DROP TABLE IF EXISTS CUSTOM_EQUATION;");
+				//Drop table			
+				// state.execute("DROP TABLE IF EXISTS CUSTOM_EQUATIONS;");
 				
 				ResultSet customEq = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' " +
-						"AND name='CUSTOM_EQUATION'");
+						"AND name='CUSTOM_EQUATIONS'");
 				if (!customEq.next())
 				{
 					System.out.println("Building the custom equations table.");
 					state = con.createStatement();
-					state.executeUpdate("CREATE TABLE CUSTOM_EQUATION(classID VARCHAR(5),"
-							+ "questionList VARCHAR(600)," + "numberOfEquations INTEGER," + "frequency INTEGER," 
+					state.executeUpdate("CREATE TABLE CUSTOM_EQUATIONS("
+							+ "classID VARCHAR(5)," + "questionList VARCHAR(600)," + "numberOfEquations INTEGER," + "frequency INTEGER," 
 							+ "FOREIGN KEY (classID) REFERENCES USER(classID),"
 							+ "PRIMARY KEY (classID));");
 					
 					addCustomEquations("1A", "5+10:7-2", 2, 5);
 				}
+				
 				// drop table if exists
 				//TODO Once we are done testing we want to get rid of this logic so it doesn't reset every time you open the application.
-				state.execute("DROP TABLE IF EXISTS STUDENT_SCORE_RECORDS;");
+				// state.execute("DROP TABLE IF EXISTS STUDENT_SCORE_RECORDS;");
 				ResultSet studentScoreRecords = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' " +
 						"AND name='STUDENT_SCORE_RECORDS'");
 				
@@ -521,15 +484,21 @@ public class SQLiteData
 				{
 					System.out.println("Building Student Score Records table.");
 					state = con.createStatement();
-					state.executeUpdate("CREATE TABLE STUDENT_SCORE_RECORDS(studentID INTEGER," + "recordID INTEGER," + 
-							"PRIMARY KEY (studentID, recordID)," + "FOREIGN KEY (studentID) REFERENCES USER(ID));");
+					state.executeUpdate("CREATE TABLE STUDENT_SCORE_RECORDS("
+							+ "studentID INTEGER," + "studentFirstName VARCHAR(30)," + "studentLastName VARCHAR(30)," + "classID VARCHAR(5)," + "date VARCHAR(19)," + "recordID INTEGER,"
+							+ "PRIMARY KEY (recordID)," 
+							+ "FOREIGN KEY (studentFirstName) REFERENCES USER(firstName)," 
+							+ "FOREIGN KEY (studentLastName) REFERENCES USER(lastName)," 
+							+ "FOREIGN KEY (classID) REFERENCES USER(classID)," 
+							+ "FOREIGN KEY (studentID) REFERENCES USER(ID));");
 					
-					addStudentScoreRecord(222222, 000000);
-					addStudentScoreRecord(222222, 000001);
-					addStudentScoreRecord(222222, 000002);
+					DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+					LocalDateTime now = LocalDateTime.now(); 
+					addStudentScoreRecord(222222, "Default", "Student", "1A", dtf.format(now));
+
 				}
 			}
-			catch (SQLException e){e.printStackTrace();}
+			catch (SQLException e){ e.printStackTrace(); }
 		}
 	}
 

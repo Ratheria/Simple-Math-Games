@@ -1,6 +1,5 @@
 /**
- *	@author Ariana Fairbanks
-*	@author Jadie Adams
+ *	@author Walker Flocker
  */
 
 package view;
@@ -17,33 +16,33 @@ import javax.swing.SwingConstants;
 
 import adapter.Controller;
 
-public class FishObject extends JButton implements ActionListener
+public class SharkObject extends JButton implements ActionListener
 {
-	private static final long serialVersionUID = -5425295018457401763L;
-	private Game1 panel;
+	private static final long serialVersionUID = 3336796505727171017L;
+	private Game3 panel;
 	private boolean onScreen;
-	private int answer;
+	private String question;
+	private String answer;
 	private int xValue;
 	private int yValue;
 	private int maxX;
 	
-    public FishObject(int answer, int numberFromTop, Game1 panel, ImageIcon icon)
+    public SharkObject(String question, String answer, Game3 panel, int numberFromTop, ImageIcon icon)
     {
-    	super((answer + ""), icon);
     	this.setBorderPainted(false);
     	this.setOpaque(false);
     	this.setContentAreaFilled(false);
-    	this.setForeground(Color.BLACK);
-    	this.setFont(new Font("Arial", Font.BOLD, 40));
+    	this.setForeground(java.awt.Color.WHITE);
+    	this.setFont(new Font("MV Boli", Font.BOLD, 40));
     	this.setVerticalTextPosition(SwingConstants.CENTER);
     	this.setHorizontalTextPosition(SwingConstants.CENTER);
     	
         this.panel = panel;
         onScreen = true;
+        this.question = question;
         this.answer = answer;
         xValue = 50; 
-        		//- (Controller.rng.nextInt(6) * 10);
-        yValue = 100 + (numberFromTop * 70);
+        yValue = 100 + (numberFromTop * 90);
         maxX = Frame.DIMENSIONS.width - 200;
 
         panel.add(this);
@@ -60,24 +59,35 @@ public class FishObject extends JButton implements ActionListener
     public void updateLocation()
     {
     	xValue += 35;
-    	if(xValue >= maxX)
-    	{	panel.wentOffScreen(this);	}
+    	if(xValue >= maxX)	
+    		panel.wentOffScreen(this);	
     }
     
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
 		if (e.getSource().equals(this)) 
-		{	panel.selected(this);	}
+			panel.selected(this);
 	}
 
-	public int getAnswer()
-	{	return answer;	}
+	public String getEquation()
+	{	
+		return question;	
+	}
+	
+	public String getAnswer()
+	{
+		return answer;
+	}
 	
 	public int getXValue()
-	{	return xValue;	}
+	{	
+		return xValue;	
+	}
 	
 	public int getYValue()
-	{	return yValue;	}
+	{	
+		return yValue;
+	}
 
 }

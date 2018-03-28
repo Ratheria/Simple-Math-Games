@@ -4,6 +4,8 @@
 package view;
 
 import java.awt.Dimension;
+import java.awt.Toolkit;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTable;
@@ -13,6 +15,7 @@ import adapter.ViewStates;
 
 public class Frame extends JFrame
 {
+	public static Dimension DIMENSIONS;
 	private static final long serialVersionUID = -2248105492340561524L;
 	private Controller base;
 	private JPanel panel;
@@ -25,15 +28,18 @@ public class Frame extends JFrame
 		this.base = base;
 		login = new Login(base);
 		panel = login;
-		minSize = new Dimension(700, 500);
+		minSize = new Dimension(950, 600);
 		setName("My Parents Don't Know What I Do");
 		setTitle("My Parents Don't Know What I Do");
-		setSize(900, 650);
+		//setExtendedState(JFrame.MAXIMIZED_BOTH); 
+		//setUndecorated(true);
+		setSize(minSize);
 		setMinimumSize(minSize);
 		setVisible(true);
-		setResizable(true);
+		//setResizable(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setContentPane(panel);
+		DIMENSIONS = getSize();
 	}
 	
 	public void updateState()
@@ -73,11 +79,16 @@ public class Frame extends JFrame
 				panel.removeAll();
 				panel = new Game1(base);
 				break;
+			case game3:
+				panel.removeAll();
+				panel = new Game3(base);
 			case viewRecords:
 				panel.removeAll();
 				panel = new ViewRecords(base);
 				break;
-			case recordsTable:
+			case game2:
+				panel.removeAll();
+				panel = new Game2(base);
 				break;
 		}	
 
@@ -86,10 +97,4 @@ public class Frame extends JFrame
 		panel.repaint();
 	}
 	
-	public void recordsTableState(int studentID)
-	{
-		panel.removeAll();
-		panel = new RecordsTable(base, studentID);
-		setContentPane(panel);
-	}
 }

@@ -62,11 +62,11 @@ public class Settings extends JPanel
 		setLayout(layout);
 		setBorder(new LineBorder(new Color(70, 130, 180), 10));
 		setForeground(new Color(135, 206, 235));
-		setBackground(new Color(0, 0, 0));
+		setBackground(new Color(245, 245, 245));
 		
 		headLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		headLabel.setFont(new Font("MV Boli", Font.PLAIN, 80));
-		headLabel.setForeground(new Color(135, 206, 250));
+		headLabel.setFont(new Font("Arial", Font.PLAIN, 80));
+		headLabel.setForeground(new Color(70, 130, 180));
 		GridBagConstraints gbc_headLabel = new GridBagConstraints();
 		gbc_headLabel.anchor = GridBagConstraints.NORTH;
 		gbc_headLabel.gridwidth = 3;
@@ -74,12 +74,12 @@ public class Settings extends JPanel
 		gbc_headLabel.gridx = 0;
 		gbc_headLabel.gridy = 1;
 
-		changePassButton.setFont(new Font("MV Boli", Font.PLAIN, 30));
-		changePassButton.setForeground(new Color(135, 206, 250));
+		changePassButton.setFont(new Font("Arial", Font.PLAIN, 30));
+		changePassButton.setForeground(new Color(70, 130, 180));
 		changePassButton.setBackground(new Color(0, 0, 0));
 		changePassButton.setFocusPainted(false);
 		changePassButton.setContentAreaFilled(false);
-		changePassButton.setBorder(new CompoundBorder(new LineBorder(new Color(30, 144, 255)), new EmptyBorder(5, 10, 0, 10)));
+		changePassButton.setBorder(new CompoundBorder(new LineBorder(new Color(0, 0, 128)), new EmptyBorder(5, 10, 0, 10)));
 		GridBagConstraints gbc_changePassButton = new GridBagConstraints();
 		gbc_changePassButton.anchor = GridBagConstraints.NORTH;
 		gbc_changePassButton.insets = new Insets(20, 5, 5, 5);
@@ -87,9 +87,9 @@ public class Settings extends JPanel
 		gbc_changePassButton.gridx = 0;
 		gbc_changePassButton.gridy = 2;
 		
-		logoutButton.setFont(new Font("MV Boli", Font.PLAIN, 30));
-		logoutButton.setForeground(new Color(135, 206, 250));
-		logoutButton.setBackground(new Color(0, 0, 0));
+		logoutButton.setFont(new Font("Arial", Font.PLAIN, 30));
+		logoutButton.setForeground(new Color(70, 130, 180));
+		logoutButton.setBackground(new Color(240, 240, 245));
 		logoutButton.setBorder(new LineBorder(new Color(70, 130, 180), 2, true));
 		GridBagConstraints gbc_logoutButton = new GridBagConstraints();
 		gbc_logoutButton.anchor = GridBagConstraints.NORTH;
@@ -98,12 +98,12 @@ public class Settings extends JPanel
 		gbc_logoutButton.gridx = 0;
 		gbc_logoutButton.gridy = 3;
 		
-		backButton.setFont(new Font("MV Boli", Font.PLAIN, 30));
-		backButton.setForeground(new Color(135, 206, 250));
+		backButton.setFont(new Font("Arial", Font.PLAIN, 30));
+		backButton.setForeground(new Color(70, 130, 180));
 		backButton.setBackground(new Color(0, 0, 0));
 		backButton.setFocusPainted(false);
 		backButton.setContentAreaFilled(false);
-		backButton.setBorder(new CompoundBorder(new LineBorder(new Color(30, 144, 255)), new EmptyBorder(5, 10, 0, 10)));
+		backButton.setBorder(new CompoundBorder(new LineBorder(new Color(0, 0, 128)), new EmptyBorder(5, 10, 0, 10)));
 		GridBagConstraints gbc_backButton = new GridBagConstraints();
 		gbc_backButton.insets = new Insets(20, 20, 5, 5);
 		gbc_backButton.anchor = GridBagConstraints.NORTHWEST;
