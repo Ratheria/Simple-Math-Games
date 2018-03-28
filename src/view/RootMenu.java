@@ -65,11 +65,11 @@ public class RootMenu extends JPanel
 		setLayout(layout);
 		setBorder(new LineBorder(new Color(128, 128, 128), 10));
 		setForeground(new Color(105, 105, 105));
-		setBackground(new Color(0, 0, 0));
+		setBackground(new Color(245, 245, 245));
 		
 		displayName.setVerticalAlignment(SwingConstants.TOP);
-		displayName.setForeground(new Color(220, 220, 220));
-		displayName.setFont(new Font("MV Boli", Font.PLAIN, 35));
+		displayName.setForeground(new Color(105, 105, 105));
+		displayName.setFont(new Font("Arial", Font.PLAIN, 35));
 		displayName.setText(base.getFullName());
 		GridBagConstraints gbc_displayName = new GridBagConstraints();
 		gbc_displayName.anchor = GridBagConstraints.NORTHWEST;
@@ -79,7 +79,7 @@ public class RootMenu extends JPanel
 		gbc_displayName.gridy = 0;
 		
 /*		
-  		logOut.setFont(new Font("MV Boli", Font.PLAIN, 30));
+  		logOut.setFont(new Font("Arial", Font.PLAIN, 30));
 		logOut.setForeground(new Color(220, 220, 220));
 		logOut.setBackground(new Color(0, 0, 0));
 		logOut.setFocusPainted(false);
@@ -92,20 +92,20 @@ public class RootMenu extends JPanel
 		gbc_logOut.gridy = 5;
 */
 		
-		settingsButton.setFont(new Font("MV Boli", Font.PLAIN, 25));
+		settingsButton.setFont(new Font("Arial", Font.PLAIN, 25));
 		settingsButton.setForeground(new Color(192, 192, 192));
 		settingsButton.setBackground(new Color(105, 105, 105));
 		settingsButton.setFocusPainted(false);
 		settingsButton.setContentAreaFilled(false);
-		settingsButton.setBorder(new LineBorder(new Color(192, 192, 192), 2));
+		settingsButton.setBorder(new LineBorder(new Color(105, 105, 105), 2));
 		GridBagConstraints gbc_settingsButton = new GridBagConstraints();
 		gbc_settingsButton.anchor = GridBagConstraints.NORTHWEST;
 		gbc_settingsButton.insets = new Insets(20, 20, 5, 5);
 		gbc_settingsButton.gridx = 0;
 		gbc_settingsButton.gridy = 0;
 		
-		unlockAccountLabel.setForeground(new Color(192, 192, 192));
-		unlockAccountLabel.setFont(new Font("MV Boli", Font.PLAIN, 25));
+		unlockAccountLabel.setForeground(new Color(105, 105, 105));
+		unlockAccountLabel.setFont(new Font("Arial", Font.PLAIN, 25));
 		GridBagConstraints gbc_unlockAccountLabel = new GridBagConstraints();
 		gbc_unlockAccountLabel.anchor = GridBagConstraints.WEST;
 		gbc_unlockAccountLabel.gridwidth = 2;
@@ -113,8 +113,8 @@ public class RootMenu extends JPanel
 		gbc_unlockAccountLabel.gridx = 1;
 		gbc_unlockAccountLabel.gridy = 2;
 		
-		unlockAccountTextField.setFont(new Font("MV Boli", Font.PLAIN, 15));
-		unlockAccountTextField.setBackground(new Color(192, 192, 192));
+		unlockAccountTextField.setFont(new Font("Arial", Font.PLAIN, 15));
+		unlockAccountTextField.setBackground(new Color(220, 220, 220));
 		unlockAccountTextField.setForeground(new Color(0, 0, 0));
 		unlockAccountTextField.setToolTipText("Username");
 		unlockAccountTextField.setBorder(new CompoundBorder(new LineBorder(new Color(105, 105, 105)), new EmptyBorder(0, 10, 0, 0)));
@@ -125,8 +125,8 @@ public class RootMenu extends JPanel
 		gbc_unlockAccountTextField.gridx = 2;
 		gbc_unlockAccountTextField.gridy = 3;
 		
-		unlockAccountButton.setFont(new Font("MV Boli", Font.PLAIN, 15));
-		unlockAccountButton.setForeground(new Color(211, 211, 211));
+		unlockAccountButton.setFont(new Font("Arial", Font.PLAIN, 15));
+		unlockAccountButton.setForeground(new Color(105, 105, 105));
 		unlockAccountButton.setBackground(new Color(0, 0, 0));
 		unlockAccountButton.setFocusPainted(false);
 		unlockAccountButton.setContentAreaFilled(false);
@@ -137,8 +137,8 @@ public class RootMenu extends JPanel
 		gbc_unlockAccountButton.gridx = 4;
 		gbc_unlockAccountButton.gridy = 3;
 
-		resetPasswordLabel.setForeground(new Color(192, 192, 192));
-		resetPasswordLabel.setFont(new Font("MV Boli", Font.PLAIN, 25));
+		resetPasswordLabel.setForeground(new Color(105, 105, 105));
+		resetPasswordLabel.setFont(new Font("Arial", Font.PLAIN, 25));
 		GridBagConstraints gbc_resetPasswordLabel = new GridBagConstraints();
 		gbc_resetPasswordLabel.anchor = GridBagConstraints.WEST;
 		gbc_resetPasswordLabel.gridwidth = 2;
@@ -146,8 +146,8 @@ public class RootMenu extends JPanel
 		gbc_resetPasswordLabel.gridx = 1;
 		gbc_resetPasswordLabel.gridy = 4;
 		
-		resetPasswordTextField.setFont(new Font("MV Boli", Font.PLAIN, 15));
-		resetPasswordTextField.setBackground(new Color(192, 192, 192));
+		resetPasswordTextField.setFont(new Font("Arial", Font.PLAIN, 15));
+		resetPasswordTextField.setBackground(new Color(220, 220, 220));
 		resetPasswordTextField.setForeground(new Color(0, 0, 0));
 		resetPasswordTextField.setToolTipText("Username");
 		resetPasswordTextField.setBorder(new CompoundBorder(new LineBorder(new Color(105, 105, 105)), new EmptyBorder(0, 10, 0, 0)));
@@ -158,8 +158,8 @@ public class RootMenu extends JPanel
 		gbc_resetPasswordTextField.gridx = 2;
 		gbc_resetPasswordTextField.gridy = 5;
 		
-		resetPasswordButton.setFont(new Font("MV Boli", Font.PLAIN, 15));
-		resetPasswordButton.setForeground(new Color(211, 211, 211));
+		resetPasswordButton.setFont(new Font("Arial", Font.PLAIN, 15));
+		resetPasswordButton.setForeground(new Color(105, 105, 105));
 		resetPasswordButton.setBackground(new Color(0, 0, 0));
 		resetPasswordButton.setFocusPainted(false);
 		resetPasswordButton.setContentAreaFilled(false);
@@ -170,9 +170,9 @@ public class RootMenu extends JPanel
 		gbc_resetPasswordButton.gridx = 4;
 		gbc_resetPasswordButton.gridy = 5;
 		
-  		manageUsersButton.setFont(new Font("MV Boli", Font.PLAIN, 30));
-  		manageUsersButton.setForeground(new Color(220, 220, 220));
-  		manageUsersButton.setBackground(new Color(0, 0, 0));
+  		manageUsersButton.setFont(new Font("Arial", Font.PLAIN, 30));
+  		manageUsersButton.setForeground(new Color(105, 105, 105));
+  		manageUsersButton.setBackground(new Color(105, 105, 105));
   		manageUsersButton.setFocusPainted(false);
 		manageUsersButton.setContentAreaFilled(false);
   		manageUsersButton.setBorder(new LineBorder(new Color(105, 105, 105), 2, true));
@@ -201,9 +201,7 @@ public class RootMenu extends JPanel
 		settingsButton.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent onClick) 
-			{
-				base.changeState(ViewStates.settings);
-			}
+			{	base.changeState(ViewStates.settings);	}
 		});
 		
 		unlockAccountButton.addActionListener(new ActionListener() 
@@ -215,9 +213,7 @@ public class RootMenu extends JPanel
 				if(length > 1)
 				{
 					if(length > 15)
-					{
-						userName = userName.substring(0, 15);
-					}
+					{	userName = userName.substring(0, 15);	}
 					base.unlockAccount(userName);
 				}
 				unlockAccountTextField.setText("");
@@ -233,9 +229,7 @@ public class RootMenu extends JPanel
 				if(length > 1)
 				{
 					if(length > 15)
-					{
-						userName = userName.substring(0, 15);
-					}
+					{	userName = userName.substring(0, 15);	}
 					base.resetPassword(userName);
 				}
 				resetPasswordTextField.setText("");
@@ -245,9 +239,7 @@ public class RootMenu extends JPanel
 		manageUsersButton.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent onClick) 
-			{
-				base.changeState(ViewStates.manageUsers);
-			}
+			{	base.changeState(ViewStates.manageUsers);	}
 		});
 	}
 }

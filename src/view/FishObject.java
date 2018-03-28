@@ -33,8 +33,8 @@ public class FishObject extends JButton implements ActionListener
     	this.setBorderPainted(false);
     	this.setOpaque(false);
     	this.setContentAreaFilled(false);
-    	this.setForeground(java.awt.Color.WHITE);
-    	this.setFont(new Font("MV Boli", Font.BOLD, 40));
+    	this.setForeground(Color.BLACK);
+    	this.setFont(new Font("Arial", Font.BOLD, 40));
     	this.setVerticalTextPosition(SwingConstants.CENTER);
     	this.setHorizontalTextPosition(SwingConstants.CENTER);
     	
@@ -43,7 +43,7 @@ public class FishObject extends JButton implements ActionListener
         this.answer = answer;
         xValue = 50; 
         		//- (Controller.rng.nextInt(6) * 10);
-        yValue = 100 + (numberFromTop * 90);
+        yValue = 100 + (numberFromTop * 70);
         maxX = Frame.DIMENSIONS.width - 200;
 
         panel.add(this);

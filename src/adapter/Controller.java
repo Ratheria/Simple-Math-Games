@@ -18,6 +18,7 @@ import view.Frame;
 public class Controller
 {
 	public static Random rng;
+	public static String[] studentRecordsHeader = {"Student ID", "First Name", "Last Name", "Date"};
 	public Frame frame;
 	public JPanel errorPanel;
 	private SQLiteData database;
@@ -260,10 +261,10 @@ public class Controller
 		System.out.println(numberOfEquations);
 	}
 	
-	public ResultSet lookupStudent(int studentID) 
+	public ResultSet lookupStudent() 
 	{
 		ResultSet result = null;
-		result = database.selectStudentRecord(studentID);
+		result = database.selectStudentRecord(classID);
 		return result;
 	}
 	

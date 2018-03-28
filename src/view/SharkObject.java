@@ -22,11 +22,12 @@ public class SharkObject extends JButton implements ActionListener
 	private Game3 panel;
 	private boolean onScreen;
 	private String question;
+	private String answer;
 	private int xValue;
 	private int yValue;
 	private int maxX;
 	
-    public SharkObject(String question, int numberFromTop, Game3 panel, ImageIcon icon)
+    public SharkObject(String question, String answer, Game3 panel, int numberFromTop, ImageIcon icon)
     {
     	this.setBorderPainted(false);
     	this.setOpaque(false);
@@ -39,6 +40,7 @@ public class SharkObject extends JButton implements ActionListener
         this.panel = panel;
         onScreen = true;
         this.question = question;
+        this.answer = answer;
         xValue = 50; 
         yValue = 100 + (numberFromTop * 90);
         maxX = Frame.DIMENSIONS.width - 200;
@@ -57,24 +59,35 @@ public class SharkObject extends JButton implements ActionListener
     public void updateLocation()
     {
     	xValue += 35;
-    	if(xValue >= maxX)
-    	{	panel.wentOffScreen(this);	}
+    	if(xValue >= maxX)	
+    		panel.wentOffScreen(this);	
     }
     
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
 		if (e.getSource().equals(this)) 
-		{	panel.selected(this);	}
+			panel.selected(this);
 	}
 
 	public String getEquation()
-	{	return question;	}
+	{	
+		return question;	
+	}
+	
+	public String getAnswer()
+	{
+		return answer;
+	}
 	
 	public int getXValue()
-	{	return xValue;	}
+	{	
+		return xValue;	
+	}
 	
 	public int getYValue()
-	{	return yValue;	}
+	{	
+		return yValue;
+	}
 
 }

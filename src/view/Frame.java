@@ -28,14 +28,15 @@ public class Frame extends JFrame
 		this.base = base;
 		login = new Login(base);
 		panel = login;
-		//minSize = new Dimension(700, 500);
+		minSize = new Dimension(950, 600);
 		setName("My Parents Don't Know What I Do");
 		setTitle("My Parents Don't Know What I Do");
-		setExtendedState(JFrame.MAXIMIZED_BOTH); 
+		//setExtendedState(JFrame.MAXIMIZED_BOTH); 
 		//setUndecorated(true);
-		//setMinimumSize(minSize);
+		setSize(minSize);
+		setMinimumSize(minSize);
 		setVisible(true);
-		setResizable(false);
+		//setResizable(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setContentPane(panel);
 		DIMENSIONS = getSize();
@@ -78,6 +79,9 @@ public class Frame extends JFrame
 				panel.removeAll();
 				panel = new Game1(base);
 				break;
+			case game3:
+				panel.removeAll();
+				panel = new Game3(base);
 			case viewRecords:
 				panel.removeAll();
 				panel = new ViewRecords(base);

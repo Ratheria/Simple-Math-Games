@@ -33,14 +33,15 @@ public class Game3 extends JPanel
 	private SharkObject shark;
 	private int maxSharkVertical;
 	private int frequency;
-	private int answer;
 	private int score;
+	private String answer;
 	private int gamePeriod;
 	private int sec;
 	private int sharkImageWidth;
 	private int sharkImageHeight;
 	private SpringLayout theLayout;
 	private String question;
+	private int[] answerList;
 	private List<String> questionList;
 	private JLabel timerLabel;
 	private JLabel questionLabel;
@@ -57,17 +58,18 @@ public class Game3 extends JPanel
 		this.base = base;
 		maxSharkVertical = (base.frame.getHeight() - 250)/80;
 		frequency = base.getFrequency();
-		answer = 0;
-		score = 0;
+		answer = "0";
 		gamePeriod = 40; //seconds
 		theLayout = new SpringLayout();
 		question = "Question";
 		questionList = base.getEquations();
+		answerList = new int [2];
 		timerLabel = new JLabel("Time: "+(gamePeriod/60)+":"+ (gamePeriod%60));
 		questionLabel = new JLabel(question);
 		scoreLabel = new JLabel("Score: 0");
 
 		//setting up fish icon for answer buttons
+		// need to generate answer buttons on the right side of the screen
 		sharkImageWidth= (base.frame.getWidth() - 250)/10;
 		sharkImageHeight = (base.frame.getHeight() - 250)/10;
 		try 
@@ -132,7 +134,6 @@ public class Game3 extends JPanel
 					timerLabel.setText("Time: "+(sec/60)+ ":" + (sec%60));
 				}
 				sec--;
-				moveFish();
 			}
 		};
 		displayTime = new Timer(1000, timeDisplayer); //time parameter milliseconds
@@ -166,37 +167,33 @@ public class Game3 extends JPanel
 		 */
 
 		getQuestion();
-		int randomPlacement = Controller.rng.nextInt(maxSharkVertical);
-		for(int i = 0; i < maxSharkVertical; i++)
-		{
-			int fishAnswer = Controller.rng.nextInt(100);
-			while (fishAnswer == answer)
-			{	fishAnswer = Controller.rng.nextInt(100);	}
-			if(i == randomPlacement)
-			{	fishAnswer = answer;	}
-			currentFish.add(new SharkObject(fishAnswer, i, this, sharkIcon));
-		}
-		addFish();
+		generateRandomAnswers();
+		System.out.println("Here");
+		// shark.add(new SharkObject(question, answer, this, 0, sharkIcon));
+		shark = new SharkObject(question, answer, this, 0, sharkIcon);
+		addShark();
 		repaint();
 	}
 
-	//TODO will need to get answers here instead of questions
-	private void getQuestion()
-	{
+	// TODO will need to get answers here instead of questions
+	private void getQuestion() {
 		int random = Controller.rng.nextInt(10);
-		if(frequency > 0 && random <= frequency && questionList != null)
-		{	questionFromList();	}
-		else
-		{	generateQuestion();	}
-		while(answer < 0)
+		if (frequency > 0 && random <= frequency) 
 		{
-			//generates a new question if the answer is negative
+			questionFromList();
+		} 
+		else 
+		{
+			generateQuestion();
+		}
+		while (Integer.parseInt(answer) < 0) 
+		{
+			// generates a new question if the answer is negative
 			generateQuestion();
 		}
 		questionLabel.setText(question);
 	}
-
-	//TODO Will need to generate answers here instead of questions
+		
 	private void questionFromList()
 	{
 		//Assumes only a + or - operator
@@ -208,7 +205,7 @@ public class Game3 extends JPanel
 			int operator = question.indexOf("+");
 			int firstInteger = Integer.parseInt(question.substring(0, operator));
 			int secondInteger = Integer.parseInt(question.substring(operator + 1));
-			answer = firstInteger + secondInteger;
+			answer = Integer.toString(firstInteger + secondInteger);
 			question = firstInteger + " + " + secondInteger + " = ? ";
 		}
 		else
@@ -216,27 +213,37 @@ public class Game3 extends JPanel
 			int operator = question.indexOf("-");
 			int firstInteger = Integer.parseInt(question.substring(0, operator));
 			int secondInteger = Integer.parseInt(question.substring(operator + 1));
-			answer = firstInteger - secondInteger;
+			answer = Integer.toString(firstInteger - secondInteger);
 			question = firstInteger + " - " + secondInteger + " = ? ";
 		}
 	}
 
+	private void generateRandomAnswers()
+	{
+		for(int i = 0; i < 2; i++)
+		{
+			int random = Controller.rng.nextInt(2);
+			answerList[i] = random;
+			System.out.println(answerList[i]);
+		}
+	}
+	
 	//TODO also need questions about place value
 	private void generateQuestion()
 	{
 		int random = Controller.rng.nextInt(2);
-		if(random < 1)
+		if (random < 1) 
 		{
 			int firstInteger = Controller.rng.nextInt(30);
 			int secondInteger = Controller.rng.nextInt(30);
-			answer = firstInteger - secondInteger;
+			answer = Integer.toString(firstInteger - secondInteger);
 			question = firstInteger + " - " + secondInteger + " = ? ";
-		}
-		else
+		} 
+		else 
 		{
 			int firstInteger = Controller.rng.nextInt(30);
 			int secondInteger = Controller.rng.nextInt(30);
-			answer = firstInteger + secondInteger;
+			answer = Integer.toString(firstInteger + secondInteger);
 			question = firstInteger + " + " + secondInteger + " = ? ";
 		}
 	}
@@ -246,65 +253,57 @@ public class Game3 extends JPanel
 		scoreLabel.setText("Score: " + Integer.toString(score));	
 	}
 
-	private void clearCurrentShark()
+	private void clearShark()
 	{
 		this.remove(shark);
-//		shark = new ArrayList<FishObject>();
 	}
 	
 	private void moveShark()
 	{
-//		removeAll();
+		removeAll();
 		setUpLayout();
-		addFish();
+		addShark();
 		revalidate();
 		repaint();
 	}
 	
 	//TODO Need this? Will probably add a shark after after a correct answer
-	private void addFish()
+	private void addShark()
 	{
-		for(FishObject fish : currentFish)
-		{
-	  		fish.setFocusPainted(false);
-//			fish.setContentAreaFilled(false);
-			fish.setFont(new Font("Ariel", Font.PLAIN, 20));
-			fish.setForeground(Color.WHITE);
-			fish.updateLocation();
-	    	fish.setLocation(fish.getXValue(), fish.getYValue());
-			add(fish);
-		}
+		shark.setFocusPainted(false);
+		// fish.setContentAreaFilled(false);
+		shark.setFont(new Font("Ariel", Font.PLAIN, 20));
+		shark.setForeground(Color.WHITE);
+		shark.updateLocation();
+		shark.setLocation(shark.getXValue(), shark.getYValue());
+		add(shark);
 	}
 
 	//TODO Modify this to make sure the shark cannot move off the screen
-	public void wentOffScreen(FishObject fish)
+	// reset shark if shark moves off screen
+	public void wentOffScreen(SharkObject shark)
 	{
-		if(fish.getAnswer() == answer)
-		{
-			System.out.println("Correct answer went off screen.");
-			timer.stop();
-			clearCurrentFish();
-			base.returnToMenu();
-			JPanel messagePanel = new JPanel();
-			JOptionPane.showMessageDialog(messagePanel, "The correct answer went off screen.\nYour score was " + score + ".", "Game Over", JOptionPane.INFORMATION_MESSAGE);
-		}
+		clearShark();
+		addShark();
 	}
-
+	
 	//TODO will be where checking shark location is on the correct answer
+	// will have to check if shark went off screen in the same row as the correct answer
 	public void selected(SharkObject shark)
 	{
-		if(shark.getQuestion() == answer)
+		if(shark.getAnswer().equals(answer))
 		{
 			System.out.println("Correct answer given.");
 			score += 10;
 			updateScore();
-			clearCurrentFish();
+			clearShark();
 			playGame();
 		}
 		else
 		{
 			System.out.println("Incorrect answer.");
-			removeShark(shark);
+			this.remove(shark);
+			repaint();
 			score--;
 			//TODO maybe limit the number of times they can answer incorrectly
 		}
