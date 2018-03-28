@@ -306,7 +306,7 @@ public class SQLiteData
         return currentLine;
     }
 
-	private void addUser(int id, String userName, String pass, String firstName, String lastName, String classID, int permissions)
+	public void addUser(int id, String userName, String pass, String firstName, String lastName, String classID, int permissions)
 	{
 		if (con == null)
 		{	getConnection();	}
@@ -375,11 +375,9 @@ public class SQLiteData
 		}
 		try 
 		{
-			//TODO replace true with classID
-			String query = "SELECT studentID, studentFirstName, studentLastName, date from STUDENT_SCORE_RECORDS WHERE ?";
+			String query = "SELECT studentID, studentFirstName, studentLastName, date from STUDENT_SCORE_RECORDS WHERE classID = ?";
 			preparedStatement = con.prepareStatement(query);
-			//preparedStatement.setString(1, classID);
-			preparedStatement.setBoolean(1, true);
+			preparedStatement.setString(1, classID);
 			studentRecords = preparedStatement.executeQuery();
 		}
 		catch (SQLException e) { e.printStackTrace(); }		

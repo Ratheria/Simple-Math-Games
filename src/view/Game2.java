@@ -1,6 +1,6 @@
 /**
  *	@author Jadie Adams
- *	@author Ariana Fairbanks
+ *
  */
 
 package view;
@@ -28,19 +28,16 @@ import java.util.List;
 import java.awt.Canvas;
 import javax.swing.Timer;
 
-public class Game1 extends JPanel
+public class Game2 extends JPanel
 {
 	private static final long serialVersionUID = -5262708339581599541L;
+	@SuppressWarnings("unused")
 	private Controller base;
-	private List<FishObject> currentFish = new ArrayList<FishObject>();
-	private int maxFishVertical;
-	private int frequency;
 	private int answer;
+	private int frequency;
 	private int score;
 	private int gamePeriod;
 	private int sec;
-	private int fishImageWidth;
-	private int fishImageHeight;
 	private SpringLayout theLayout;
 	private String question;
 	private List<String> questionList;
@@ -51,33 +48,20 @@ public class Game1 extends JPanel
 	private Timer displayTime;
 	private ActionListener gameRestarter;
 	private ActionListener timeDisplayer;
-	private Image fishImg;
-	private ImageIcon fishIcon;
 
-	public Game1(Controller base) 
+	public Game2(Controller base) 
 	{
 		this.base = base;
-		maxFishVertical = (base.frame.getHeight() - 250)/60;
 		frequency = base.getFrequency();
 		answer = 0;
 		score = 0;
-		gamePeriod = 40; //seconds
+		gamePeriod = 60; //seconds
 		theLayout = new SpringLayout();
 		question = "Question";
 		questionList = base.getEquations();
 		timerLabel = new JLabel("Time: "+(gamePeriod/60)+":"+ (gamePeriod%60));
 		questionLabel = new JLabel(question);
 		scoreLabel = new JLabel("Score: 0");
-
-		//setting up fish icon for answer buttons
-		fishImageWidth= (base.frame.getWidth() - 250)/8;
-		fishImageHeight = (base.frame.getHeight() - 250)/7;
-		try 
-		{	fishImg = ImageIO.read(new File("fish.png"));	} 
-		catch (IOException ex) 
-		{	System.out.println("File fish.png is missing.");	}
-		fishImg = fishImg.getScaledInstance( fishImageWidth, fishImageHeight,  java.awt.Image.SCALE_SMOOTH ) ;  //resizes fish image
-		fishIcon = new ImageIcon(fishImg);
 
 		setUpLayout();
 		setUpTimers();
@@ -130,7 +114,7 @@ public class Game1 extends JPanel
 					timerLabel.setText("Time: "+(sec/60)+ ":" + (sec%60));
 				}
 				sec--;
-				moveFish();
+				//moveFish();
 			}
 		};
 		displayTime = new Timer(1000, timeDisplayer); //time parameter milliseconds
@@ -154,21 +138,6 @@ public class Game1 extends JPanel
 
 	private void playGame()
 	{
-		//Our 'Game Loop' So Far
-
-		getQuestion();
-		int randomPlacement = Controller.rng.nextInt(maxFishVertical);
-		for(int i = 0; i < maxFishVertical; i++)
-		{
-			int fishAnswer = Controller.rng.nextInt(100);
-			while (fishAnswer == answer)
-			{	fishAnswer = Controller.rng.nextInt(100);	}
-			if(i == randomPlacement)
-			{	fishAnswer = answer;	}
-			currentFish.add(new FishObject(fishAnswer, i, this, fishIcon));
-		}
-		addFish();
-		repaint();
 	}
 
 	private void getQuestion()
@@ -234,44 +203,7 @@ public class Game1 extends JPanel
 		scoreLabel.setText("Score: " + Integer.toString(score));	
 	}
 
-	private void removeFish(FishObject fish)
-	{
-		currentFish.remove(fish);
-		this.remove(fish);
-		repaint();
-	}
-
-	private void clearCurrentFish()
-	{
-		for(FishObject fish : currentFish)
-		{
-			this.remove(fish);
-		}
-		currentFish = new ArrayList<FishObject>();
-	}
 	
-	private void moveFish()
-	{
-		removeAll();
-		setUpLayout();
-		addFish();
-		revalidate();
-		repaint();
-	}
-	
-	private void addFish()
-	{
-		for(FishObject fish : currentFish)
-		{
-	  		fish.setFocusPainted(false);
-//			fish.setContentAreaFilled(false);
-			fish.setFont(new Font("Ariel", Font.PLAIN, 20));
-			fish.setForeground(Color.BLACK);
-			fish.updateLocation();
-	    	fish.setLocation(fish.getXValue(), fish.getYValue());
-			add(fish);
-		}
-	}
 
 	public void wentOffScreen(FishObject fish)
 	{
@@ -279,7 +211,7 @@ public class Game1 extends JPanel
 		{
 			System.out.println("Correct answer went off screen.");
 			timer.stop();
-			clearCurrentFish();
+			//clearCurrentFish();
 			base.returnToMenu();
 			JPanel messagePanel = new JPanel();
 			JOptionPane.showMessageDialog(messagePanel, "The correct answer went off screen.\nYour score was " + score + ".", "Game Over", JOptionPane.INFORMATION_MESSAGE);
@@ -293,13 +225,13 @@ public class Game1 extends JPanel
 			System.out.println("Correct answer given.");
 			score += 10;
 			updateScore();
-			clearCurrentFish();
+			//clearCurrentFish();
 			playGame();
 		}
 		else
 		{
 			System.out.println("Incorrect answer.");
-			removeFish(fish);
+			//removeFish(fish);
 			score--;
 			//TODO maybe limit the number of times they can answer incorrectly
 		}
