@@ -1,5 +1,6 @@
 /**
  *	@author Ariana Fairbanks
+ * Jadie Adams
  */
 package view;
 

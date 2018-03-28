@@ -33,6 +33,7 @@ public class Game2 extends JPanel
 	private static final long serialVersionUID = -5262708339581599541L;
 	@SuppressWarnings("unused")
 	private Controller base;
+	private JellyfishObject currentJelly;
 	private int answer;
 	private int frequency;
 	private int score;
@@ -42,12 +43,21 @@ public class Game2 extends JPanel
 	private String question;
 	private List<String> questionList;
 	private JLabel timerLabel;
-	private JLabel questionLabel;
 	private JLabel scoreLabel;
 	private Timer timer;
 	private Timer displayTime;
 	private ActionListener gameRestarter;
 	private ActionListener timeDisplayer;
+	private Image JellyImg;
+	private ImageIcon JellyIcon;
+	private int JellyImageWidth;
+	private int JellyImageHeight;
+	private List<Integer> answers = new ArrayList<Integer>();
+	private JLabel answer1Label;
+	private JLabel answer2Label;
+	private JLabel answer3Label;
+	
+	
 
 	public Game2(Controller base) 
 	{
@@ -60,8 +70,20 @@ public class Game2 extends JPanel
 		question = "Question";
 		questionList = base.getEquations();
 		timerLabel = new JLabel("Time: "+(gamePeriod/60)+":"+ (gamePeriod%60));
-		questionLabel = new JLabel(question);
 		scoreLabel = new JLabel("Score: 0");
+		answer1Label = new JLabel("");
+		answer2Label = new JLabel("");
+		answer3Label = new JLabel("");
+		
+		//setting up jellyfish icon for 
+		JellyImageWidth= (base.frame.getWidth() - 250)/4;
+		JellyImageHeight = (base.frame.getHeight() - 250)/2;
+		try 
+		{	JellyImg = ImageIO.read(new File("Jellyfish.png"));	} 
+		catch (IOException ex) 
+		{	System.out.println("File fish.png is missing.");	}
+		JellyImg =JellyImg.getScaledInstance( JellyImageWidth, JellyImageHeight,  java.awt.Image.SCALE_SMOOTH ) ;  //resizes fish image
+		JellyIcon = new ImageIcon(JellyImg);
 
 		setUpLayout();
 		setUpTimers();
@@ -83,19 +105,33 @@ public class Game2 extends JPanel
 
 		scoreLabel.setFont(new Font("Arial", Font.PLAIN, 30));
 		scoreLabel.setForeground(new Color(70, 130, 180));
-		scoreLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		theLayout.putConstraint(SpringLayout.SOUTH, scoreLabel, -25, SpringLayout.SOUTH, this);
-		theLayout.putConstraint(SpringLayout.EAST, scoreLabel, -50, SpringLayout.EAST, this);
-
-		questionLabel.setHorizontalAlignment(SwingConstants.LEFT);
-		questionLabel.setForeground(new Color(70, 130, 180));
-		questionLabel.setFont(new Font("Arial", Font.BOLD, 30));
-		theLayout.putConstraint(SpringLayout.WEST, questionLabel, 50, SpringLayout.WEST, this);
-		theLayout.putConstraint(SpringLayout.SOUTH, questionLabel, -25, SpringLayout.SOUTH, this);
-
+		scoreLabel.setHorizontalAlignment(SwingConstants.LEFT);
+		theLayout.putConstraint(SpringLayout.NORTH, scoreLabel, 25, SpringLayout.NORTH, this);
+		theLayout.putConstraint(SpringLayout.WEST, scoreLabel, 50, SpringLayout.WEST, this);
+		
+		answer1Label.setFont(new Font("Arial", Font.PLAIN, 30));
+		answer1Label.setForeground(new Color(70, 130, 180));
+		answer1Label.setHorizontalAlignment(SwingConstants.LEFT);
+		theLayout.putConstraint(SpringLayout.SOUTH, answer1Label, -25, SpringLayout.SOUTH, this);
+		theLayout.putConstraint(SpringLayout.WEST, answer1Label, 150, SpringLayout.WEST, this);
+		
+		answer2Label.setFont(new Font("Arial", Font.PLAIN, 30));
+		answer2Label.setForeground(new Color(70, 130, 180));
+		answer2Label.setHorizontalAlignment(SwingConstants.LEFT);
+		theLayout.putConstraint(SpringLayout.SOUTH, answer2Label, -25, SpringLayout.SOUTH, this);
+		theLayout.putConstraint(SpringLayout.WEST, answer2Label, 200, SpringLayout.EAST, answer1Label);
+		
+		answer3Label.setFont(new Font("Arial", Font.PLAIN, 30));
+		answer3Label.setForeground(new Color(70, 130, 180));
+		answer3Label.setHorizontalAlignment(SwingConstants.LEFT);
+		theLayout.putConstraint(SpringLayout.SOUTH, answer3Label, -25, SpringLayout.SOUTH, this);
+		theLayout.putConstraint(SpringLayout.WEST, answer3Label, 200, SpringLayout.EAST, answer2Label);
+		
+		add(answer1Label);
+		add(answer2Label);
+		add(answer3Label);
 		add(timerLabel);
 		add(scoreLabel);
-		add(questionLabel);
 	}
 
 	private void setUpTimers()
@@ -114,7 +150,7 @@ public class Game2 extends JPanel
 					timerLabel.setText("Time: "+(sec/60)+ ":" + (sec%60));
 				}
 				sec--;
-				//moveFish();
+				moveJelly();
 			}
 		};
 		displayTime = new Timer(1000, timeDisplayer); //time parameter milliseconds
@@ -138,6 +174,23 @@ public class Game2 extends JPanel
 
 	private void playGame()
 	{
+		getQuestion();
+		currentJelly = new JellyfishObject(question, answer, this, JellyIcon);
+		int randomPlacement = Controller.rng.nextInt(3);
+		for(int i = 0; i < 3; i++)
+		{
+			int jellyAnswer = Controller.rng.nextInt(100);
+			while (jellyAnswer == answer)
+			{	jellyAnswer = Controller.rng.nextInt(100);	}
+			if(i == randomPlacement)
+			{	jellyAnswer = answer;	}
+			answers.add(jellyAnswer);
+		}
+		answer1Label = new JLabel(" " + answers.get(0));
+		answer2Label = new JLabel(" " + answers.get(1));
+		answer3Label = new JLabel(" " + answers.get(2));
+		addJelly();
+		repaint();
 	}
 
 	private void getQuestion()
@@ -152,9 +205,9 @@ public class Game2 extends JPanel
 			//generates a new question if the answer is negative
 			generateQuestion();
 		}
-		questionLabel.setText(question);
+		//questionLabel.setText(question);
 	}
-
+	
 	private void questionFromList()
 	{
 		//Assumes only a + or - operator
@@ -203,11 +256,25 @@ public class Game2 extends JPanel
 		scoreLabel.setText("Score: " + Integer.toString(score));	
 	}
 
-	
+	private void addJelly(){
+		currentJelly.setFocusPainted(false);
+		currentJelly.updateLocation();
+    	currentJelly.setLocation(currentJelly.getXValue(), currentJelly.getYValue());
+		add(currentJelly);
+	}
 
-	public void wentOffScreen(FishObject fish)
+
+	public void moveJelly(){
+		removeAll();
+		setUpLayout();
+		addJelly();
+		revalidate();
+		repaint();
+	}
+
+	public void wentOffScreen(JellyfishObject jelly)
 	{
-		if(fish.getAnswer() == answer)
+		if(jelly.getAnswer() == answer)
 		{
 			System.out.println("Correct answer went off screen.");
 			timer.stop();
@@ -218,14 +285,14 @@ public class Game2 extends JPanel
 		}
 	}
 
-	public void selected(FishObject fish)
+	public void selected(JellyfishObject jelly)
 	{
-		if(fish.getAnswer() == answer)
+		if(jelly.getAnswer() == answer)
 		{
 			System.out.println("Correct answer given.");
 			score += 10;
 			updateScore();
-			//clearCurrentFish();
+			remove(currentJelly);
 			playGame();
 		}
 		else
