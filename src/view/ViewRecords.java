@@ -19,12 +19,9 @@ import javax.swing.JTextField;
 import javax.swing.RowFilter;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
-<<<<<<< HEAD
 import javax.swing.SwingUtilities;
-=======
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
->>>>>>> master
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -43,12 +40,9 @@ public class ViewRecords extends JPanel
 	private JLabel header;
 	private JButton backButton;
 	private JTextField studentLookupField;
-<<<<<<< HEAD
-=======
 	private JTable studentRecordsSet;
     private TableRowSorter<TableModel> rowSorter;
 	private JScrollPane scrollPane;
->>>>>>> master
 	
 	public ViewRecords(Controller base)
 	{
@@ -142,39 +136,19 @@ public class ViewRecords extends JPanel
 		add(header, gbc_header);
 		add(backButton, gbc_backButton);
 		add(studentLookupField, gbc_studentLookupField);
-<<<<<<< HEAD
 		
 		studentLookupField.setText("");
-=======
 		add(scrollPane, gbc_studentRecordsSet);
->>>>>>> master
 	}
 	
 	private void setUpListeners() 
 	{
 		backButton.addActionListener(new ActionListener() 
 		{
-<<<<<<< HEAD
 			public void actionPerformed(ActionEvent onClick)
 			{
 				base.returnToMenu();
 			}
-		});
-		
-		studentLookupField.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e) 
-			{
-				base.recordsTableState(ViewStates.recordsTable, Integer.parseInt(studentLookupField.getText()));
-			}
-		});
-		
-		viewRecordsButton.addActionListener(new ActionListener()
-		{
-=======
->>>>>>> master
-			public void actionPerformed(ActionEvent onClick)
-			{	base.returnToMenu();	}
 		});
 		
 		studentLookupField.getDocument().addDocumentListener(new DocumentListener()

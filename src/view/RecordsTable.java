@@ -86,7 +86,7 @@ public class RecordsTable extends JPanel
 		gbc_studentRecordSet.ipady = 70;
 		gbc_studentRecordSet.weighty = 0.3;
 		
-		populateTable(base.lookupStudent(studentID));
+		populateTable(base.lookupStudent());
 		scrollPane = new JScrollPane(studentRecordsSet);
 		
 		add(header, gbc_displayName);

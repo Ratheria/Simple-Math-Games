@@ -9,7 +9,6 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
@@ -18,7 +17,7 @@ import adapter.Controller;
 
 public class SharkObject extends JButton implements ActionListener
 {
-	private static final long serialVersionUID = 3336796505727171017L;
+	private static final long serialVersionUID = -6301327677560567434L;
 	private Game3 panel;
 	private boolean onScreen;
 	private String question;
@@ -27,12 +26,12 @@ public class SharkObject extends JButton implements ActionListener
 	private int yValue;
 	private int maxX;
 	
-    public SharkObject(String question, String answer, Game3 panel, int numberFromTop, ImageIcon icon)
+    public SharkObject(String question, String answer, Game3 panel, ImageIcon icon)
     {
     	this.setBorderPainted(false);
     	this.setOpaque(false);
     	this.setContentAreaFilled(false);
-    	this.setForeground(java.awt.Color.WHITE);
+    	this.setForeground(java.awt.Color.BLACK);
     	this.setFont(new Font("MV Boli", Font.BOLD, 40));
     	this.setVerticalTextPosition(SwingConstants.CENTER);
     	this.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -41,8 +40,8 @@ public class SharkObject extends JButton implements ActionListener
         onScreen = true;
         this.question = question;
         this.answer = answer;
-        xValue = 50; 
-        yValue = 100 + (numberFromTop * 90);
+        xValue = 100; 
+        yValue = 100;
         maxX = Frame.DIMENSIONS.width - 200;
 
         panel.add(this);

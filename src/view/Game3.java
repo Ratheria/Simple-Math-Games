@@ -31,7 +31,6 @@ public class Game3 extends JPanel
 	private static final long serialVersionUID = 8585306608329719982L;
 	private Controller base;
 	private SharkObject shark;
-	private int maxSharkVertical;
 	private int frequency;
 	private int score;
 	private String answer;
@@ -52,26 +51,30 @@ public class Game3 extends JPanel
 	private ActionListener timeDisplayer;
 	private Image sharkImg;
 	private ImageIcon sharkIcon;
+	private JLabel answerLabel1;
+	private JLabel answerLabel2;
+	private JLabel answerLabel3;
 
 	public Game3(Controller base) 
 	{
 		this.base = base;
-		maxSharkVertical = (base.frame.getHeight() - 250)/80;
 		frequency = base.getFrequency();
 		answer = "0";
 		gamePeriod = 40; //seconds
 		theLayout = new SpringLayout();
 		question = "Question";
 		questionList = base.getEquations();
-		answerList = new int [2];
-		timerLabel = new JLabel("Time: "+(gamePeriod/60)+":"+ (gamePeriod%60));
+		answerList = new int[2];
+		timerLabel = new JLabel("Time: "+(gamePeriod/60)+":"+ (gamePeriod % 60));
 		questionLabel = new JLabel(question);
 		scoreLabel = new JLabel("Score: 0");
-
-		//setting up fish icon for answer buttons
-		// need to generate answer buttons on the right side of the screen
-		sharkImageWidth= (base.frame.getWidth() - 250)/10;
-		sharkImageHeight = (base.frame.getHeight() - 250)/10;
+		answerLabel1 = new JLabel();
+		answerLabel2 = new JLabel();
+		answerLabel3 = new JLabel();
+		
+		// setting up shark icon
+		sharkImageWidth= (base.frame.getWidth() - 250);
+		sharkImageHeight = (base.frame.getHeight() - 250);
 		try 
 		{	
 			sharkImg = ImageIO.read(new File("shark.png"));
@@ -80,7 +83,7 @@ public class Game3 extends JPanel
 		{	
 			System.out.println("File \"shark.png\" is missing.");
 		}
-		sharkImg = sharkImg.getScaledInstance( sharkImageWidth, sharkImageHeight,  java.awt.Image.SCALE_SMOOTH ) ;  //resizes fish image
+		sharkImg = sharkImg.getScaledInstance(sharkImageWidth, sharkImageHeight, java.awt.Image.SCALE_SMOOTH);  //resizes shark image
 		sharkIcon = new ImageIcon(sharkImg);
 
 		setUpLayout();
@@ -93,26 +96,26 @@ public class Game3 extends JPanel
 		setLayout(theLayout);
 		setBorder(new LineBorder(new Color(70, 130, 180), 10));
 		setForeground(new Color(173, 216, 230));
-		setBackground(new Color(0, 0, 0));
+		setBackground(new Color(245, 245, 245));
 
 		timerLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		timerLabel.setForeground(new Color(135, 206, 250));
-		timerLabel.setFont(new Font("MV Boli", Font.PLAIN, 20));
+		timerLabel.setForeground(new Color(70, 130, 180));
+		timerLabel.setFont(new Font("Arial", Font.PLAIN, 20));
 		theLayout.putConstraint(SpringLayout.NORTH, timerLabel, 25, SpringLayout.NORTH, this);
 		theLayout.putConstraint(SpringLayout.EAST, timerLabel, -50, SpringLayout.EAST, this);
 
-		scoreLabel.setFont(new Font("MV Boli", Font.PLAIN, 30));
-		scoreLabel.setForeground(new Color(135, 206, 250));
+		scoreLabel.setFont(new Font("Arial", Font.PLAIN, 30));
+		scoreLabel.setForeground(new Color(70, 130, 180));
 		scoreLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		theLayout.putConstraint(SpringLayout.SOUTH, scoreLabel, -25, SpringLayout.SOUTH, this);
 		theLayout.putConstraint(SpringLayout.EAST, scoreLabel, -50, SpringLayout.EAST, this);
 
 		questionLabel.setHorizontalAlignment(SwingConstants.LEFT);
-		questionLabel.setForeground(new Color(135, 206, 250));
-		questionLabel.setFont(new Font("MV Boli", Font.BOLD, 30));
+		questionLabel.setForeground(new Color(70, 130, 180));
+		questionLabel.setFont(new Font("Arial", Font.BOLD, 30));
 		theLayout.putConstraint(SpringLayout.WEST, questionLabel, 50, SpringLayout.WEST, this);
 		theLayout.putConstraint(SpringLayout.SOUTH, questionLabel, -25, SpringLayout.SOUTH, this);
-
+				
 		add(timerLabel);
 		add(scoreLabel);
 		add(questionLabel);
@@ -167,15 +170,65 @@ public class Game3 extends JPanel
 		 */
 
 		getQuestion();
-		generateRandomAnswers();
+		addAnswerLabels();
 		System.out.println("Here");
-		// shark.add(new SharkObject(question, answer, this, 0, sharkIcon));
-		shark = new SharkObject(question, answer, this, 0, sharkIcon);
+		shark = new SharkObject(question, answer, this, sharkIcon);
 		addShark();
 		repaint();
 	}
+	
+	private void addAnswerLabels() {
+		generateRandomAnswers();
+		
+		// TODO randomize the way answers are added to labels
+		// TODO add labels to screen
+		answerLabel1.setText("= " + Integer.toString(answerList[0]));
+		answerLabel2.setText("= " + Integer.toString(answerList[1]));
+		answerLabel3.setText("= " + answer);
+		
+		/**
+		// make answerLabel an array, add 3 JLabels to it
+		// generate random number and take answer from anserLabel
+		int[] temp = new int[3];
+		
+		for(int i = 0; i < 2; i++) {
+			int random = Controller.rng.nextInt(3);
+			temp[i] = answerLabel [random];
+		}
+		*/
+		
+		/**
+		questionLabel.setHorizontalAlignment(SwingConstants.LEFT);
+		questionLabel.setForeground(new Color(70, 130, 180));
+		questionLabel.setFont(new Font("Arial", Font.BOLD, 30));
+		theLayout.putConstraint(SpringLayout.WEST, questionLabel, 50, SpringLayout.WEST, this);
+		theLayout.putConstraint(SpringLayout.SOUTH, questionLabel, -25, SpringLayout.SOUTH, this);
+		*/
+		
+		answerLabel1.setHorizontalAlignment(SwingConstants.LEFT);
+		answerLabel1.setForeground(new Color(70, 130, 180));
+		answerLabel1.setFont(new Font("Arial", Font.BOLD, 30));
+		theLayout.putConstraint(SpringLayout.EAST, answerLabel1, 0, SpringLayout.EAST, this);
+		theLayout.putConstraint(SpringLayout.NORTH, answerLabel1, 180, SpringLayout.NORTH, this);
+		
+		answerLabel2.setHorizontalAlignment(SwingConstants.LEFT);
+		answerLabel2.setForeground(new Color(70, 130, 180));
+		answerLabel2.setFont(new Font("Arial", Font.BOLD, 30));
+		theLayout.putConstraint(SpringLayout.EAST, answerLabel2, 0, SpringLayout.EAST, this);
+		theLayout.putConstraint(SpringLayout.NORTH, answerLabel2, 50, SpringLayout.SOUTH, answerLabel1);
+		
+		answerLabel3.setHorizontalAlignment(SwingConstants.LEFT);
+		answerLabel3.setForeground(new Color(70, 130, 180));
+		answerLabel3.setFont(new Font("Arial", Font.BOLD, 30));
+		theLayout.putConstraint(SpringLayout.EAST, answerLabel3, 0, SpringLayout.EAST, this);
+		theLayout.putConstraint(SpringLayout.NORTH, answerLabel3, 70, SpringLayout.SOUTH, answerLabel2);
+		
+		add(answerLabel1);
+		add(answerLabel2);
+		add(answerLabel3);
+	}
 
-	// TODO will need to get answers here instead of questions
+	// TODO Need to display question on the shark
 	private void getQuestion() {
 		int random = Controller.rng.nextInt(10);
 		if (frequency > 0 && random <= frequency) 
@@ -222,9 +275,9 @@ public class Game3 extends JPanel
 	{
 		for(int i = 0; i < 2; i++)
 		{
-			int random = Controller.rng.nextInt(2);
+			int random = Controller.rng.nextInt(15);
 			answerList[i] = random;
-			System.out.println(answerList[i]);
+			// System.out.println(answerList[i]);
 		}
 	}
 	
