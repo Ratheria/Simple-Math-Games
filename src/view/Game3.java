@@ -4,6 +4,7 @@
 package view;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -54,6 +55,7 @@ public class Game3 extends JPanel
 	private JLabel answerLabel1;
 	private JLabel answerLabel2;
 	private JLabel answerLabel3;
+	private JLabel sharkLabel;
 
 	public Game3(Controller base) 
 	{
@@ -73,8 +75,8 @@ public class Game3 extends JPanel
 		answerLabel3 = new JLabel();
 		
 		// setting up shark icon
-		sharkImageWidth= (base.frame.getWidth() - 250);
-		sharkImageHeight = (base.frame.getHeight() - 250);
+		sharkImageWidth= (base.frame.getWidth() - 660);
+		sharkImageHeight = (base.frame.getHeight() - 450);
 		try 
 		{	
 			sharkImg = ImageIO.read(new File("shark.png"));
@@ -85,6 +87,7 @@ public class Game3 extends JPanel
 		}
 		sharkImg = sharkImg.getScaledInstance(sharkImageWidth, sharkImageHeight, java.awt.Image.SCALE_SMOOTH);  //resizes shark image
 		sharkIcon = new ImageIcon(sharkImg);
+		sharkLabel = new JLabel(sharkIcon);
 
 		setUpLayout();
 		setUpTimers();
@@ -111,14 +114,25 @@ public class Game3 extends JPanel
 		theLayout.putConstraint(SpringLayout.EAST, scoreLabel, -50, SpringLayout.EAST, this);
 
 		questionLabel.setHorizontalAlignment(SwingConstants.LEFT);
-		questionLabel.setForeground(new Color(70, 130, 180));
+//		questionLabel.setForeground(new Color(70, 130, 180));
+		questionLabel.setForeground(Color.BLACK);
 		questionLabel.setFont(new Font("Arial", Font.BOLD, 30));
-		theLayout.putConstraint(SpringLayout.WEST, questionLabel, 50, SpringLayout.WEST, this);
-		theLayout.putConstraint(SpringLayout.SOUTH, questionLabel, -25, SpringLayout.SOUTH, this);
+		questionLabel.setMinimumSize(new Dimension(130, 100));
+		questionLabel.setPreferredSize(new Dimension(240, 120));
+		questionLabel.setMaximumSize(new Dimension(250, 130));
+//		theLayout.putConstraint(SpringLayout.WEST, questionLabel, 50, SpringLayout.WEST, this);
+//		theLayout.putConstraint(SpringLayout.SOUTH, questionLabel, -25, SpringLayout.SOUTH, this);
+		theLayout.putConstraint(SpringLayout.WEST, questionLabel, 45, SpringLayout.WEST, this);
+		theLayout.putConstraint(SpringLayout.NORTH, questionLabel, 110, SpringLayout.NORTH, this);
 				
+		sharkLabel.setHorizontalAlignment(SwingConstants.LEFT);
+		theLayout.putConstraint(SpringLayout.WEST, sharkLabel, 10, SpringLayout.WEST, this);
+		theLayout.putConstraint(SpringLayout.NORTH, sharkLabel, 90, SpringLayout.NORTH, this);
+		
 		add(timerLabel);
 		add(scoreLabel);
 		add(questionLabel);
+		add(sharkLabel);
 	}
 
 	private void setUpTimers()
@@ -171,7 +185,6 @@ public class Game3 extends JPanel
 
 		getQuestion();
 		addAnswerLabels();
-		System.out.println("Here");
 		shark = new SharkObject(question, answer, this, sharkIcon);
 		addShark();
 		repaint();
@@ -209,19 +222,19 @@ public class Game3 extends JPanel
 		answerLabel1.setForeground(new Color(70, 130, 180));
 		answerLabel1.setFont(new Font("Arial", Font.BOLD, 30));
 		theLayout.putConstraint(SpringLayout.EAST, answerLabel1, 0, SpringLayout.EAST, this);
-		theLayout.putConstraint(SpringLayout.NORTH, answerLabel1, 180, SpringLayout.NORTH, this);
+		theLayout.putConstraint(SpringLayout.NORTH, answerLabel1, 110, SpringLayout.NORTH, this);
 		
 		answerLabel2.setHorizontalAlignment(SwingConstants.LEFT);
 		answerLabel2.setForeground(new Color(70, 130, 180));
 		answerLabel2.setFont(new Font("Arial", Font.BOLD, 30));
 		theLayout.putConstraint(SpringLayout.EAST, answerLabel2, 0, SpringLayout.EAST, this);
-		theLayout.putConstraint(SpringLayout.NORTH, answerLabel2, 50, SpringLayout.SOUTH, answerLabel1);
+		theLayout.putConstraint(SpringLayout.NORTH, answerLabel2, 120, SpringLayout.SOUTH, answerLabel1);
 		
 		answerLabel3.setHorizontalAlignment(SwingConstants.LEFT);
 		answerLabel3.setForeground(new Color(70, 130, 180));
 		answerLabel3.setFont(new Font("Arial", Font.BOLD, 30));
 		theLayout.putConstraint(SpringLayout.EAST, answerLabel3, 0, SpringLayout.EAST, this);
-		theLayout.putConstraint(SpringLayout.NORTH, answerLabel3, 70, SpringLayout.SOUTH, answerLabel2);
+		theLayout.putConstraint(SpringLayout.NORTH, answerLabel3, 120, SpringLayout.SOUTH, answerLabel2);
 		
 		add(answerLabel1);
 		add(answerLabel2);
@@ -320,11 +333,10 @@ public class Game3 extends JPanel
 		repaint();
 	}
 	
-	//TODO Need this? Will probably add a shark after after a correct answer
 	private void addShark()
 	{
 		shark.setFocusPainted(false);
-		// fish.setContentAreaFilled(false);
+		shark.setContentAreaFilled(false);
 		shark.setFont(new Font("Ariel", Font.PLAIN, 20));
 		shark.setForeground(Color.WHITE);
 		shark.updateLocation();
