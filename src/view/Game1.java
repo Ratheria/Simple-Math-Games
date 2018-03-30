@@ -1,6 +1,6 @@
 /**
+ * @author Ariana Fairbanks
  *	@author Jadie Adams
- *	@author Ariana Fairbanks
  */
 
 package view;
@@ -38,7 +38,7 @@ public class Game1 extends JPanel
 	private int answer;
 	private int score;
 	private int gamePeriod;
-	private int sec;
+	private double currentTime;
 	private int fishImageWidth;
 	private int fishImageHeight;
 	private SpringLayout theLayout;
@@ -48,11 +48,15 @@ public class Game1 extends JPanel
 	private JLabel questionLabel;
 	private JLabel scoreLabel;
 	private Timer timer;
+	private Timer fishTimer;
 	private Timer displayTime;
 	private ActionListener gameRestarter;
+	private ActionListener fishMover;
 	private ActionListener timeDisplayer;
 	private Image fishImg;
+	private Image buffer;
 	private ImageIcon fishIcon;
+	private boolean playing;
 
 	public Game1(Controller base) 
 	{
@@ -68,6 +72,7 @@ public class Game1 extends JPanel
 		timerLabel = new JLabel("Time: "+(gamePeriod/60)+":"+ (gamePeriod%60));
 		questionLabel = new JLabel(question);
 		scoreLabel = new JLabel("Score: 0");
+		playing = true;
 
 		//setting up fish icon for answer buttons
 		fishImageWidth= (base.frame.getWidth() - 250)/8;
@@ -116,32 +121,41 @@ public class Game1 extends JPanel
 
 	private void setUpTimers()
 	{
-		sec = gamePeriod -1;
+		currentTime = gamePeriod - 1;
 		timeDisplayer = new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent evt) 
 			{
-				if((sec%60) < 10)
+				if((currentTime%60) < 10)
 				{
-					timerLabel.setText("Time: "+(sec/60)+ ":0" + (sec%60));
+					timerLabel.setText("Time: " + (int)(currentTime/60)+ ":0" + (int)(currentTime%60));
 				}
 				else
 				{
-					timerLabel.setText("Time: "+(sec/60)+ ":" + (sec%60));
+					timerLabel.setText("Time: " + (int)(currentTime/60)+ ":" + (int)(currentTime%60));
 				}
-				sec--;
-				moveFish();
+				currentTime--;
 			}
 		};
 		displayTime = new Timer(1000, timeDisplayer); //time parameter milliseconds
 		displayTime.start();
 		displayTime.setRepeats(true);
 		
+		fishMover = new ActionListener()
+		{
+			public void actionPerformed(ActionEvent event)
+			{	moveFish();	}
+		};
+		fishTimer = new Timer(10, fishMover);
+		fishTimer.start();
+		fishTimer.setRepeats(true);
+		
 		gameRestarter = new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent evt) 
 			{
 				timer.stop();
+				playing = false;
 				clearCurrentFish();
 				base.returnToMenu();
 				System.out.println("Time's up!");
@@ -157,8 +171,6 @@ public class Game1 extends JPanel
 
 	private void playGame()
 	{
-		//Our 'Game Loop' So Far
-
 		getQuestion();
 		int randomPlacement = Controller.rng.nextInt(maxFishVertical);
 		for(int i = 0; i < maxFishVertical; i++)
@@ -171,7 +183,6 @@ public class Game1 extends JPanel
 			currentFish.add(new FishObject(fishAnswer, i, this, fishIcon));
 		}
 		addFish();
-		repaint();
 	}
 
 	private void getQuestion()
@@ -247,9 +258,7 @@ public class Game1 extends JPanel
 	private void clearCurrentFish()
 	{
 		for(FishObject fish : currentFish)
-		{
-			this.remove(fish);
-		}
+		{	this.remove(fish);	}
 		currentFish = new ArrayList<FishObject>();
 	}
 	
@@ -258,8 +267,6 @@ public class Game1 extends JPanel
 		removeAll();
 		setUpLayout();
 		addFish();
-		revalidate();
-		repaint();
 	}
 	
 	private void addFish()
@@ -272,7 +279,7 @@ public class Game1 extends JPanel
 			fish.setForeground(Color.WHITE);
 			fish.updateLocation();
 	    	fish.setLocation(fish.getXValue(), fish.getYValue());
-			add(fish);
+	    	add(fish);
 		}
 	}
 
@@ -307,5 +314,17 @@ public class Game1 extends JPanel
 			updateScore();
 			//TODO maybe limit the number of times they can answer incorrectly
 		}
+	}
+	
+	public void update(Graphics brush) 
+	{
+		paint(buffer.getGraphics());
+		brush.drawImage(buffer,0,0,this);
+		if (playing) {sleep(20); revalidate(); repaint();}
+	}
+	
+	private void sleep(int time) 
+	{
+		try {Thread.sleep(time);} catch(Exception exc){};
 	}
 }

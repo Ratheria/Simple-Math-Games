@@ -45,8 +45,6 @@ public class FishObject extends JButton implements ActionListener
         		//- (Controller.rng.nextInt(6) * 10);
         yValue = 100 + (numberFromTop * 70);
         maxX = Frame.DIMENSIONS.width - 200;
-
-        panel.add(this);
         addActionListener(this);
     }
 
@@ -54,12 +52,11 @@ public class FishObject extends JButton implements ActionListener
     {
     	this.setLocation(xValue, yValue);
         super.paint(g);
-        panel.add(this);
     }
     
     public void updateLocation()
     {
-    	xValue += 35;
+    	xValue += 1;
     	if(xValue >= maxX)
     	{	panel.wentOffScreen(this);	}
     }
