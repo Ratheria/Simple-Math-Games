@@ -36,7 +36,7 @@ public class Frame extends JFrame
 		setSize(minSize);
 		setMinimumSize(minSize);
 		setVisible(true);
-		//setResizable(true);
+		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setContentPane(panel);
 		DIMENSIONS = getSize();
