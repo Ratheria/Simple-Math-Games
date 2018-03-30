@@ -296,11 +296,12 @@ public class RootMenu extends JPanel
 							int valueReturned = JOptionPane.showConfirmDialog(base.errorPanel, "Are you sure you want to delete this user?");
 							if(valueReturned == JOptionPane.OK_OPTION)
 							{	
-								//base.deleteUser(id);	
+								base.deleteUser(id);	
 								setUpTable();
 							}
 							break;
 					}
+					userField.setText("");
 				}
 			}
 		});

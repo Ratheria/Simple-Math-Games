@@ -136,17 +136,20 @@ public class Game1 extends JPanel
 		displayTime = new Timer(1000, timeDisplayer); //time parameter milliseconds
 		displayTime.start();
 		displayTime.setRepeats(true);
-
+		
 		gameRestarter = new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent evt) 
 			{
+				timer.stop();
+				clearCurrentFish();
 				base.returnToMenu();
 				System.out.println("Time's up!");
 				JPanel gameOverPanel = new JPanel();
 				JOptionPane.showMessageDialog(gameOverPanel, "Your score was " + score + ".", "Time's up!", JOptionPane.PLAIN_MESSAGE);
 			}
 		};
+		
 		timer = new Timer(gamePeriod*1000, gameRestarter); //time parameter milliseconds
 		timer.setRepeats(false);
 		timer.start();
@@ -266,7 +269,7 @@ public class Game1 extends JPanel
 	  		fish.setFocusPainted(false);
 //			fish.setContentAreaFilled(false);
 			fish.setFont(new Font("Ariel", Font.PLAIN, 20));
-			fish.setForeground(Color.BLACK);
+			fish.setForeground(Color.WHITE);
 			fish.updateLocation();
 	    	fish.setLocation(fish.getXValue(), fish.getYValue());
 			add(fish);
@@ -291,7 +294,7 @@ public class Game1 extends JPanel
 		if(fish.getAnswer() == answer)
 		{
 			System.out.println("Correct answer given.");
-			score += 10;
+			score += 50;
 			updateScore();
 			clearCurrentFish();
 			playGame();
@@ -300,7 +303,8 @@ public class Game1 extends JPanel
 		{
 			System.out.println("Incorrect answer.");
 			removeFish(fish);
-			score--;
+			score -= 5;
+			updateScore();
 			//TODO maybe limit the number of times they can answer incorrectly
 		}
 	}

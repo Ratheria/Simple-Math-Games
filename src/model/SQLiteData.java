@@ -187,6 +187,29 @@ public class SQLiteData
 		return result;
 	}
 	
+	public boolean deleteUser(int ID)
+	{
+		boolean result = true;
+		if(base.getPerms() < 2)
+		{
+			try
+			{
+				if (con == null)
+				{	getConnection();	}
+				String query = "DELETE FROM USER WHERE ID = ?";
+				PreparedStatement preparedStatement = con.prepareStatement(query);
+				preparedStatement.setInt(1, ID);
+				preparedStatement.executeUpdate();
+			}
+			catch (SQLException e)
+			{
+				e.printStackTrace(); 
+				result = false;
+			}
+		}
+		return result;
+	}
+	
 	public ResultSet getUserInfo(int id)
 	{
 		ResultSet res = null;
@@ -467,7 +490,7 @@ public class SQLiteData
 				state = con.createStatement();
 				
 				// drop table if exists
-				state.execute("DROP TABLE IF EXISTS USER;");
+				//state.execute("DROP TABLE IF EXISTS USER;");
 				
 				ResultSet res = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='USER'");
 				if (!res.next())
@@ -485,7 +508,7 @@ public class SQLiteData
 				}
 				
 				//Drop table			
-				state.execute("DROP TABLE IF EXISTS CUSTOM_EQUATIONS;");
+				//state.execute("DROP TABLE IF EXISTS CUSTOM_EQUATIONS;");
 				
 				ResultSet customEq = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' " +
 						"AND name='CUSTOM_EQUATIONS'");
@@ -503,7 +526,7 @@ public class SQLiteData
 				
 				// drop table if exists
 				//TODO Once we are done testing we want to get rid of this logic so it doesn't reset every time you open the application.
-				state.execute("DROP TABLE IF EXISTS STUDENT_SCORE_RECORDS;");
+				//state.execute("DROP TABLE IF EXISTS STUDENT_SCORE_RECORDS;");
 				ResultSet studentScoreRecords = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' " +
 						"AND name='STUDENT_SCORE_RECORDS'");
 				

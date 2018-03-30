@@ -157,6 +157,17 @@ public class Controller
 		{	JOptionPane.showMessageDialog(errorPanel, "Password successfully reset.", "", JOptionPane.INFORMATION_MESSAGE);}
 	}
 	
+	public void deleteUser(int ID)
+	{
+		boolean change = false;
+		if(permission < 2)
+		{	change = database.deleteUser(ID);	}
+		if(!change)
+		{	JOptionPane.showMessageDialog(errorPanel, "User not deleted.", "", JOptionPane.ERROR_MESSAGE);	}
+		else
+		{	JOptionPane.showMessageDialog(errorPanel, "User successfully deleted.", "", JOptionPane.INFORMATION_MESSAGE);}
+	}
+	
 	public void importUsers(File file)
 	{	
 		int result = database.importUsers(file);	
