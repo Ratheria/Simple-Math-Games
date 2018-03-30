@@ -11,6 +11,8 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.JPanel;
@@ -28,7 +30,7 @@ import java.util.List;
 import java.awt.Canvas;
 import javax.swing.Timer;
 
-public class Game2 extends JPanel
+public class Game2 extends JPanel implements KeyListener
 {
 	private static final long serialVersionUID = -5262708339581599541L;
 	@SuppressWarnings("unused")
@@ -56,12 +58,17 @@ public class Game2 extends JPanel
 	private JLabel answer1Label;
 	private JLabel answer2Label;
 	private JLabel answer3Label;
-	
-	
+	private boolean left;
+	private boolean right;	
 
 	public Game2(Controller base) 
 	{
 		this.base = base;
+		
+		this.addKeyListener(this);
+	    this.setFocusable(true);
+	    this.requestFocus();
+	    
 		frequency = base.getFrequency();
 		answer = 0;
 		score = 0;
@@ -74,6 +81,8 @@ public class Game2 extends JPanel
 		answer1Label = new JLabel("");
 		answer2Label = new JLabel("");
 		answer3Label = new JLabel("");
+		left = false;
+		right = false;
 		
 		//setting up jellyfish icon for 
 		JellyImageWidth= (base.frame.getWidth() - 250)/4;
@@ -276,31 +285,38 @@ public class Game2 extends JPanel
 	{
 		if(jelly.getAnswer() == answer)
 		{
-			System.out.println("Correct answer went off screen.");
-			timer.stop();
-			//clearCurrentFish();
-			base.returnToMenu();
+			System.out.println("Jellyfish went off screen.");
 			JPanel messagePanel = new JPanel();
-			JOptionPane.showMessageDialog(messagePanel, "The correct answer went off screen.\nYour score was " + score + ".", "Game Over", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(messagePanel, "The correct answer was " + answer, "Good try!", JOptionPane.INFORMATION_MESSAGE);
+			playGame();		
+		}
+	}
+	
+	public void keyPressed(KeyEvent e) {
+		if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
+			right = true;
+		}
+		if(e.getKeyCode() == KeyEvent.VK_LEFT) {
+			left = true;
 		}
 	}
 
-	public void selected(JellyfishObject jelly)
-	{
-		if(jelly.getAnswer() == answer)
-		{
-			System.out.println("Correct answer given.");
-			score += 10;
-			updateScore();
-			remove(currentJelly);
-			playGame();
+	public void keyReleased(KeyEvent e) {
+		if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
+			right = false;
 		}
-		else
-		{
-			System.out.println("Incorrect answer.");
-			//removeFish(fish);
-			score--;
-			//TODO maybe limit the number of times they can answer incorrectly
+		if(e.getKeyCode() == KeyEvent.VK_LEFT) {
+			left = false;
 		}
 	}
+	public void keyTyped(KeyEvent arg0) {
+		System.out.println("key recognized");
+
+	}
+	
+	public boolean getRight(){
+		return right;
+	}
+	public boolean getLeft(){
+		return left;	}
 }

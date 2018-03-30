@@ -26,11 +26,9 @@ public class StudentMenu extends JPanel
 	private JLabel displayName;
 	private JButton settingsButton;
 	private JButton btnGame;
-<<<<<<< HEAD
 	private JButton btnGame3;
-=======
 	private JButton btnGame2;
->>>>>>> f3b159c197d52a3581fe4e4fbf4abe2bd1c69021
+
 	
 	public StudentMenu(Controller base)
 	{
@@ -38,14 +36,10 @@ public class StudentMenu extends JPanel
 		layout = new GridBagLayout();
 		displayName = new JLabel(" ");
 		settingsButton = new JButton("    ");
-<<<<<<< HEAD
+		
 		btnGame = new JButton(" Game1 ");
 		btnGame3 = new JButton(" Game3");
-=======
-		btnGame = new JButton(" Game 1 ");
 		btnGame2 = new JButton(" Game 2 ");
->>>>>>> f3b159c197d52a3581fe4e4fbf4abe2bd1c69021
-
 		setUpLayout();
 		setUpListeners();
 	}
@@ -107,7 +101,7 @@ public class StudentMenu extends JPanel
 		gbc_btnGame.gridx = 1;
 		gbc_btnGame.gridy = 2;
 		
-<<<<<<< HEAD
+
 		btnGame3.setFont(new Font("Arial", Font.PLAIN, 25));
 		btnGame3.setForeground(new Color(70, 130, 180));
 		btnGame3.setBackground(new Color(70, 130, 180));
@@ -118,7 +112,7 @@ public class StudentMenu extends JPanel
 		gbc_btnGame3.insets = new Insets(0, 0, 5, 5);
 		gbc_btnGame3.gridx = 2;
 		gbc_btnGame3.gridy = 3;
-=======
+
 		btnGame2.setFont(new Font("Arial", Font.PLAIN, 25));
 		btnGame2.setForeground(new Color(70, 130, 180));
 		btnGame2.setBackground(new Color(70, 130, 180));
@@ -129,16 +123,13 @@ public class StudentMenu extends JPanel
 		gbc_btnGame2.insets = new Insets(0, 0, 5, 5);
 		gbc_btnGame2.gridx = 2;
 		gbc_btnGame2.gridy = 2;
->>>>>>> f3b159c197d52a3581fe4e4fbf4abe2bd1c69021
 		
 		add(displayName, gbc_displayName);
 		add(settingsButton, gbc_settingsButton);
 		add(btnGame, gbc_btnGame);
-<<<<<<< HEAD
 		add(btnGame3, gbc_btnGame3);
-=======
 		add(btnGame2, gbc_btnGame2);
->>>>>>> f3b159c197d52a3581fe4e4fbf4abe2bd1c69021
+
 //		add(logOut, gbc_logOut);
 
 	}
@@ -161,20 +152,23 @@ public class StudentMenu extends JPanel
 			}
 		});
 		
-<<<<<<< HEAD
+
 		btnGame3.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent onClick) 
 			{
 				base.changeState(ViewStates.game3);
-=======
+			}
+		});
+
 		btnGame2.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent onClick) 
 			{
 				base.changeState(ViewStates.game2);
->>>>>>> f3b159c197d52a3581fe4e4fbf4abe2bd1c69021
+
 			}
 		});
 	}
 }
+	
