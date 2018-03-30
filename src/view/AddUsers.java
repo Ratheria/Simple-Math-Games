@@ -44,6 +44,8 @@ public class AddUsers extends JPanel
 	private JTextField addLastNameTextField;
 	private JLabel addID;
 	private JTextField addIDTextField;
+	private JLabel addClassID;
+	private JTextField addClassIDTextField;
 	private JButton manageUserButton;
 	private int value;
 	
@@ -62,6 +64,8 @@ public class AddUsers extends JPanel
 		addLastNameTextField = new JTextField();
 		addID = new JLabel("User ID");
 		addIDTextField = new JTextField();
+		addClassID = new JLabel("Class ID");
+		addClassIDTextField = new JTextField();
 		manageUserButton = new JButton(" ADD USER ");
 		value = 0;
 
@@ -71,18 +75,16 @@ public class AddUsers extends JPanel
 
 	private void setUpLayout() 
 	{
-		layout.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-		layout.rowWeights = new double[]{0.0, 2.0, 0.0, 2.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.0, 1.0};
+		layout.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+		layout.rowWeights = new double[]{0.0, 2.0, 0.0, 2.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0};
 		layout.columnWidths = new int[]{0, 0, 0, 0, 0};
 		layout.columnWeights = new double[]{0.0, 0.0, 1.0, 1.0, 0.0};
 		setLayout(layout);
 		setBorder(new LineBorder(new Color(128, 128, 128), 10));
 		setForeground(new Color(105, 105, 105));
 		setBackground(new Color(245, 245, 245));
-		
-		header.setVerticalAlignment(SwingConstants.TOP);
 		header.setForeground(new Color(105, 105, 105));
-		header.setFont(new Font("Arial", Font.PLAIN, 35));
+		header.setFont(new Font("Arial", Font.PLAIN, 30));
 		GridBagConstraints gbc_displayName = new GridBagConstraints();
 		gbc_displayName.anchor = GridBagConstraints.NORTHWEST;
 		gbc_displayName.gridwidth = 4;
@@ -98,7 +100,7 @@ public class AddUsers extends JPanel
 		backButton.setBorder(new LineBorder(new Color(105, 105, 105), 2));
 		GridBagConstraints gbc_settingsButton = new GridBagConstraints();
 		gbc_settingsButton.anchor = GridBagConstraints.NORTHWEST;
-		gbc_settingsButton.insets = new Insets(20, 20, 5, 5);
+		gbc_settingsButton.insets = new Insets(15, 20, 5, 5);
 		gbc_settingsButton.gridx = 0;
 		gbc_settingsButton.gridy = 0;		
 		
@@ -118,9 +120,9 @@ public class AddUsers extends JPanel
 		userOptions.setForeground(new Color(105, 105, 105));
 		userOptions.setFont(new Font("Arial", Font.PLAIN, 20));
 		GridBagConstraints gbc_userOptions = new GridBagConstraints();
-		gbc_userOptions.anchor = GridBagConstraints.NORTHWEST;
+		gbc_userOptions.anchor = GridBagConstraints.WEST;
 		gbc_userOptions.gridwidth = 2;
-		gbc_userOptions.insets = new Insets(10, 30, 10, 0);
+		gbc_userOptions.insets = new Insets(10, 30, 10, 5);
 		gbc_userOptions.gridx = 0;
 		gbc_userOptions.gridy = 4;
 		
@@ -128,7 +130,7 @@ public class AddUsers extends JPanel
 		addFirstName.setForeground(new Color(105, 105, 105));
 		addFirstName.setFont(new Font("Arial", Font.PLAIN, 25));
 		GridBagConstraints gbc_addFirstName = new GridBagConstraints();
-		gbc_addFirstName.anchor = GridBagConstraints.NORTHWEST;
+		gbc_addFirstName.anchor = GridBagConstraints.WEST;
 		gbc_addFirstName.gridwidth = 5;
 		gbc_addFirstName.insets = new Insets(10, 60, 5, 0);
 		gbc_addFirstName.gridx = 0;
@@ -149,7 +151,7 @@ public class AddUsers extends JPanel
 		addLastName.setForeground(new Color(105, 105, 105));
 		addLastName.setFont(new Font("Arial", Font.PLAIN, 25));
 		GridBagConstraints gbc_addLastName = new GridBagConstraints();
-		gbc_addLastName.anchor = GridBagConstraints.NORTHWEST;
+		gbc_addLastName.anchor = GridBagConstraints.WEST;
 		gbc_addLastName.gridwidth = 5;
 		gbc_addLastName.insets = new Insets(10, 60, 5, 0);
 		gbc_addLastName.gridx = 0;
@@ -170,7 +172,7 @@ public class AddUsers extends JPanel
 		addID.setForeground(new Color(105, 105, 105));
 		addID.setFont(new Font("Arial", Font.PLAIN, 25));
 		GridBagConstraints gbc_addID = new GridBagConstraints();
-		gbc_addID.anchor = GridBagConstraints.NORTHWEST;
+		gbc_addID.anchor = GridBagConstraints.WEST;
 		gbc_addID.gridwidth = 5;
 		gbc_addID.insets = new Insets(10, 60, 5, 0);
 		gbc_addID.gridx = 0;
@@ -187,6 +189,27 @@ public class AddUsers extends JPanel
 		gbc_addIDTextField.gridx = 0;
 		gbc_addIDTextField.gridy = 11;
 		
+		addClassID.setVerticalAlignment(SwingConstants.TOP);
+		addClassID.setForeground(new Color(105, 105, 105));
+		addClassID.setFont(new Font("Arial", Font.PLAIN, 25));
+		GridBagConstraints gbc_addClassID = new GridBagConstraints();
+		gbc_addClassID.anchor = GridBagConstraints.WEST;
+		gbc_addClassID.gridwidth = 5;
+		gbc_addClassID.insets = new Insets(10, 60, 5, 0);
+		gbc_addClassID.gridx = 0;
+		gbc_addClassID.gridy = 12;
+		
+		addClassIDTextField.setFont(new Font("Arial", Font.PLAIN, 20));
+		addClassIDTextField.setBackground(new Color(220, 220, 220));
+		addClassIDTextField.setForeground(new Color(0, 0, 0));
+		addClassIDTextField.setBorder(new CompoundBorder(new LineBorder(new Color(105, 105, 105)), new EmptyBorder(0, 10, 0, 0)));
+		GridBagConstraints gbc_addClassIDTextField = new GridBagConstraints();
+		gbc_addClassIDTextField.gridwidth = 4;
+		gbc_addClassIDTextField.insets = new Insets(0, 75, 5, 75);
+		gbc_addClassIDTextField.fill = GridBagConstraints.HORIZONTAL;
+		gbc_addClassIDTextField.gridx = 0;
+		gbc_addClassIDTextField.gridy = 13;
+		
 		manageUserButton.setVerticalAlignment(SwingConstants.TOP);
 		manageUserButton.setForeground(new Color(105, 105, 105));
 		manageUserButton.setBackground(new Color(105, 105, 105));
@@ -199,7 +222,7 @@ public class AddUsers extends JPanel
 		gbc_addUserButton.gridwidth = 2;
 		gbc_addUserButton.insets = new Insets(0, 0, 20, 20);
 		gbc_addUserButton.gridx = 3;
-		gbc_addUserButton.gridy = 14;
+		gbc_addUserButton.gridy = 16;
 		
 		add(header, gbc_displayName);
 		add(backButton, gbc_settingsButton);
@@ -211,6 +234,8 @@ public class AddUsers extends JPanel
 		add(addLastNameTextField, gbc_addLastNameTextField);
 		add(addID, gbc_addID);
 		add(addIDTextField, gbc_addIDTextField);
+		add(addClassID, gbc_addClassID);
+		add(addClassIDTextField, gbc_addClassIDTextField);
 		add(manageUserButton, gbc_addUserButton);
 	}
 	
@@ -260,7 +285,7 @@ public class AddUsers extends JPanel
 				{
 					case 0:	addUser(3);	break;
 					case 1:	addUser(2);	break;
-					case 3:	addUser(1);	break;
+					case 2:	addUser(1);	break;
 				}
 			}
 		});
@@ -269,15 +294,15 @@ public class AddUsers extends JPanel
 	
 	private void addUser(int permissionLevel)
 	{
-		String firstName = addFirstNameTextField.getText();
-		String lastName = addLastNameTextField.getText();
-		String idString = addIDTextField.getText();
-		int firstLength = firstName.length();
-		int lastLength = lastName.length();
-		int idLength = idString.length();
-		if(firstLength > 0 && lastLength > 0 && idLength > 0)
+		String firstName = addFirstNameTextField.getText().trim();
+		String lastName = addLastNameTextField.getText().trim();
+		String idString = addIDTextField.getText().trim();
+		String classID = addClassIDTextField.getText().trim();
+		if(firstName.length() > 0 && lastName.length() > 0 && idString.length() > 0)
 		{
-			base.addUser(firstName, lastName, idString, permissionLevel);	
+			if(classID.length() < 1)
+			{	classID = "00";	}
+			base.addUser(firstName, lastName, idString, classID, permissionLevel);	
 		}
 		else
 		{
@@ -287,6 +312,7 @@ public class AddUsers extends JPanel
 		addFirstNameTextField.setText("");
 		addLastNameTextField.setText("");
 		addIDTextField.setText("");
+		addClassIDTextField.setText("");
 		addFirstNameTextField.requestFocus();
 	}
 	

@@ -71,7 +71,7 @@ public class Game1 extends JPanel
 
 		//setting up fish icon for answer buttons
 		fishImageWidth= (base.frame.getWidth() - 250)/8;
-		fishImageHeight = (base.frame.getHeight() - 250)/7;
+		fishImageHeight = (base.frame.getHeight() - 250)/5;
 		try 
 		{	fishImg = ImageIO.read(this.getClass().getResourceAsStream("fish.png"));	} 
 		catch (IOException ex) 

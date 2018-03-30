@@ -165,7 +165,7 @@ public class Controller
 		if(!change)
 		{	JOptionPane.showMessageDialog(errorPanel, "User not deleted.", "", JOptionPane.ERROR_MESSAGE);	}
 		else
-		{	JOptionPane.showMessageDialog(errorPanel, "User successfully deleted.", "", JOptionPane.INFORMATION_MESSAGE);}
+		{	JOptionPane.showMessageDialog(errorPanel, "User successfully deleted.", "", JOptionPane.INFORMATION_MESSAGE);	}
 	}
 	
 	public void importUsers(File file)
@@ -334,14 +334,18 @@ public class Controller
 		return result;
 	}
 	
-	public void addUser(String firstName, String lastName, String idString, int permissionLevel)
+	public void addUser(String firstName, String lastName, String idString, String classID, int permissionLevel)
 	{
 		int id = Integer.parseInt(idString);
 		String pass = idString;
 		String userName = firstName.substring(0, 1) 
 				+ lastName.substring(0, 1) 
 				+ idString.substring(idString.length() - 4);
-		database.addUser(id, userName, pass, firstName, lastName, this.classID, permissionLevel);
+		boolean change = database.addUser(id, userName, pass, firstName, lastName, classID, permissionLevel);
+		if(!change)
+		{	JOptionPane.showMessageDialog(errorPanel, "Invalid input or duplicate ID. User not added.", "", JOptionPane.ERROR_MESSAGE);	}
+		else
+		{	JOptionPane.showMessageDialog(errorPanel, "User successfully added.", "", JOptionPane.INFORMATION_MESSAGE);	}
 	}
 	
 }

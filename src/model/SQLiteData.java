@@ -324,26 +324,33 @@ public class SQLiteData
         return currentLine;
     }
 
-	public void addUser(int id, String userName, String pass, String firstName, String lastName, String classID, int permissions)
+	public boolean addUser(int id, String userName, String pass, String firstName, String lastName, String classID, int permissions)
 	{
+		boolean result = false;
 		if (con == null)
 		{	getConnection();	}
 		try 
 		{
-			PreparedStatement preparedStatement;
-			preparedStatement = con.prepareStatement("INSERT INTO USER VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?);");
-			preparedStatement.setInt(1, id);
-			preparedStatement.setString(2, userName);
-			preparedStatement.setString(3, pass);
-			preparedStatement.setString(4, firstName);
-			preparedStatement.setString(5, lastName);
-			preparedStatement.setString(6, classID);
-			preparedStatement.setInt(7, permissions);
-			preparedStatement.setInt(8, 0);
-			preparedStatement.setBoolean(9, false);
-			preparedStatement.execute();
+			if(!userExists(id))
+			{
+				PreparedStatement preparedStatement;
+				preparedStatement = con.prepareStatement("INSERT INTO USER VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+				preparedStatement.setInt(1, id);
+				preparedStatement.setString(2, userName);
+				preparedStatement.setString(3, pass);
+				preparedStatement.setString(4, firstName);
+				preparedStatement.setString(5, lastName);
+				preparedStatement.setString(6, classID);
+				preparedStatement.setInt(7, permissions);
+				preparedStatement.setInt(8, 0);
+				preparedStatement.setBoolean(9, false);
+				preparedStatement.execute();
+				result = true;
+			}
 		} 
-		catch (SQLException e) {e.printStackTrace();}
+		catch (SQLException e) 
+		{	e.printStackTrace();	}
+		return result;
 	}
 
 	private void addCustomEquations(String classID, String questionList, int numberOfEquations, int frequency)
