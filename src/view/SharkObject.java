@@ -9,6 +9,8 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
@@ -40,9 +42,8 @@ public class SharkObject extends JButton implements ActionListener
         onScreen = true;
         this.question = question;
         this.answer = answer;
-        xValue = 100; 
-        yValue = 100;
-        maxX = Frame.DIMENSIONS.width - 200;
+        xValue = 10; 
+        yValue = 90;
 
         panel.add(this);
         addActionListener(this);
@@ -55,11 +56,22 @@ public class SharkObject extends JButton implements ActionListener
         panel.add(this);
     }
     
-    public void updateLocation()
+    public void updateLocation(String direction)
     {
-    	xValue += 35;
-    	if(xValue >= maxX)	
-    		panel.wentOffScreen(this);	
+    	switch(direction) { 
+        case "up":
+        	yValue -= 90;
+            break;
+        case "down":
+			yValue += 90;  
+			break;
+        case "left":
+        	xValue -= 45;
+        	break;
+        case "right":
+        	xValue += 45;
+        	break;
+    	}
     }
     
 	@Override

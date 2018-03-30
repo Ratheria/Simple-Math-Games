@@ -10,6 +10,8 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.JPanel;
@@ -56,6 +58,8 @@ public class Game3 extends JPanel
 	private JLabel answerLabel2;
 	private JLabel answerLabel3;
 	private JLabel sharkLabel;
+	private int maxX;
+	private int maxY;
 
 	public Game3(Controller base) 
 	{
@@ -73,27 +77,47 @@ public class Game3 extends JPanel
 		answerLabel1 = new JLabel();
 		answerLabel2 = new JLabel();
 		answerLabel3 = new JLabel();
+        maxX = Frame.DIMENSIONS.width - 200;
+        maxY = Frame.DIMENSIONS.height - 150;
 		
 		// setting up shark icon
 		sharkImageWidth= (base.frame.getWidth() - 660);
 		sharkImageHeight = (base.frame.getHeight() - 450);
+//		try 
+//		{	
+//			sharkImg = ImageIO.read(new File("shark.png"));
+//		} 
+//		catch (IOException ex) 
+//		{	
+//			System.out.println("File \"shark.png\" is missing.");
+//		}
+		setGraphics();
+		sharkImg = sharkImg.getScaledInstance(sharkImageWidth, sharkImageHeight, java.awt.Image.SCALE_SMOOTH);  //resizes shark image	
+		sharkIcon = new ImageIcon(sharkImg);
+		sharkLabel = new JLabel(sharkIcon);
+			
+		setUpLayout();
+		setUpTimers();
+		addShark();
+		playGame();
+	}
+
+	private void setGraphics()
+	{
 		try 
 		{	
 			sharkImg = ImageIO.read(new File("shark.png"));
+//			Graphics g = sharkImg.getGraphics();
+			Graphics g = sharkImg.getGraphics();
+			g.setFont(new Font("Arial", Font.PLAIN, 30));
+			g.drawString(question, 5, 5);
+			g.dispose();
 		} 
 		catch (IOException ex) 
 		{	
 			System.out.println("File \"shark.png\" is missing.");
 		}
-		sharkImg = sharkImg.getScaledInstance(sharkImageWidth, sharkImageHeight, java.awt.Image.SCALE_SMOOTH);  //resizes shark image
-		sharkIcon = new ImageIcon(sharkImg);
-		sharkLabel = new JLabel(sharkIcon);
-
-		setUpLayout();
-		setUpTimers();
-		playGame();
 	}
-
 	private void setUpLayout() 
 	{
 		setLayout(theLayout);
@@ -112,27 +136,9 @@ public class Game3 extends JPanel
 		scoreLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		theLayout.putConstraint(SpringLayout.SOUTH, scoreLabel, -25, SpringLayout.SOUTH, this);
 		theLayout.putConstraint(SpringLayout.EAST, scoreLabel, -50, SpringLayout.EAST, this);
-
-		questionLabel.setHorizontalAlignment(SwingConstants.LEFT);
-//		questionLabel.setForeground(new Color(70, 130, 180));
-		questionLabel.setForeground(Color.BLACK);
-		questionLabel.setFont(new Font("Arial", Font.BOLD, 30));
-		questionLabel.setMinimumSize(new Dimension(130, 100));
-		questionLabel.setPreferredSize(new Dimension(240, 120));
-		questionLabel.setMaximumSize(new Dimension(250, 130));
-//		theLayout.putConstraint(SpringLayout.WEST, questionLabel, 50, SpringLayout.WEST, this);
-//		theLayout.putConstraint(SpringLayout.SOUTH, questionLabel, -25, SpringLayout.SOUTH, this);
-		theLayout.putConstraint(SpringLayout.WEST, questionLabel, 45, SpringLayout.WEST, this);
-		theLayout.putConstraint(SpringLayout.NORTH, questionLabel, 110, SpringLayout.NORTH, this);
-				
-		sharkLabel.setHorizontalAlignment(SwingConstants.LEFT);
-		theLayout.putConstraint(SpringLayout.WEST, sharkLabel, 10, SpringLayout.WEST, this);
-		theLayout.putConstraint(SpringLayout.NORTH, sharkLabel, 90, SpringLayout.NORTH, this);
 		
 		add(timerLabel);
 		add(scoreLabel);
-		add(questionLabel);
-		add(sharkLabel);
 	}
 
 	private void setUpTimers()
@@ -172,6 +178,45 @@ public class Game3 extends JPanel
 		timer.start();
 	}
 
+	private void keyPress(KeyEvent e)
+	{
+		int keyCode = e.getKeyCode();
+	    switch(keyCode) { 
+	        case KeyEvent.VK_UP:
+	        	if(wentOffScreen())
+	        		resetShark();
+	        	else {
+	        		moveShark("up");
+	        		playGame();
+	        	}
+	            break;
+	        case KeyEvent.VK_DOWN:
+	        	if(wentOffScreen())
+	        		resetShark();
+	        	else {
+	        		moveShark("down");
+	        		playGame();
+	        	}
+	            break;
+	        case KeyEvent.VK_LEFT:
+	        	if(wentOffScreen())
+	        		resetShark();
+	        	else {
+	        		moveShark("left");
+	        		playGame();
+	        	}
+	            break;
+	        case KeyEvent.VK_RIGHT :
+	        	if(wentOffScreen())
+	        		resetShark();
+	        	else {
+	        		moveShark("right");
+	        		playGame();
+	        	}
+	            break;
+	     }
+	}
+	
 	private void playGame()
 	{
 		/** TODO
@@ -324,7 +369,7 @@ public class Game3 extends JPanel
 		this.remove(shark);
 	}
 	
-	private void moveShark()
+	private void resetShark()
 	{
 		removeAll();
 		setUpLayout();
@@ -333,23 +378,59 @@ public class Game3 extends JPanel
 		repaint();
 	}
 	
+	// might be a problem here with how things are drawn in relation to preceding component
+	private void moveShark(String direction)
+	{
+		removeAll();
+		setUpLayout();
+		revalidate();
+		repaint();
+		
+		shark.updateLocation(direction);
+		//sharkLabel.setHorizontalAlignment(SwingConstants.LEFT);
+		sharkLabel.setFocusable(true);
+		theLayout.putConstraint(SpringLayout.WEST, sharkLabel, shark.getXValue(), SpringLayout.WEST, this);
+		theLayout.putConstraint(SpringLayout.NORTH, sharkLabel, shark.getYValue(), SpringLayout.NORTH, this);
+		
+		add(sharkLabel);
+	}
+
+	// Adds a shark to the screen with the question JLabel
 	private void addShark()
 	{
-		shark.setFocusPainted(false);
-		shark.setContentAreaFilled(false);
-		shark.setFont(new Font("Ariel", Font.PLAIN, 20));
-		shark.setForeground(Color.WHITE);
-		shark.updateLocation();
-		shark.setLocation(shark.getXValue(), shark.getYValue());
-		add(shark);
+//		shark.setLocation(shark.getXValue(), shark.getYValue());
+		
+		
+		theLayout.putConstraint(SpringLayout.WEST, questionLabel, 45, SpringLayout.WEST, this);
+		theLayout.putConstraint(SpringLayout.NORTH, questionLabel, 110, SpringLayout.NORTH, this);
+		
+//		questionLabel.setHorizontalAlignment(SwingConstants.LEFT);
+//		questionLabel.setForeground(new Color(70, 130, 180));
+//		questionLabel.setForeground(Color.BLACK);
+//		questionLabel.setFont(new Font("Arial", Font.BOLD, 30));
+//		questionLabel.setMinimumSize(new Dimension(130, 100));
+//		questionLabel.setPreferredSize(new Dimension(240, 120));
+//		questionLabel.setMaximumSize(new Dimension(250, 130));
+//		theLayout.putConstraint(SpringLayout.WEST, questionLabel, 50, SpringLayout.WEST, this);
+//		theLayout.putConstraint(SpringLayout.SOUTH, questionLabel, -25, SpringLayout.SOUTH, this);
+		sharkLabel.setHorizontalAlignment(SwingConstants.LEFT);
+		sharkLabel.setFocusable(true);
+		theLayout.putConstraint(SpringLayout.WEST, sharkLabel, 10, SpringLayout.WEST, this);
+		theLayout.putConstraint(SpringLayout.NORTH, sharkLabel, 90, SpringLayout.NORTH, this);
+		
+//		add(shark);
+		add(questionLabel);
+		add(sharkLabel);
 	}
 
 	//TODO Modify this to make sure the shark cannot move off the screen
 	// reset shark if shark moves off screen
-	public void wentOffScreen(SharkObject shark)
+	public boolean wentOffScreen()
 	{
-		clearShark();
-		addShark();
+		if((shark.getXValue() > maxX) || (shark.getYValue() > maxY)) 
+			return true;
+		else
+			return false;
 	}
 	
 	//TODO will be where checking shark location is on the correct answer
