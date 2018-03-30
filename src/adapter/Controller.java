@@ -309,13 +309,14 @@ public class Controller
 		return result;
 	}
 	
-	public void addStudent(String firstName, String lastName, String idString){
+	public void addUser(String firstName, String lastName, String idString, int permissionLevel)
+	{
 		int id = Integer.parseInt(idString);
 		String pass = idString;
 		String userName = firstName.substring(0, 1) 
 				+ lastName.substring(0, 1) 
 				+ idString.substring(idString.length() - 4);
-		database.addUser(id, userName, pass, firstName, lastName, this.classID, 3);
+		database.addUser(id, userName, pass, firstName, lastName, this.classID, permissionLevel);
 	}
 	
 }

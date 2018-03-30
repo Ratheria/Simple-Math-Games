@@ -12,7 +12,10 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -34,14 +37,15 @@ public class ManageUsers extends JPanel
 	private JLabel header;
 	private JButton backButton;
 	private JButton importUsersButton;
-	private JLabel addUser;
+	private JComboBox<String> userOptions;
 	private JLabel addFirstName;
 	private JTextField addFirstNameTextField;
 	private JLabel addLastName;
 	private JTextField addLastNameTextField;
 	private JLabel addID;
 	private JTextField addIDTextField;
-	private JButton addUserButton;
+	private JButton manageUserButton;
+	private int value;
 	
 	public ManageUsers(Controller base)
 	{
@@ -51,14 +55,15 @@ public class ManageUsers extends JPanel
 		header = new JLabel(" Manage Users ");
 		backButton = new JButton(" BACK ");
 		importUsersButton = new JButton(" IMPORT USERS FROM CSV ");
-		addUser = new JLabel("Add Individual User");
+		userOptions = new JComboBox<String>(new DefaultComboBoxModel<String>(new String[] {" Add New Student", " Add New Teacher"}));
 		addFirstName = new JLabel("First Name");
 		addFirstNameTextField = new JTextField();
 		addLastName = new JLabel("Last Name");
 		addLastNameTextField = new JTextField();
 		addID = new JLabel("Student ID");
 		addIDTextField = new JTextField();
-		addUserButton = new JButton(" ADD USER ");
+		manageUserButton = new JButton(" ADD USER ");
+		value = 0;
 
 		setUpLayout();
 		setUpListeners();
@@ -110,12 +115,11 @@ public class ManageUsers extends JPanel
 		gbc_importUsersButton.gridx = 0;
 		gbc_importUsersButton.gridy = 2;
 		
-		addUser.setVerticalAlignment(SwingConstants.TOP);
-		addUser.setForeground(new Color(105, 105, 105));
-		addUser.setFont(new Font("Arial", Font.PLAIN, 25));
+		userOptions.setForeground(new Color(105, 105, 105));
+		userOptions.setFont(new Font("Arial", Font.PLAIN, 20));
 		GridBagConstraints gbc_addUser = new GridBagConstraints();
 		gbc_addUser.anchor = GridBagConstraints.NORTHWEST;
-		gbc_addUser.gridwidth = 5;
+		gbc_addUser.gridwidth = 2;
 		gbc_addUser.insets = new Insets(10, 30, 10, 0);
 		gbc_addUser.gridx = 0;
 		gbc_addUser.gridy = 4;
@@ -183,13 +187,13 @@ public class ManageUsers extends JPanel
 		gbc_addIDTextField.gridx = 0;
 		gbc_addIDTextField.gridy = 11;
 		
-		addUserButton.setVerticalAlignment(SwingConstants.TOP);
-		addUserButton.setForeground(new Color(105, 105, 105));
-		addUserButton.setBackground(new Color(105, 105, 105));
-		addUserButton.setFocusPainted(false);
-		addUserButton.setContentAreaFilled(false);
-		addUserButton.setBorder(new LineBorder(new Color(105, 105, 105), 2));
-		addUserButton.setFont(new Font("Arial", Font.PLAIN, 25));
+		manageUserButton.setVerticalAlignment(SwingConstants.TOP);
+		manageUserButton.setForeground(new Color(105, 105, 105));
+		manageUserButton.setBackground(new Color(105, 105, 105));
+		manageUserButton.setFocusPainted(false);
+		manageUserButton.setContentAreaFilled(false);
+		manageUserButton.setBorder(new LineBorder(new Color(105, 105, 105), 2));
+		manageUserButton.setFont(new Font("Arial", Font.PLAIN, 25));
 		GridBagConstraints gbc_addUserButton = new GridBagConstraints();
 		gbc_addUserButton.anchor = GridBagConstraints.NORTHEAST;
 		gbc_addUserButton.gridwidth = 2;
@@ -200,14 +204,14 @@ public class ManageUsers extends JPanel
 		add(header, gbc_displayName);
 		add(backButton, gbc_settingsButton);
 		add(importUsersButton, gbc_importUsersButton);
-		add(addUser, gbc_addUser);
+		add(userOptions, gbc_addUser);
 		add(addFirstName, gbc_addFirstName);
 		add(addFirstNameTextField, gbc_addFirstNameTextField);
 		add(addLastName, gbc_addLastName);
 		add(addLastNameTextField, gbc_addLastNameTextField);
 		add(addID, gbc_addID);
 		add(addIDTextField, gbc_addIDTextField);
-		add(addUserButton, gbc_addUserButton);
+		add(manageUserButton, gbc_addUserButton);
 		
 	}
 	
@@ -244,17 +248,37 @@ public class ManageUsers extends JPanel
 			}
 		});
 		
-		addUserButton.addActionListener(new ActionListener() 
+		userOptions.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				if(value != userOptions.getSelectedIndex())
+				{
+					value = userOptions.getSelectedIndex();
+				}
+			}
+		});
+		
+		manageUserButton.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent onClick) 
 			{
-				addStudent();
+				switch(value)
+				{
+					case 0:
+						addUser(3);
+						break;
+					case 1:
+						addUser(2);
+						break;
+				}
 			}
 		});
 	
 	}
 	
-	private void addStudent(){
+	private void addUser(int permissionLevel)
+	{
 		String firstName = addFirstNameTextField.getText();
 		String lastName = addLastNameTextField.getText();
 		String idString = addIDTextField.getText();
@@ -263,7 +287,7 @@ public class ManageUsers extends JPanel
 		int idLength = idString.length();
 		if(firstLength > 0 && lastLength > 0 && idLength > 0)
 		{
-		base.addStudent(firstName, lastName, idString);	
+			base.addUser(firstName, lastName, idString, permissionLevel);	
 		}
 		else
 		{
@@ -275,4 +299,5 @@ public class ManageUsers extends JPanel
 		addIDTextField.setText("");
 		addFirstNameTextField.requestFocus();
 	}
+	
 }
