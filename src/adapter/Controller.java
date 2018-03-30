@@ -171,7 +171,7 @@ public class Controller
 	public void addEquation(String newEquation)
 	{
 		newEquation = newEquation.trim();
-		if(newEquation != null)
+		if(newEquation != null && newEquation.length() > 2)
 		{
 			int whitespace = newEquation.indexOf(" "); 
 			while(whitespace != -1)
@@ -239,6 +239,7 @@ public class Controller
 				}
 			}
 		}
+		
 	}
 	
 	public void changeCustomEquations(String equationString, int frequency, int numberOfEquations)
