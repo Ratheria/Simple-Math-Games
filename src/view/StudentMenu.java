@@ -48,7 +48,7 @@ public class StudentMenu extends JPanel
 	private void setUpLayout() 
 	{
 		layout.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0};
-		layout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+		layout.rowWeights = new double[]{0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0};
 		layout.columnWidths = new int[]{20, 0, 0, 0};
 		layout.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0};
 		setLayout(layout);
@@ -99,7 +99,7 @@ public class StudentMenu extends JPanel
 		btnGame.setBorder(new LineBorder(new Color(135, 206, 250), 2));
 		GridBagConstraints gbc_btnGame = new GridBagConstraints();
 		gbc_btnGame.gridwidth = 4;
-		gbc_btnGame.insets = new Insets(5, 0, 10, 0);
+		gbc_btnGame.insets = new Insets(5, 0, 15, 0);
 		gbc_btnGame.gridx = 0;
 		gbc_btnGame.gridy = 2;
 		
@@ -111,7 +111,7 @@ public class StudentMenu extends JPanel
 		btnGame2.setBorder(new LineBorder(new Color(135, 206, 250), 2));
 		GridBagConstraints gbc_btnGame2 = new GridBagConstraints();
 		gbc_btnGame2.gridwidth = 4;
-		gbc_btnGame2.insets = new Insets(5, 0, 10, 0);
+		gbc_btnGame2.insets = new Insets(5, 0, 15, 0);
 		gbc_btnGame2.gridx = 0;
 		gbc_btnGame2.gridy = 3;
 		
@@ -123,7 +123,7 @@ public class StudentMenu extends JPanel
 		btnGame3.setBorder(new LineBorder(new Color(135, 206, 250), 2));
 		GridBagConstraints gbc_btnGame3 = new GridBagConstraints();
 		gbc_btnGame3.gridwidth = 4;
-		gbc_btnGame3.insets = new Insets(0, 0, 5, 5);
+		gbc_btnGame3.insets = new Insets(5, 0, 15, 5);
 		gbc_btnGame3.gridx = 0;
 		gbc_btnGame3.gridy = 4;
 		
@@ -135,7 +135,7 @@ public class StudentMenu extends JPanel
 		viewStats.setBorder(new LineBorder(new Color(135, 206, 250), 2));
 		GridBagConstraints gbc_viewStats = new GridBagConstraints();
 		gbc_viewStats.gridwidth = 4;
-		gbc_viewStats.insets = new Insets(0, 0, 5, 5);
+		gbc_viewStats.insets = new Insets(5, 0, 15, 5);
 		gbc_viewStats.gridx = 0;
 		gbc_viewStats.gridy = 5;
 		

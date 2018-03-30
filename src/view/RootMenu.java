@@ -20,6 +20,7 @@ import adapter.Controller;
 import adapter.ViewStates;
 import model.CustomTableModel;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -31,7 +32,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import javax.swing.SwingConstants;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.RowFilter;
@@ -68,6 +68,15 @@ public class RootMenu extends JPanel
 		operationButton = new JButton(" UNLOCK ACCOUNT ");
 		searchField = new JTextField();
 		dataSet = new JTable();
+		addUsersButton = new JButton(" Add Users ");
+		@SuppressWarnings("unused")
+		int value = 0;
+
+		setUpTable();
+	}
+
+	private void setUpTable()
+	{
 		ResultSet res = base.getAllUsers();
 		try 
 		{	dataSet = new JTable(CustomTableModel.buildTableModel(res, Controller.allUsersHeader));	}
@@ -79,13 +88,14 @@ public class RootMenu extends JPanel
 		listSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         listSelectionModel.addListSelectionListener(new SharedListSelectionHandler());
         dataSet.setSelectionModel(listSelectionModel);
-		addUsersButton = new JButton(" Add Users ");
-		int value = 0;
-
+		
+        removeAll();
+        revalidate();
+        repaint();
 		setUpLayout();
 		setUpListeners();
 	}
-
+	
 	private void setUpLayout() 
 	{
 		layout.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0};
@@ -280,10 +290,15 @@ public class RootMenu extends JPanel
 							base.unlockAccount(id);
 							break;
 						case 1:
-							operationButton.setText(" RESET PASSWORD ");
+							base.resetPassword(id);
 							break;
 						case 2:
-							operationButton.setText(" DELETE USER ");
+							int valueReturned = JOptionPane.showConfirmDialog(base.errorPanel, "Are you sure you want to delete this user?");
+							if(valueReturned == JOptionPane.OK_OPTION)
+							{	
+								//base.deleteUser(id);	
+								setUpTable();
+							}
 							break;
 					}
 				}

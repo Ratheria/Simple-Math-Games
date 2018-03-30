@@ -73,7 +73,7 @@ public class Game1 extends JPanel
 		fishImageWidth= (base.frame.getWidth() - 250)/8;
 		fishImageHeight = (base.frame.getHeight() - 250)/7;
 		try 
-		{	fishImg = ImageIO.read(new File("fish.png"));	} 
+		{	fishImg = ImageIO.read(this.getClass().getResourceAsStream("fish.png"));	} 
 		catch (IOException ex) 
 		{	System.out.println("File fish.png is missing.");	}
 		fishImg = fishImg.getScaledInstance( fishImageWidth, fishImageHeight,  java.awt.Image.SCALE_SMOOTH ) ;  //resizes fish image
