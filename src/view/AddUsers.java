@@ -28,7 +28,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileFilter;
 import adapter.Controller;
 
-public class ManageUsers extends JPanel
+public class AddUsers extends JPanel
 {
 	private static final long serialVersionUID = 7833894194480819845L;
 	private JFileChooser fileChoose;
@@ -47,20 +47,20 @@ public class ManageUsers extends JPanel
 	private JButton manageUserButton;
 	private int value;
 	
-	public ManageUsers(Controller base)
+	public AddUsers(Controller base)
 	{
 		this.base = base;
 		fileChoose = new JFileChooser();
 		layout = new GridBagLayout();
-		header = new JLabel(" Manage Users ");
+		header = new JLabel(" Add Users ");
 		backButton = new JButton(" BACK ");
 		importUsersButton = new JButton(" IMPORT USERS FROM CSV ");
-		userOptions = new JComboBox<String>(new DefaultComboBoxModel<String>(new String[] {" Add New Student", " Add New Teacher"}));
+		userOptions = new JComboBox<String>(new DefaultComboBoxModel<String>(new String[] {" Add New Student", " Add New Teacher", " Add New Admin"}));
 		addFirstName = new JLabel("First Name");
 		addFirstNameTextField = new JTextField();
 		addLastName = new JLabel("Last Name");
 		addLastNameTextField = new JTextField();
-		addID = new JLabel("Student ID");
+		addID = new JLabel("User ID");
 		addIDTextField = new JTextField();
 		manageUserButton = new JButton(" ADD USER ");
 		value = 0;
@@ -117,12 +117,12 @@ public class ManageUsers extends JPanel
 		
 		userOptions.setForeground(new Color(105, 105, 105));
 		userOptions.setFont(new Font("Arial", Font.PLAIN, 20));
-		GridBagConstraints gbc_addUser = new GridBagConstraints();
-		gbc_addUser.anchor = GridBagConstraints.NORTHWEST;
-		gbc_addUser.gridwidth = 2;
-		gbc_addUser.insets = new Insets(10, 30, 10, 0);
-		gbc_addUser.gridx = 0;
-		gbc_addUser.gridy = 4;
+		GridBagConstraints gbc_userOptions = new GridBagConstraints();
+		gbc_userOptions.anchor = GridBagConstraints.NORTHWEST;
+		gbc_userOptions.gridwidth = 2;
+		gbc_userOptions.insets = new Insets(10, 30, 10, 0);
+		gbc_userOptions.gridx = 0;
+		gbc_userOptions.gridy = 4;
 		
 		addFirstName.setVerticalAlignment(SwingConstants.TOP);
 		addFirstName.setForeground(new Color(105, 105, 105));
@@ -204,7 +204,7 @@ public class ManageUsers extends JPanel
 		add(header, gbc_displayName);
 		add(backButton, gbc_settingsButton);
 		add(importUsersButton, gbc_importUsersButton);
-		add(userOptions, gbc_addUser);
+		add(userOptions, gbc_userOptions);
 		add(addFirstName, gbc_addFirstName);
 		add(addFirstNameTextField, gbc_addFirstNameTextField);
 		add(addLastName, gbc_addLastName);
@@ -212,7 +212,6 @@ public class ManageUsers extends JPanel
 		add(addID, gbc_addID);
 		add(addIDTextField, gbc_addIDTextField);
 		add(manageUserButton, gbc_addUserButton);
-		
 	}
 	
 	private void setUpListeners() 
@@ -221,9 +220,7 @@ public class ManageUsers extends JPanel
 		backButton.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent onClick) 
-			{
-				base.returnToMenu();
-			}
+			{	base.returnToMenu();	}
 		});
 		
 		importUsersButton.addActionListener(new ActionListener() 
@@ -242,9 +239,7 @@ public class ManageUsers extends JPanel
 			    });
 				int valueReturned = fileChoose.showOpenDialog(temp);
 				if(valueReturned == JFileChooser.APPROVE_OPTION)
-				{
-					base.importUsers(fileChoose.getSelectedFile());
-				}
+				{	base.importUsers(fileChoose.getSelectedFile());	}
 			}
 		});
 		
@@ -253,9 +248,7 @@ public class ManageUsers extends JPanel
 			public void actionPerformed(ActionEvent e) 
 			{
 				if(value != userOptions.getSelectedIndex())
-				{
-					value = userOptions.getSelectedIndex();
-				}
+				{	value = userOptions.getSelectedIndex();	}
 			}
 		});
 		
@@ -265,12 +258,9 @@ public class ManageUsers extends JPanel
 			{
 				switch(value)
 				{
-					case 0:
-						addUser(3);
-						break;
-					case 1:
-						addUser(2);
-						break;
+					case 0:	addUser(3);	break;
+					case 1:	addUser(2);	break;
+					case 3:	addUser(1);	break;
 				}
 			}
 		});
@@ -292,7 +282,7 @@ public class ManageUsers extends JPanel
 		else
 		{
 			JPanel errorPanel = new JPanel();
-			JOptionPane.showMessageDialog(errorPanel, "Please enter first name, last name, and password.", "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(errorPanel, "Please enter first name, last name, and user ID.", "Error", JOptionPane.ERROR_MESSAGE);
 		}
 		addFirstNameTextField.setText("");
 		addLastNameTextField.setText("");

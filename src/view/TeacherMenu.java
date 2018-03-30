@@ -284,7 +284,7 @@ public class TeacherMenu extends JPanel implements ChangeListener
 			public void actionPerformed(ActionEvent onClick)
 			{	
 				String newEquation = addEquationsTextField.getText();
-				if(newEquation != null)
+				if(newEquation != null && newEquation.length() > 1)
 				{
 					base.addEquation(newEquation);
 					updateQuestionInfo();

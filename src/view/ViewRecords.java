@@ -1,3 +1,7 @@
+/**
+ * @author Ariana Fairbanks
+ */
+
 package view;
 
 import java.awt.Color;
@@ -8,14 +12,13 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.Vector;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.RowFilter;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
@@ -24,7 +27,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import javax.swing.table.JTableHeader;
@@ -51,14 +55,15 @@ public class ViewRecords extends JPanel
 		backButton = new JButton(" BACK ");
 		studentLookupField = new JTextField();
 		studentRecordsSet = new JTable();
+		
+		ResultSet res = base.getStudents();
+		try 
+		{	studentRecordsSet = new JTable(CustomTableModel.buildTableModel(res, Controller.studentRecordsHeader));	}
+		catch (SQLException e) { e.printStackTrace(); }
+
 		rowSorter = new TableRowSorter<>(studentRecordsSet.getModel());
 		studentRecordsSet.setRowSorter(rowSorter);
 		
-		ResultSet res = base.lookupStudent();
-		try 
-		{	studentRecordsSet = new JTable(CustomTableModel.buildTableModel(res));	}
-		catch (SQLException e) { e.printStackTrace(); }
-
 		setUpLayout();
 		setUpListeners();
 	}
@@ -103,7 +108,7 @@ public class ViewRecords extends JPanel
 		studentLookupField.setBorder(new CompoundBorder(new LineBorder(new Color(70, 130, 180)), new EmptyBorder(0, 10, 0, 0)));
 		GridBagConstraints gbc_studentLookupField = new GridBagConstraints();
 		gbc_studentLookupField.gridwidth = 4;
-		gbc_studentLookupField.insets = new Insets(5, 100, 5, 100);
+		gbc_studentLookupField.insets = new Insets(10, 100, 10, 100);
 		gbc_studentLookupField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_studentLookupField.gridx = 0;
 		gbc_studentLookupField.gridy = 2;
@@ -156,7 +161,6 @@ public class ViewRecords extends JPanel
                 else 
                 {	rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));	}
             }
-
             @Override
             public void removeUpdate(DocumentEvent e) 
             {
@@ -166,11 +170,29 @@ public class ViewRecords extends JPanel
                 else 
                 {	rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));	}
             }
-
             @Override
             public void changedUpdate(DocumentEvent e) 
             {	throw new UnsupportedOperationException("Not supported."); }
         });	
+	}
+
+	private void updateField()
+	{
+		int row = studentRecordsSet.getSelectedRow();
+		String selection = (String) studentRecordsSet.getValueAt(row, 0);
+		//userField.setText(selection);
+		//TODO
+	}
+	
+	private class SharedListSelectionHandler implements ListSelectionListener 
+	{		
+	    public void valueChanged(ListSelectionEvent e) 
+	    {
+	        ListSelectionModel lsm = (ListSelectionModel)e.getSource();
+	        if (lsm.isSelectionEmpty()){	} 
+	        else 
+	        {	updateField();	}
+	    }
 	}
 	
 }

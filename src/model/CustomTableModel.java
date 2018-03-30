@@ -5,7 +5,6 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
-import adapter.Controller;
 
 public class CustomTableModel extends DefaultTableModel 
 {
@@ -14,6 +13,7 @@ public class CustomTableModel extends DefaultTableModel
     public CustomTableModel(Vector<Vector<Object>> data, Vector<String> columnNames) 
     {
 		super(data, columnNames);
+		
 	}
     
 	public CustomTableModel(Object[][] data, Object[] columnNames)
@@ -24,7 +24,7 @@ public class CustomTableModel extends DefaultTableModel
 	public boolean isCellEditable(int row, int column)
     {	return false;  }
 	
-	public static CustomTableModel buildTableModel(ResultSet res) throws SQLException 
+	public static CustomTableModel buildTableModel(ResultSet res, String[] header) throws SQLException 
 	{
 		ResultSetMetaData metaData = res.getMetaData();
 
@@ -33,7 +33,7 @@ public class CustomTableModel extends DefaultTableModel
 
 	    for (int column = 0; column < columnCount; column++) 
 	    {	
-	    	columnNames.add(Controller.studentRecordsHeader[column]);
+	    	columnNames.add(header[column]);
 	    }
 	    
 	    Vector<Vector<Object>> data = new Vector<Vector<Object>>();

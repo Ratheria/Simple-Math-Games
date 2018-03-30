@@ -1,6 +1,7 @@
 /**
  *	@author Ariana Fairbanks
  */
+
 package model;
 
 import java.io.BufferedReader;
@@ -93,7 +94,7 @@ public class SQLiteData
 		return match;
 	}
 	
-	public boolean resetPassword(String userName)
+	public boolean resetPassword(int ID)
 	{
 		boolean result = true;
 		if(base.getPerms() < 2)
@@ -102,16 +103,10 @@ public class SQLiteData
 			{
 				if (con == null)
 				{	getConnection();	}
-				ResultSet res = null;
-				String query = "SELECT ID FROM USER WHERE userName = ?";
+				String query = "UPDATE USER SET pass = ? WHERE ID = ?";
 				PreparedStatement preparedStatement = con.prepareStatement(query);
-				preparedStatement.setString(1, userName);
-				res = preparedStatement.executeQuery();
-				String id = "" + res.getInt("ID");
-				query = "UPDATE USER SET pass = ? WHERE userName = ?";
-				preparedStatement = con.prepareStatement(query);
-				preparedStatement.setString(1, id);
-				preparedStatement.setString(2, userName);
+				preparedStatement.setInt(1, ID);
+				preparedStatement.setInt(2, ID);
 				preparedStatement.executeUpdate();
 			}
 			catch (SQLException e)
@@ -123,57 +118,57 @@ public class SQLiteData
 		return result;
 	}
 	
-	public void loginSuccess(String userName)
+	public void loginSuccess(int ID)
 	{
 		try
 		{
 			if (con == null)
 			{	getConnection();	}
-			String query = "UPDATE USER SET failedAttempts = ? WHERE userName = ?";
+			String query = "UPDATE USER SET failedAttempts = ? WHERE ID = ?";
 			PreparedStatement preparedStatement = con.prepareStatement(query);
 			preparedStatement.setInt(1, 0);
-			preparedStatement.setString(2, userName);
+			preparedStatement.setInt(2, ID);
 			preparedStatement.executeUpdate();
-			query = "UPDATE USER SET isLocked = ? WHERE userName = ?";
+			query = "UPDATE USER SET isLocked = ? WHERE ID = ?";
 			preparedStatement = con.prepareStatement(query);
 			preparedStatement.setBoolean(1, false);
-			preparedStatement.setString(2, userName);
+			preparedStatement.setInt(2, ID);
 			preparedStatement.executeUpdate();
 		}
 		catch (SQLException e){ e.printStackTrace(); }
 	}
 	
-	public void loginFailure(String userName)
+	public void loginFailure(int ID)
 	{
 		try
 		{
 			ResultSet res = null;
 			if (con == null)
 			{	getConnection();	}
-			String query = "SELECT failedAttempts FROM USER WHERE userName = ?";
+			String query = "SELECT failedAttempts FROM USER WHERE ID = ?";
 			PreparedStatement preparedStatement = con.prepareStatement(query);
-			preparedStatement.setString(1, userName);
+			preparedStatement.setInt(1, ID);
 			res = preparedStatement.executeQuery();
 			int result = res.getInt("failedAttempts");
 			result += 1;
-			query = "UPDATE USER SET failedAttempts = ? WHERE userName = ?";
+			query = "UPDATE USER SET failedAttempts = ? WHERE ID = ?";
 			preparedStatement = con.prepareStatement(query);
 			preparedStatement.setInt(1, result);
-			preparedStatement.setString(2, userName);
+			preparedStatement.setInt(2, ID);
 			preparedStatement.executeUpdate();
 			if (result > 5)
 			{
-				query = "UPDATE USER SET isLocked = ? WHERE userName = ?";
+				query = "UPDATE USER SET isLocked = ? WHERE ID = ?";
 				preparedStatement = con.prepareStatement(query);
 				preparedStatement.setBoolean(1, true);
-				preparedStatement.setString(2, userName);
+				preparedStatement.setInt(2, ID);
 				preparedStatement.executeUpdate();
 			}
 		}
 		catch (SQLException e){e.printStackTrace();}
 	}
 	
-	public boolean isLocked(String userName)
+	public boolean isLocked(int ID)
 	{
 		boolean result = true;
 		ResultSet res = null;
@@ -182,9 +177,9 @@ public class SQLiteData
 		{	getConnection();	}
 		try 
 		{
-			String query = "SELECT isLocked FROM USER WHERE userName = ?";
+			String query = "SELECT isLocked FROM USER WHERE ID = ?";
 			preparedStatement = con.prepareStatement(query);
-			preparedStatement.setString(1, userName);
+			preparedStatement.setInt(1, ID);
 			res = preparedStatement.executeQuery();
 			result = res.getBoolean("isLocked");
 		}		
@@ -364,15 +359,12 @@ public class SQLiteData
 		catch (SQLException e) {e.printStackTrace();}
 	}
 	
-	// Method to retrieve the records for a student. Called from TeacherMenu/ViewRecords
 	public ResultSet selectStudentRecord(String classID)
 	{
 		ResultSet studentRecords = null;
 		PreparedStatement preparedStatement;
 		if (con == null)
-		{	
-			getConnection();	
-		}
+		{	getConnection();	}
 		try 
 		{
 			String query = "SELECT studentID, studentFirstName, studentLastName, date from STUDENT_SCORE_RECORDS WHERE classID = ?";
@@ -382,6 +374,41 @@ public class SQLiteData
 		}
 		catch (SQLException e) { e.printStackTrace(); }		
 		return studentRecords;
+	}
+	
+	public ResultSet getStudents(String classID)
+	{
+		ResultSet res = null;
+		PreparedStatement preparedStatement;
+		if (con == null)
+		{	getConnection();	}
+		try 
+		{
+			String query = "SELECT ID, userName, firstName, lastName from USER WHERE classID = ? AND permission = ?";
+			preparedStatement = con.prepareStatement(query);
+			preparedStatement.setString(1, classID);
+			preparedStatement.setInt(2, 3);
+			res = preparedStatement.executeQuery();
+		}
+		catch (SQLException e) { e.printStackTrace(); }		
+		return res;
+	}
+	
+	public ResultSet getAllUsers()
+	{
+		ResultSet res = null;
+		PreparedStatement preparedStatement;
+		if (con == null)
+		{	getConnection();	}
+		try 
+		{
+			String query = "SELECT ID, userName, firstName, lastName, classID from USER WHERE NOT ID = ?";
+			preparedStatement = con.prepareStatement(query);
+			preparedStatement.setInt(1, 0);
+			res = preparedStatement.executeQuery();
+		}
+		catch (SQLException e) { e.printStackTrace(); }		
+		return res;
 	}
 	
 	private boolean userExists(int ID)
@@ -458,7 +485,7 @@ public class SQLiteData
 				}
 				
 				//Drop table			
-				// state.execute("DROP TABLE IF EXISTS CUSTOM_EQUATIONS;");
+				state.execute("DROP TABLE IF EXISTS CUSTOM_EQUATIONS;");
 				
 				ResultSet customEq = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' " +
 						"AND name='CUSTOM_EQUATIONS'");
@@ -476,7 +503,7 @@ public class SQLiteData
 				
 				// drop table if exists
 				//TODO Once we are done testing we want to get rid of this logic so it doesn't reset every time you open the application.
-				// state.execute("DROP TABLE IF EXISTS STUDENT_SCORE_RECORDS;");
+				state.execute("DROP TABLE IF EXISTS STUDENT_SCORE_RECORDS;");
 				ResultSet studentScoreRecords = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' " +
 						"AND name='STUDENT_SCORE_RECORDS'");
 				
@@ -486,15 +513,15 @@ public class SQLiteData
 					state = con.createStatement();
 					state.executeUpdate("CREATE TABLE STUDENT_SCORE_RECORDS("
 							+ "studentID INTEGER," + "studentFirstName VARCHAR(30)," + "studentLastName VARCHAR(30)," + "classID VARCHAR(5)," + "date VARCHAR(19)," + "recordID INTEGER,"
-							+ "PRIMARY KEY (recordID)," 
-							+ "FOREIGN KEY (studentFirstName) REFERENCES USER(firstName)," 
-							+ "FOREIGN KEY (studentLastName) REFERENCES USER(lastName)," 
-							+ "FOREIGN KEY (classID) REFERENCES USER(classID)," 
+							+ "PRIMARY KEY (recordID),"  
 							+ "FOREIGN KEY (studentID) REFERENCES USER(ID));");
 					
 					DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 					LocalDateTime now = LocalDateTime.now(); 
 					addStudentScoreRecord(222222, "Default", "Student", "1A", dtf.format(now));
+					addStudentScoreRecord(222222, "Default", "Student", "1A", dtf.format(now));
+					addStudentScoreRecord(222222, "Default", "Student", "1A", dtf.format(now));
+					addStudentScoreRecord(111111, "Default", "Teacher", "1A", dtf.format(now));
 
 				}
 			}

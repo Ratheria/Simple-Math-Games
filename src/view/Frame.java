@@ -73,7 +73,7 @@ public class Frame extends JFrame
 				break;
 			case manageUsers:
 				panel.removeAll();
-				panel = new ManageUsers(base);
+				panel = new AddUsers(base);
 				break;			
 			case game1:
 				panel.removeAll();

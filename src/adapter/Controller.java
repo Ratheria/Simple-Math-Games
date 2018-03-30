@@ -18,7 +18,8 @@ import view.Frame;
 public class Controller
 {
 	public static Random rng;
-	public static String[] studentRecordsHeader = {"Student ID", "First Name", "Last Name", "Date"};
+	public static String[] studentRecordsHeader = {"Student ID", "Username", "First Name", "Last Name"};
+	public static String[] allUsersHeader = {"User ID", "Username", "First Name", "Last Name", "Class ID"};
 	public Frame frame;
 	public JPanel errorPanel;
 	private SQLiteData database;
@@ -50,7 +51,7 @@ public class Controller
 		try
 		{
 			boolean hasRes = res.next();
-			if(database.isLocked(userName) && hasRes)
+			if(database.isLocked(ID) && hasRes)
 			{	JOptionPane.showMessageDialog(errorPanel, "This account has been locked due to too many failed login attempts.", "Error", JOptionPane.ERROR_MESSAGE);	}
 			else if(hasRes)
 			{
@@ -75,13 +76,13 @@ public class Controller
 				returnToMenu();
 				System.out.println(ID);
 				frame.updateState();
-				database.loginSuccess(userName);
+				database.loginSuccess(ID);
 			}
 			else
 			{
 				JOptionPane.showMessageDialog(errorPanel, "Incorrect username or password.", "Error", JOptionPane.ERROR_MESSAGE);
 				if(!(userName.equals("root")))
-				{	database.loginFailure(userName);	}
+				{	database.loginFailure(ID);	}
 			}
 		}
 		catch (SQLException e){ e.printStackTrace(); }
@@ -111,9 +112,6 @@ public class Controller
 		{	changeState(ViewStates.studentMenu);	}
 	}
 	
-	public void returnToStudentRecords()
-	{	changeState(ViewStates.viewRecords);	}
-	
 	public void logout()
 	{
 		state = ViewStates.login;
@@ -137,22 +135,22 @@ public class Controller
 		frame.updateState();
 	}
 	
-	public void unlockAccount(String userName)
+	public void unlockAccount(int ID)
 	{
 		JPanel errorPanel = new JPanel();
 		if(permission < 2)
-		{	database.loginSuccess(userName);	}
-		if(database.isLocked(userName))
+		{	database.loginSuccess(ID);	}
+		if(database.isLocked(ID))
 		{	JOptionPane.showMessageDialog(errorPanel, "Failed to unlock account.", "Error", JOptionPane.ERROR_MESSAGE);	}
 		else
 		{	JOptionPane.showMessageDialog(errorPanel, "Account successfully unlocked.", "", JOptionPane.INFORMATION_MESSAGE);	}
 	}
 	
-	public void resetPassword(String userName)
+	public void resetPassword(int ID)
 	{
 		boolean change = false;
 		if(permission < 2)
-		{	change = database.resetPassword(userName);	}
+		{	change = database.resetPassword(ID);	}
 		if(!change)
 		{	JOptionPane.showMessageDialog(errorPanel, "Password not reset.", "", JOptionPane.ERROR_MESSAGE);	}
 		else
@@ -231,7 +229,9 @@ public class Controller
 					{	JOptionPane.showMessageDialog(errorPanel, "That problem has already been added.", "", JOptionPane.ERROR_MESSAGE);	}
 					else
 					{
-						equationString = equationString + ":" + newEquation;
+						if(numberOfEquations > 0)
+						{	equationString += ":";	}
+						equationString += newEquation;
 						numberOfEquations++;
 						changeCustomEquations(equationString, frequency, numberOfEquations);
 						JOptionPane.showMessageDialog(errorPanel, "Equation added.", "", JOptionPane.INFORMATION_MESSAGE);
@@ -262,7 +262,21 @@ public class Controller
 		System.out.println(numberOfEquations);
 	}
 	
-	public ResultSet lookupStudent() 
+	public ResultSet getAllUsers() 
+	{
+		ResultSet result = null;
+		result = database.getAllUsers();
+		return result;
+	}
+	
+	public ResultSet getStudents() 
+	{
+		ResultSet result = null;
+		result = database.getStudents(classID);
+		return result;
+	}
+	
+	public ResultSet getStudentRecords() 
 	{
 		ResultSet result = null;
 		result = database.selectStudentRecord(classID);
