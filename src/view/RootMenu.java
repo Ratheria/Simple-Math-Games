@@ -297,7 +297,7 @@ public class RootMenu extends JPanel
 						case 2:
 							if(id != 0)
 							{
-								int valueReturned = JOptionPane.showConfirmDialog(base.errorPanel, "Are you sure you want to delete this user?");
+								int valueReturned = JOptionPane.showConfirmDialog(base.messagePanel, "Are you sure you want to delete this user?");
 								if(valueReturned == JOptionPane.OK_OPTION)
 								{	
 									base.deleteUser(id);	
@@ -305,7 +305,7 @@ public class RootMenu extends JPanel
 								}
 							}
 							else
-							{	JOptionPane.showMessageDialog(base.errorPanel, "You can not delete the root user.", "", JOptionPane.INFORMATION_MESSAGE);	}
+							{	JOptionPane.showMessageDialog(base.messagePanel, "You can not delete the root user.", "", JOptionPane.INFORMATION_MESSAGE);	}
 							break;
 					}
 					userField.setText("");

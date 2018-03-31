@@ -321,7 +321,7 @@ public class TeacherMenu extends JPanel implements ChangeListener
 						setUpTable();
 					}
 					else
-					{	JOptionPane.showMessageDialog(base.errorPanel, "No such equation.", "", JOptionPane.INFORMATION_MESSAGE);	}
+					{	JOptionPane.showMessageDialog(base.messagePanel, "No such equation.", "", JOptionPane.INFORMATION_MESSAGE);	}
 				}
 				removeEquationsTextField.setText("");
 			}
@@ -370,7 +370,6 @@ public class TeacherMenu extends JPanel implements ChangeListener
 		System.out.println(row);
 		String selection = (String) dataSet.getValueAt(row, 0);
 		removeEquationsTextField.setText(selection);
-		//setUpTable();
 	}
 	
 	private class SharedListSelectionHandler implements ListSelectionListener 

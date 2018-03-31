@@ -21,7 +21,7 @@ public class Controller
 	public static String[] studentRecordsHeader = {"Student ID", "Username", "First Name", "Last Name"};
 	public static String[] allUsersHeader = {"User ID", "Username", "First Name", "Last Name", "Class ID"};
 	public Frame frame;
-	public JPanel errorPanel;
+	public JPanel messagePanel;
 	private SQLiteData database;
 	private ViewStates state;
 	private ViewStates lastState;
@@ -38,7 +38,7 @@ public class Controller
 	public void start()
 	{
 		rng = new Random();
-		errorPanel = new JPanel();
+		messagePanel = new JPanel();
 		database = new SQLiteData(this);
 		frame = new Frame(this);
 		logout();
@@ -93,12 +93,12 @@ public class Controller
 		boolean result = database.changeLogin(ID, pass, newPass);
 		if(result)
 		{
-			JOptionPane.showMessageDialog(errorPanel, "Password changed.", "Done", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(messagePanel, "Password changed.", "Done", JOptionPane.INFORMATION_MESSAGE);
 			changeState(lastState);
 		}
 		else
 		{
-			JOptionPane.showMessageDialog(errorPanel, "Incorrect password.", "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(messagePanel, "Incorrect password.", "Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 	
@@ -152,9 +152,9 @@ public class Controller
 		if(permission < 2)
 		{	change = database.resetPassword(ID);	}
 		if(!change)
-		{	JOptionPane.showMessageDialog(errorPanel, "Password not reset.", "", JOptionPane.ERROR_MESSAGE);	}
+		{	JOptionPane.showMessageDialog(messagePanel, "Password not reset.", "", JOptionPane.ERROR_MESSAGE);	}
 		else
-		{	JOptionPane.showMessageDialog(errorPanel, "Password successfully reset.", "", JOptionPane.INFORMATION_MESSAGE);}
+		{	JOptionPane.showMessageDialog(messagePanel, "Password successfully reset.", "", JOptionPane.INFORMATION_MESSAGE);}
 	}
 	
 	public void deleteUser(int ID)
@@ -163,18 +163,18 @@ public class Controller
 		if(permission < 2)
 		{	change = database.deleteUser(ID);	}
 		if(!change)
-		{	JOptionPane.showMessageDialog(errorPanel, "User not deleted.", "", JOptionPane.ERROR_MESSAGE);	}
+		{	JOptionPane.showMessageDialog(messagePanel, "User not deleted.", "", JOptionPane.ERROR_MESSAGE);	}
 		else
-		{	JOptionPane.showMessageDialog(errorPanel, "User successfully deleted.", "", JOptionPane.INFORMATION_MESSAGE);	}
+		{	JOptionPane.showMessageDialog(messagePanel, "User successfully deleted.", "", JOptionPane.INFORMATION_MESSAGE);	}
 	}
 	
 	public void importUsers(File file)
 	{	
 		int result = database.importUsers(file);	
 		if(result == -1)
-		{	JOptionPane.showMessageDialog(errorPanel, "Users successfully imported.", "", JOptionPane.INFORMATION_MESSAGE);	}
+		{	JOptionPane.showMessageDialog(messagePanel, "Users successfully imported.", "", JOptionPane.INFORMATION_MESSAGE);	}
 		else
-		{	JOptionPane.showMessageDialog(errorPanel, "Something went wrong at line " + result + ".", "", JOptionPane.ERROR_MESSAGE);	}
+		{	JOptionPane.showMessageDialog(messagePanel, "Something went wrong at line " + result + ".", "", JOptionPane.ERROR_MESSAGE);	}
 	}
 	
 	public void addEquation(String newEquation)
@@ -211,13 +211,13 @@ public class Controller
 				operators++;
 			}
 			if(operators < 1)
-			{	JOptionPane.showMessageDialog(errorPanel, "Please enter an addition or subtraction problem.", "", JOptionPane.ERROR_MESSAGE);	}
+			{	JOptionPane.showMessageDialog(messagePanel, "Please enter an addition or subtraction problem.", "", JOptionPane.ERROR_MESSAGE);	}
 			else if(operators > 1)
-			{	JOptionPane.showMessageDialog(errorPanel, "The problem you entered contained too many operators.", "", JOptionPane.ERROR_MESSAGE);	}
+			{	JOptionPane.showMessageDialog(messagePanel, "The problem you entered contained too many operators.", "", JOptionPane.ERROR_MESSAGE);	}
 			else if(stringLength < 3 || stringLength > 7)
-			{	JOptionPane.showMessageDialog(errorPanel, "The problem you entered was of invalid length.", "", JOptionPane.ERROR_MESSAGE);	}
+			{	JOptionPane.showMessageDialog(messagePanel, "The problem you entered was of invalid length.", "", JOptionPane.ERROR_MESSAGE);	}
 			else if(plusLocation == 0 || plusLocation == stringLength - 1 || minusLocation == 0 || minusLocation == stringLength - 1)
-			{	JOptionPane.showMessageDialog(errorPanel, "The problem you entered contained only one integer.", "", JOptionPane.ERROR_MESSAGE);	}
+			{	JOptionPane.showMessageDialog(messagePanel, "The problem you entered contained only one integer.", "", JOptionPane.ERROR_MESSAGE);	}
 			else
 			{
 				int answer = 0;
@@ -227,7 +227,7 @@ public class Controller
 					answer = Integer.parseInt(expressionHalves.get(0)) - Integer.parseInt(expressionHalves.get(1));
 				}
 				if(answer < 0)
-				{	JOptionPane.showMessageDialog(errorPanel, "Negative answer values are not supported.", "", JOptionPane.ERROR_MESSAGE);	}
+				{	JOptionPane.showMessageDialog(messagePanel, "Negative answer values are not supported.", "", JOptionPane.ERROR_MESSAGE);	}
 				else
 				{
 					boolean repeat = false;
@@ -237,7 +237,7 @@ public class Controller
 						{	repeat = true;	}
 					}
 					if(repeat)
-					{	JOptionPane.showMessageDialog(errorPanel, "That problem has already been added.", "", JOptionPane.ERROR_MESSAGE);	}
+					{	JOptionPane.showMessageDialog(messagePanel, "That problem has already been added.", "", JOptionPane.ERROR_MESSAGE);	}
 					else
 					{
 						if(numberOfEquations > 0)
@@ -245,7 +245,7 @@ public class Controller
 						equationString += newEquation;
 						numberOfEquations++;
 						changeCustomEquations(equationString, frequency, numberOfEquations);
-						JOptionPane.showMessageDialog(errorPanel, "Equation added.", "", JOptionPane.INFORMATION_MESSAGE);
+						JOptionPane.showMessageDialog(messagePanel, "Equation added.", "", JOptionPane.INFORMATION_MESSAGE);
 					}
 				}
 			}
@@ -343,9 +343,9 @@ public class Controller
 				+ idString.substring(idString.length() - 4);
 		boolean change = database.addUser(id, userName, pass, firstName, lastName, classID, permissionLevel);
 		if(!change)
-		{	JOptionPane.showMessageDialog(errorPanel, "Invalid input or duplicate ID. User not added.", "", JOptionPane.ERROR_MESSAGE);	}
+		{	JOptionPane.showMessageDialog(messagePanel, "Invalid input or duplicate ID. User not added.", "", JOptionPane.ERROR_MESSAGE);	}
 		else
-		{	JOptionPane.showMessageDialog(errorPanel, "User successfully added.", "", JOptionPane.INFORMATION_MESSAGE);	}
+		{	JOptionPane.showMessageDialog(messagePanel, "User successfully added.", "", JOptionPane.INFORMATION_MESSAGE);	}
 	}
 	
 }
