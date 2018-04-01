@@ -33,13 +33,13 @@ public class FishObject extends JButton implements ActionListener
     	super((answer + ""), icon);
         this.panel = panel;
         this.answer = answer;
-        movement = 1; //TODO
+        movement = 2; //TODO
         xValue = 50; 
         		//- (Controller.rng.nextInt(6) * 10);
         yValue = 100 + (numberFromTop * 70);
         maxX = Frame.DIMENSIONS.width - 25;
         
-        this.setLocation(xValue, yValue);
+        setLocation(xValue, yValue);
         setBorderPainted(false);
     	setOpaque(false);
     	setContentAreaFilled(false);
@@ -47,31 +47,21 @@ public class FishObject extends JButton implements ActionListener
     	setFont(new Font("Arial", Font.BOLD, 40));
     	setVerticalTextPosition(SwingConstants.CENTER);
     	setHorizontalTextPosition(SwingConstants.CENTER);
-    	
-        setIgnoreRepaint(true);
-    	setDoubleBuffered(true);
         addActionListener(this);
     }
-
-    @Override
-    public void paint(Graphics g) 
-    {
-    	this.setLocation(xValue, yValue);
-        super.paint(g);
-    }
     
-    public void updateLocation()
+    public void updateFishLocation()
     {
     	xValue += movement;
     	if(xValue >= maxX)
-    	{	panel.wentOffScreen(this);	}
+    	{	panel.fishWentOffScreen(this);	}
     }
     
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
 		if (e.getSource().equals(this)) 
-		{	panel.selected(this);	}
+		{	panel.fishWasSelected(this);	}
 	}
 
 	public int getAnswer()

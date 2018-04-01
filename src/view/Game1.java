@@ -1,6 +1,6 @@
 /**
  * @author Ariana Fairbanks
- *	@author Jadie Adams
+ * @author Jadie Adams
  */
 
 package view;
@@ -56,8 +56,9 @@ public class Game1 extends JPanel
 	private ImageIcon fishIcon;
 	private int questionBase;
 	private int questionTypes;	//TODO
-	public boolean playing;
-
+	private int fishSpeed;
+	private boolean playing;
+	
 	public Game1(Controller base) 
 	{
 		this.base = base;
@@ -85,8 +86,9 @@ public class Game1 extends JPanel
 		fishIcon = new ImageIcon(fishImg);
 		questionBase = 15;
 		questionTypes = 0; //both, addition, subtraction
+		fishSpeed = 60;
+		
 		setDoubleBuffered(true);
-
 		playGame();
 		setUpLayout();
 		setUpTimers();
@@ -147,7 +149,7 @@ public class Game1 extends JPanel
 			{
 				if(playing)
 				{
-					if((currentTime%60) < 10)
+					if((currentTime % 60) < 10)
 					{	timerLabel.setText("Time: " + (int)(currentTime/60)+ ":0" + (int)(currentTime%60));	}
 					else
 					{	timerLabel.setText("Time: " + (int)(currentTime/60)+ ":" + (int)(currentTime%60));	}
@@ -174,7 +176,7 @@ public class Game1 extends JPanel
 				{	timer.stop();	}
 			}
 		};
-		fishTimer = new Timer(20, fishMover);
+		fishTimer = new Timer(fishSpeed, fishMover);
 		fishTimer.start();
 		fishTimer.setRepeats(true);
 		
@@ -286,13 +288,11 @@ public class Game1 extends JPanel
 	}
 	
 	private void moveFish()
-	{
+	{	
 		for(FishObject fish : currentFish)
-		{
-			fish.updateLocation();
-	    	fish.setLocation(fish.getXValue(), fish.getYValue());
-	    	if(playing)
-	    	{	fish.setVisible(true);	}
+		{	
+			fish.updateFishLocation();	
+			repaint(fish.getBounds());
 		}
 	}
 	
@@ -300,17 +300,22 @@ public class Game1 extends JPanel
 	{
 		for(FishObject fish : currentFish)
 		{
-			fish.setVisible(false);
 	  		fish.setFocusPainted(false);
 			fish.setFont(new Font("Ariel", Font.PLAIN, 20));
 			fish.setForeground(Color.WHITE);
-			fish.updateLocation();
-	    	fish.setLocation(fish.getXValue(), fish.getYValue());
 	    	add(fish);
 		}
 	}
 
-	public void wentOffScreen(FishObject fish)
+	private void refreshFishLocation()
+	{
+		for(FishObject fish : currentFish)
+		{
+	    	fish.setLocation(fish.getXValue(), fish.getYValue());
+		}
+	}
+	
+	public void fishWentOffScreen(FishObject fish)
 	{
 		if(fish.getAnswer() == answer)
 		{
@@ -323,7 +328,7 @@ public class Game1 extends JPanel
 		}
 	}
 
-	public void selected(FishObject fish)
+	public void fishWasSelected(FishObject fish)
 	{
 		if(fish.getAnswer() == answer)
 		{
@@ -342,14 +347,11 @@ public class Game1 extends JPanel
 		}
 	}
 	
-	/*@Override
-	public void update(Graphics g)
+	@Override 
+	public void paint(Graphics g)
 	{
-    	int delay = 40; 
-	    ActionListener taskPerformer = new ActionListener() 
-	    {	public void actionPerformed(ActionEvent evt) { } };
-	    new Timer(delay, taskPerformer).start();
-		super.update(g);
-	}*/
+		refreshFishLocation();
+		super.paint(g);
+	}
 	
 }
