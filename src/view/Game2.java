@@ -43,7 +43,6 @@ public class Game2 extends JPanel implements KeyListener
 	private Timer timeOutCount;
 	private Timer jellyTimer;
 	private Timer displayTime;
-	private ActionListener timeOut;
 	private ActionListener jellyMover;
 	private ActionListener timeDisplayer;
 	private ArrayList<Integer> columnLabels;
@@ -120,9 +119,12 @@ public class Game2 extends JPanel implements KeyListener
 	
 	private void playGame()
 	{
+		playing = true;
 		getQuestion();
 		newJelly();
 		int randomPlacement = Controller.rng.nextInt(numberOfColumns);
+		columnLabels = new ArrayList<Integer>();
+		System.out.println(randomPlacement);
 		for(int i = 0; i < numberOfColumns; i++)
 		{
 			int columnAnswer = Controller.rng.nextInt(25);
@@ -136,7 +138,6 @@ public class Game2 extends JPanel implements KeyListener
 			columnLabels.add(columnAnswer);
 		}
 		resetLabels();
-		playing = true;
 	}
 	
 	private void setUpLayout() 
@@ -207,10 +208,13 @@ public class Game2 extends JPanel implements KeyListener
 					{	timerLabel.setText("Time: " + (int)(currentTime/60)+ ":" + (int)(currentTime%60));	}
 					currentTime--;
 				}
-				else
-				{	
-					timerLabel.setText("Time: 0:00");
+				if(currentTime == 0){
 					displayTime.stop();
+					playing = false;
+					System.out.println("Time's up!");
+					JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "Time's up!", JOptionPane.PLAIN_MESSAGE);
+					remove(jelly);
+					base.returnToMenu();
 				}
 			}
 		};
@@ -239,21 +243,6 @@ public class Game2 extends JPanel implements KeyListener
 		jellyTimer.start();
 		jellyTimer.setRepeats(true);
 		
-		timeOut = new ActionListener() 
-		{
-			public void actionPerformed(ActionEvent evt) 
-			{
-				timeOutCount.stop();
-				playing = false;
-				System.out.println("Time's up!");
-				JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "Time's up!", JOptionPane.PLAIN_MESSAGE);
-				remove(jelly);
-				base.returnToMenu();
-			}
-		};
-		timeOutCount = new Timer(gamePeriod * 1000, timeOut);
-		timeOutCount.setRepeats(false);
-		timeOutCount.start();
 	}
 	
 	private void getQuestion()
@@ -327,6 +316,7 @@ public class Game2 extends JPanel implements KeyListener
 	
 	private void wentOffScreen()
 	{
+		playing = false;
 		if(index == answerIndex)
 		{
 			System.out.println("Correct answer given.");
@@ -339,7 +329,6 @@ public class Game2 extends JPanel implements KeyListener
 			JOptionPane.showMessageDialog(base.messagePanel, question.substring(0, question.indexOf("?")) + " " + answer, "Incorrect", JOptionPane.INFORMATION_MESSAGE);
 		}
 		updateScore(index == answerIndex);
-		playing = false;
 		playGame();
 	}
 	
@@ -408,9 +397,6 @@ public class Game2 extends JPanel implements KeyListener
 	}
 	
 	private void resetLabels(){
-		System.out.println("New labels: " + columnLabels.get(0));
-		System.out.println(columnLabels.get(1));
-		System.out.println(columnLabels.get(2));
 		label1.setText(columnLabels.get(0)+"");
 		label2.setText(columnLabels.get(1)+"");
 		label3.setText(columnLabels.get(2)+"");
