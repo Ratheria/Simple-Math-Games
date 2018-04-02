@@ -8,9 +8,7 @@ package view;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.GridBagConstraints;
 import java.awt.Image;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -19,8 +17,6 @@ import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import adapter.Controller;
-import adapter.ViewStates;
-
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -51,6 +47,7 @@ public class Game1 extends JPanel
 	private JLabel timerLabel;
 	private JLabel questionLabel;
 	private JLabel scoreLabel;
+	private JButton menu;
 	private Timer timeOutCount;
 	private Timer fishTimer;
 	private Timer displayTime;
@@ -63,7 +60,6 @@ public class Game1 extends JPanel
 	private int questionTypes;	//TODO
 	private int fishSpeed;
 	private boolean playing;
-	private JButton menu;
 	
 	public Game1(Controller base) 
 	{
@@ -83,6 +79,7 @@ public class Game1 extends JPanel
 		questionLabel = new JLabel(question);
 		questionLabel.setBackground(new Color(245, 245, 245));
 		scoreLabel = new JLabel("Score: 0");
+		menu = new JButton(" Exit Game ");
 		fishImageWidth = (width - 250)/8;
 		fishImageHeight = (height - 250)/5;
 		try 
@@ -93,13 +90,12 @@ public class Game1 extends JPanel
 		questionBase = 15;
 		questionTypes = 0; //both, addition, subtraction
 		fishSpeed = 40;
-		menu = new JButton(" Return to Menu ");
 		
 		this.setDoubleBuffered(true);
 		playGame();
 		setUpLayout();
-		setUpTimers();
 		setUpListeners();
+		setUpTimers();
 	}
 
 	private void playGame()
@@ -115,6 +111,7 @@ public class Game1 extends JPanel
 			{	fishAnswer = answer;	}
 			currentFish.add(new FishObject(fishAnswer, i, this, fishIcon));
 		}
+		addFish();
 		playing = true;
 	}
 	
@@ -142,7 +139,7 @@ public class Game1 extends JPanel
 		questionLabel.setFont(new Font("Arial", Font.BOLD, 30));
 		theLayout.putConstraint(SpringLayout.WEST, questionLabel, 50, SpringLayout.WEST, this);
 		theLayout.putConstraint(SpringLayout.NORTH, questionLabel, 25, SpringLayout.NORTH, this);
-		
+
 		menu.setFont(new Font("Arial", Font.PLAIN, 25));
 		menu.setForeground(new Color(70, 130, 180));
 		menu.setBackground(new Color(70, 130, 180));
@@ -151,12 +148,26 @@ public class Game1 extends JPanel
 		menu.setBorder(new LineBorder(new Color(135, 206, 250), 2));
 		theLayout.putConstraint(SpringLayout.SOUTH, menu, -25, SpringLayout.SOUTH, this);
 		theLayout.putConstraint(SpringLayout.WEST, menu, 50, SpringLayout.WEST, this);
-
-		add(menu);
+		
 		add(timerLabel);
 		add(scoreLabel);
 		add(questionLabel);
-		addFish();
+		add(menu);
+	}
+	
+	private void setUpListeners() 
+	{	
+		menu.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent onClick) 
+			{	
+				timeOutCount.stop();
+				playing = false;
+				//TODO
+				clearCurrentFish();
+				base.returnToMenu();
+			}
+		});
 	}
 	
 	private void setUpTimers()
@@ -373,12 +384,4 @@ public class Game1 extends JPanel
 		super.paint(g);
 	}
 	
-	private void setUpListeners() 
-	{	
-		menu.addActionListener(new ActionListener() 
-		{
-			public void actionPerformed(ActionEvent onClick) 
-			{	base.changeState(ViewStates.studentMenu);	}
-		});
-	}
 }
