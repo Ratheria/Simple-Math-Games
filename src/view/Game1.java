@@ -88,7 +88,7 @@ public class Game1 extends JPanel
 		questionTypes = 0; //both, addition, subtraction
 		fishSpeed = 60;
 		
-		setDoubleBuffered(true);
+		this.setDoubleBuffered(true);
 		playGame();
 		setUpLayout();
 		setUpTimers();
@@ -115,6 +115,7 @@ public class Game1 extends JPanel
 	{
 		setLayout(theLayout);
 		setBorder(new LineBorder(new Color(70, 130, 180), 10));
+		setBackground(new Color(213, 248, 255));
 		setBackground(new Color(208, 243, 255));
 
 		timerLabel.setHorizontalAlignment(SwingConstants.RIGHT);
