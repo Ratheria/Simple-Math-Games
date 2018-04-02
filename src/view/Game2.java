@@ -46,11 +46,14 @@ public class Game2 extends JPanel implements KeyListener
 	private ActionListener timeOut;
 	private ActionListener jellyMover;
 	private ActionListener timeDisplayer;
-	private ArrayList<JLabel> columnLabels;
+	private ArrayList<Integer> columnLabels;
 	private Image jellyImg;
 	private ImageIcon jellyIcon;
 	private JLabel timerLabel;
 	private JLabel scoreLabel;
+	private JLabel label1;
+	private JLabel label2;
+	private JLabel label3;
 	private Point jellyLocation;
 	private List<String> questionList;
 	private double currentTime;
@@ -75,7 +78,7 @@ public class Game2 extends JPanel implements KeyListener
 	{
 		this.base = base;
 		theLayout = new SpringLayout();
-		columnLabels = new ArrayList<JLabel>();
+		columnLabels = new ArrayList<Integer>();
 		movement = 2;
 		index = 1;
 		answerIndex = 0;
@@ -88,6 +91,9 @@ public class Game2 extends JPanel implements KeyListener
 		questionList = base.getEquations();
 		timerLabel = new JLabel("Time: "+(gamePeriod/60)+":"+ (gamePeriod%60));
 		scoreLabel = new JLabel("Score: 0");
+		label1 = new JLabel("");
+		label2 = new JLabel("");
+		label3 = new JLabel("");
 		maxY = base.frame.getHeight();
 		xSpacing = (base.frame.getWidth())/numberOfColumns;
 		jellyLocation = new Point(xSpacing + 50, 50);
@@ -115,6 +121,7 @@ public class Game2 extends JPanel implements KeyListener
 	private void playGame()
 	{
 		getQuestion();
+		newJelly();
 		int randomPlacement = Controller.rng.nextInt(numberOfColumns);
 		for(int i = 0; i < numberOfColumns; i++)
 		{
@@ -126,8 +133,9 @@ public class Game2 extends JPanel implements KeyListener
 				columnAnswer = answer;	
 				answerIndex = i;
 			}
-			columnLabels.add(new JLabel(columnAnswer + ""));
+			columnLabels.add(columnAnswer);
 		}
+		resetLabels();
 		playing = true;
 	}
 	
@@ -149,37 +157,27 @@ public class Game2 extends JPanel implements KeyListener
 		theLayout.putConstraint(SpringLayout.EAST, scoreLabel, -50, SpringLayout.EAST, this);
 		
 		int currentX = xSpacing/2;
-		JLabel label1 = columnLabels.get(0);
+		label1 = new JLabel(columnLabels.get(0)+"");
 		label1.setForeground(new Color(70, 130, 180));
 		label1.setFont(new Font("Arial", Font.PLAIN, 30));
 		theLayout.putConstraint(SpringLayout.SOUTH, label1, -25, SpringLayout.SOUTH, this);
 		theLayout.putConstraint(SpringLayout.WEST, label1, currentX, SpringLayout.WEST, this);
 		add(label1);
 		currentX += xSpacing;
-		JLabel label2 = columnLabels.get(1);
+		label2 = new JLabel(columnLabels.get(1)+"");
 		label2.setForeground(new Color(70, 130, 180));
 		label2.setFont(new Font("Arial", Font.PLAIN, 30));
 		theLayout.putConstraint(SpringLayout.SOUTH, label2, -25, SpringLayout.SOUTH, this);
 		theLayout.putConstraint(SpringLayout.WEST, label2, currentX, SpringLayout.WEST, this);
 		add(label2);
 		currentX += xSpacing;
-		JLabel label3 = columnLabels.get(2);
+		label3 = new JLabel(columnLabels.get(2)+"");
 		label3.setForeground(new Color(70, 130, 180));
 		label3.setFont(new Font("Arial", Font.PLAIN, 30));
 		theLayout.putConstraint(SpringLayout.SOUTH, label3, -25, SpringLayout.SOUTH, this);
 		theLayout.putConstraint(SpringLayout.EAST, label3, currentX, SpringLayout.WEST, this);
 		add(label3);
 		
-		jelly.setLocation(jellyLocation);
-		jelly.setFocusable(false);
-		jelly.setDisabledIcon(jellyIcon);
-		jelly.setEnabled(false);
-		jelly.setFocusPainted(false);
-    	jelly.setOpaque(false);
-    	jelly.setContentAreaFilled(false);
-    	jelly.setBorderPainted(false);
-    	jelly.setText(question);
-    	
     	menu.setFont(new Font("Arial", Font.PLAIN, 25));
 		menu.setForeground(new Color(70, 130, 180));
 		menu.setBackground(new Color(70, 130, 180));
@@ -190,7 +188,6 @@ public class Game2 extends JPanel implements KeyListener
 		theLayout.putConstraint(SpringLayout.WEST, menu, 10, SpringLayout.WEST, this);
 		
 		add(menu);
-		add(jelly);
 		add(timerLabel);
 		add(scoreLabel);
 	}
@@ -242,7 +239,21 @@ public class Game2 extends JPanel implements KeyListener
 		jellyTimer.start();
 		jellyTimer.setRepeats(true);
 		
-
+		timeOut = new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent evt) 
+			{
+				timeOutCount.stop();
+				playing = false;
+				System.out.println("Time's up!");
+				JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "Time's up!", JOptionPane.PLAIN_MESSAGE);
+				remove(jelly);
+				base.returnToMenu();
+			}
+		};
+		timeOutCount = new Timer(gamePeriod * 1000, timeOut);
+		timeOutCount.setRepeats(false);
+		timeOutCount.start();
 	}
 	
 	private void getQuestion()
@@ -320,14 +331,16 @@ public class Game2 extends JPanel implements KeyListener
 		{
 			System.out.println("Correct answer given.");
 			JOptionPane.showMessageDialog(base.messagePanel, question.substring(0, question.indexOf("?")) + " " + answer, "Correct!", JOptionPane.INFORMATION_MESSAGE);
+			score += 50;
 		}
 		else
 		{
 			System.out.println("Incorrect answer given.");
 			JOptionPane.showMessageDialog(base.messagePanel, question.substring(0, question.indexOf("?")) + " " + answer, "Incorrect", JOptionPane.INFORMATION_MESSAGE);
 		}
+		updateScore(index == answerIndex);
 		playing = false;
-		base.returnToMenu();
+		playGame();
 	}
 	
 	private void updateJellyLocation()
@@ -373,6 +386,34 @@ public class Game2 extends JPanel implements KeyListener
 			public void actionPerformed(ActionEvent onClick) 
 			{	base.changeState(ViewStates.studentMenu);	}
 		});
+	}
+	
+	private void updateScore(boolean correct) 
+	{	
+		scoreLabel.setText("Score: " + Integer.toString(score));	
+	}
+	
+	private void newJelly(){
+		jellyLocation = new Point(xSpacing + 50, 50);
+		jelly.setLocation(jellyLocation);
+		jelly.setFocusable(false);
+		jelly.setDisabledIcon(jellyIcon);
+		jelly.setEnabled(false);
+		jelly.setFocusPainted(false);
+    	jelly.setOpaque(false);
+    	jelly.setContentAreaFilled(false);
+    	jelly.setBorderPainted(false);
+    	jelly.setText(question);
+    	add(jelly);
+	}
+	
+	private void resetLabels(){
+		System.out.println("New labels: " + columnLabels.get(0));
+		System.out.println(columnLabels.get(1));
+		System.out.println(columnLabels.get(2));
+		label1.setText(columnLabels.get(0)+"");
+		label2.setText(columnLabels.get(1)+"");
+		label3.setText(columnLabels.get(2)+"");
 	}
 	
 }
