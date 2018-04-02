@@ -7,19 +7,26 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+
+import javax.swing.AbstractAction;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 import adapter.Controller;
+import adapter.ViewStates;
+
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -57,9 +64,10 @@ public class Game3 extends JPanel
 	private JLabel answerLabel1;
 	private JLabel answerLabel2;
 	private JLabel answerLabel3;
-	private JLabel sharkLabel;
+	private JButton sharkButton;
 	private int maxX;
 	private int maxY;
+	private BufferedImage drawnImage;
 
 	public Game3(Controller base) 
 	{
@@ -83,19 +91,26 @@ public class Game3 extends JPanel
 		// setting up shark icon
 		sharkImageWidth= (base.frame.getWidth() - 660);
 		sharkImageHeight = (base.frame.getHeight() - 450);
-//		try 
-//		{	
-//			sharkImg = ImageIO.read(new File("shark.png"));
-//		} 
-//		catch (IOException ex) 
-//		{	
-//			System.out.println("File \"shark.png\" is missing.");
-//		}
-		setGraphics();
-		sharkImg = sharkImg.getScaledInstance(sharkImageWidth, sharkImageHeight, java.awt.Image.SCALE_SMOOTH);  //resizes shark image	
+		
+		try
+		{
+			drawnImage = ImageIO.read(new File("shark.png"));
+			//setGraphics();
+		}
+		catch (IOException ex)
+		{
+			System.out.println("File \"shark.png\" is missing.");
+		}
+		
+		generateQuestion();
+		//setGraphics();
+		sharkImg = drawnImage.getScaledInstance(sharkImageWidth, sharkImageHeight, java.awt.Image.SCALE_SMOOTH);  //resizes shark image
 		sharkIcon = new ImageIcon(sharkImg);
-		sharkLabel = new JLabel(sharkIcon);
-			
+		sharkButton = new JButton(sharkIcon);
+        sharkButton.setBorderPainted(false);
+        sharkButton.setOpaque(false);
+        sharkButton.setContentAreaFilled(false);
+		
 		setUpLayout();
 		setUpTimers();
 		addShark();
@@ -104,20 +119,13 @@ public class Game3 extends JPanel
 
 	private void setGraphics()
 	{
-		try 
-		{	
-			sharkImg = ImageIO.read(new File("shark.png"));
-//			Graphics g = sharkImg.getGraphics();
-			Graphics g = sharkImg.getGraphics();
-			g.setFont(new Font("Arial", Font.PLAIN, 30));
-			g.drawString(question, 5, 5);
-			g.dispose();
-		} 
-		catch (IOException ex) 
-		{	
-			System.out.println("File \"shark.png\" is missing.");
-		}
+		Graphics2D g = drawnImage.createGraphics();
+		g.setPaint(Color.BLACK);
+		g.setFont(new Font("Arial", Font.PLAIN, 90));
+		g.drawString(question, 250, 320);
+		g.dispose();
 	}
+	
 	private void setUpLayout() 
 	{
 		setLayout(theLayout);
@@ -229,7 +237,12 @@ public class Game3 extends JPanel
 		 */
 
 		getQuestion();
+//		generateQuestion();
+//		setGraphics();	
+//		add(sharkLabel);
+		sharkButton.setText(question);
 		addAnswerLabels();
+		
 		shark = new SharkObject(question, answer, this, sharkIcon);
 		addShark();
 		repaint();
@@ -302,7 +315,7 @@ public class Game3 extends JPanel
 			// generates a new question if the answer is negative
 			generateQuestion();
 		}
-		questionLabel.setText(question);
+		//questionLabel.setText(question);
 	}
 		
 	private void questionFromList()
@@ -388,11 +401,11 @@ public class Game3 extends JPanel
 		
 		shark.updateLocation(direction);
 		//sharkLabel.setHorizontalAlignment(SwingConstants.LEFT);
-		sharkLabel.setFocusable(true);
-		theLayout.putConstraint(SpringLayout.WEST, sharkLabel, shark.getXValue(), SpringLayout.WEST, this);
-		theLayout.putConstraint(SpringLayout.NORTH, sharkLabel, shark.getYValue(), SpringLayout.NORTH, this);
+		sharkButton.setFocusable(true);
+		theLayout.putConstraint(SpringLayout.WEST, sharkButton, shark.getXValue(), SpringLayout.WEST, this);
+		theLayout.putConstraint(SpringLayout.NORTH, sharkButton, shark.getYValue(), SpringLayout.NORTH, this);
 		
-		add(sharkLabel);
+		add(sharkButton);
 	}
 
 	// Adds a shark to the screen with the question JLabel
@@ -401,8 +414,9 @@ public class Game3 extends JPanel
 //		shark.setLocation(shark.getXValue(), shark.getYValue());
 		
 		
-		theLayout.putConstraint(SpringLayout.WEST, questionLabel, 45, SpringLayout.WEST, this);
-		theLayout.putConstraint(SpringLayout.NORTH, questionLabel, 110, SpringLayout.NORTH, this);
+//		theLayout.putConstraint(SpringLayout.WEST, questionLabel, 45, SpringLayout.WEST, this);
+//		theLayout.putConstraint(SpringLayout.NORTH, questionLabel, 110, SpringLayout.NORTH, this);
+		
 		
 //		questionLabel.setHorizontalAlignment(SwingConstants.LEFT);
 //		questionLabel.setForeground(new Color(70, 130, 180));
@@ -413,14 +427,16 @@ public class Game3 extends JPanel
 //		questionLabel.setMaximumSize(new Dimension(250, 130));
 //		theLayout.putConstraint(SpringLayout.WEST, questionLabel, 50, SpringLayout.WEST, this);
 //		theLayout.putConstraint(SpringLayout.SOUTH, questionLabel, -25, SpringLayout.SOUTH, this);
-		sharkLabel.setHorizontalAlignment(SwingConstants.LEFT);
-		sharkLabel.setFocusable(true);
-		theLayout.putConstraint(SpringLayout.WEST, sharkLabel, 10, SpringLayout.WEST, this);
-		theLayout.putConstraint(SpringLayout.NORTH, sharkLabel, 90, SpringLayout.NORTH, this);
+		
+		sharkButton.setHorizontalAlignment(SwingConstants.LEFT);
+		sharkButton.setHorizontalTextPosition(SwingConstants.CENTER);
+		sharkButton.setFocusable(true);
+		theLayout.putConstraint(SpringLayout.WEST, sharkButton, 10, SpringLayout.WEST, this);
+		theLayout.putConstraint(SpringLayout.NORTH, sharkButton, 110, SpringLayout.NORTH, this);
 		
 //		add(shark);
-		add(questionLabel);
-		add(sharkLabel);
+//		add(questionLabel);
+		add(sharkButton);
 	}
 
 	//TODO Modify this to make sure the shark cannot move off the screen
