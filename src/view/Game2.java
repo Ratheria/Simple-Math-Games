@@ -22,6 +22,8 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 import adapter.Controller;
+import adapter.ViewStates;
+
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -48,6 +50,7 @@ public class Game2 extends JPanel implements KeyListener
 	private Image jellyImg;
 	private ImageIcon jellyIcon;
 	private JLabel timerLabel;
+	private JLabel scoreLabel;
 	private Point jellyLocation;
 	private List<String> questionList;
 	private double currentTime;
@@ -60,11 +63,13 @@ public class Game2 extends JPanel implements KeyListener
 	private int maxY;
 	private int xSpacing;
 	private int movement;
+	private int score;
 	private String question;
 	private int questionBase;
 	private int questionTypes;	//TODO
 	private int speed;
 	private boolean playing;
+	private JButton menu;
 
 	public Game2(Controller base) 
 	{
@@ -77,10 +82,12 @@ public class Game2 extends JPanel implements KeyListener
 		numberOfColumns = 3;
 		frequency = base.getFrequency();
 		answer = 0;
+		score = 0;
 		gamePeriod = 40; //seconds
 		question = "Question";
 		questionList = base.getEquations();
 		timerLabel = new JLabel("Time: "+(gamePeriod/60)+":"+ (gamePeriod%60));
+		scoreLabel = new JLabel("Score: 0");
 		maxY = base.frame.getHeight();
 		xSpacing = (base.frame.getWidth())/numberOfColumns;
 		jellyLocation = new Point(xSpacing + 50, 50);
@@ -94,6 +101,7 @@ public class Game2 extends JPanel implements KeyListener
 		questionBase = 15;
 		questionTypes = 0; //both, addition, subtraction
 		speed = 40;
+		menu = new JButton(" Return to Menu ");
 		
 		addKeyListener(this);
 		setFocusable(true);
@@ -101,6 +109,7 @@ public class Game2 extends JPanel implements KeyListener
 		playGame();
 		setUpLayout();
 		setUpTimers();
+		setUpListeners();
 	}
 	
 	private void playGame()
@@ -133,6 +142,12 @@ public class Game2 extends JPanel implements KeyListener
 		timerLabel.setForeground(new Color(70, 130, 180));
 		timerLabel.setFont(new Font("Arial", Font.PLAIN, 30));
 		
+		scoreLabel.setFont(new Font("Arial", Font.PLAIN, 25));
+		scoreLabel.setForeground(new Color(70, 130, 180));
+		scoreLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		theLayout.putConstraint(SpringLayout.NORTH, scoreLabel, 25, SpringLayout.NORTH, this);
+		theLayout.putConstraint(SpringLayout.EAST, scoreLabel, -50, SpringLayout.EAST, this);
+		
 		int currentX = xSpacing/2;
 		JLabel label1 = columnLabels.get(0);
 		label1.setForeground(new Color(70, 130, 180));
@@ -164,10 +179,20 @@ public class Game2 extends JPanel implements KeyListener
     	jelly.setContentAreaFilled(false);
     	jelly.setBorderPainted(false);
     	jelly.setText(question);
+    	
+    	menu.setFont(new Font("Arial", Font.PLAIN, 25));
+		menu.setForeground(new Color(70, 130, 180));
+		menu.setBackground(new Color(70, 130, 180));
+		menu.setFocusPainted(false);
+		menu.setContentAreaFilled(false);
+		menu.setBorder(new LineBorder(new Color(135, 206, 250), 2));
+		theLayout.putConstraint(SpringLayout.NORTH, menu, 15, SpringLayout.SOUTH, timerLabel);
+		theLayout.putConstraint(SpringLayout.WEST, menu, 10, SpringLayout.WEST, this);
 		
-
+		add(menu);
 		add(jelly);
 		add(timerLabel);
+		add(scoreLabel);
 	}
 
 	private void setUpTimers()
@@ -339,6 +364,15 @@ public class Game2 extends JPanel implements KeyListener
 		requestFocus();
 		updateJellyLocation();
 		super.paint(g);;
+	}
+	
+	private void setUpListeners() 
+	{	
+		menu.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent onClick) 
+			{	base.changeState(ViewStates.studentMenu);	}
+		});
 	}
 	
 }

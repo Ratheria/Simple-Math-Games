@@ -8,7 +8,9 @@ package view;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.GridBagConstraints;
 import java.awt.Image;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -17,8 +19,11 @@ import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import adapter.Controller;
+import adapter.ViewStates;
+
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import java.util.ArrayList;
@@ -58,6 +63,7 @@ public class Game1 extends JPanel
 	private int questionTypes;	//TODO
 	private int fishSpeed;
 	private boolean playing;
+	private JButton menu;
 	
 	public Game1(Controller base) 
 	{
@@ -87,11 +93,13 @@ public class Game1 extends JPanel
 		questionBase = 15;
 		questionTypes = 0; //both, addition, subtraction
 		fishSpeed = 40;
+		menu = new JButton(" Return to Menu ");
 		
 		this.setDoubleBuffered(true);
 		playGame();
 		setUpLayout();
 		setUpTimers();
+		setUpListeners();
 	}
 
 	private void playGame()
@@ -134,7 +142,17 @@ public class Game1 extends JPanel
 		questionLabel.setFont(new Font("Arial", Font.BOLD, 30));
 		theLayout.putConstraint(SpringLayout.WEST, questionLabel, 50, SpringLayout.WEST, this);
 		theLayout.putConstraint(SpringLayout.NORTH, questionLabel, 25, SpringLayout.NORTH, this);
+		
+		menu.setFont(new Font("Arial", Font.PLAIN, 25));
+		menu.setForeground(new Color(70, 130, 180));
+		menu.setBackground(new Color(70, 130, 180));
+		menu.setFocusPainted(false);
+		menu.setContentAreaFilled(false);
+		menu.setBorder(new LineBorder(new Color(135, 206, 250), 2));
+		theLayout.putConstraint(SpringLayout.SOUTH, menu, -25, SpringLayout.SOUTH, this);
+		theLayout.putConstraint(SpringLayout.WEST, menu, 50, SpringLayout.WEST, this);
 
+		add(menu);
 		add(timerLabel);
 		add(scoreLabel);
 		add(questionLabel);
@@ -355,4 +373,12 @@ public class Game1 extends JPanel
 		super.paint(g);
 	}
 	
+	private void setUpListeners() 
+	{	
+		menu.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent onClick) 
+			{	base.changeState(ViewStates.studentMenu);	}
+		});
+	}
 }
