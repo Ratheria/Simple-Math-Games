@@ -74,7 +74,7 @@ public class TeacherMenu extends JPanel implements ChangeListener
 		displayName = new JLabel(" ");
 		frequencyLabel = new JLabel("Custom Problem Frequency");
 		frequencySlider = new JSlider();
-		viewRecordsButton = new JButton(" View Records ");
+		viewRecordsButton = new JButton(" Student Records ");
 		addEquationsTextField = new JTextField();
 		addEquationsButton = new JButton(" Add Problem ");
 		removeEquationsTextField = new JTextField();
@@ -174,13 +174,13 @@ public class TeacherMenu extends JPanel implements ChangeListener
 		gbc_slider.gridy = 3;
 		
 		addEquationsTextField.setFont(new Font("Arial", Font.PLAIN, 20));
-		addEquationsTextField.setForeground(new Color(70, 130, 180));
-		addEquationsTextField.setBackground(new Color(240, 240, 245));
+		addEquationsTextField.setForeground(new Color(0, 0, 128));
+		addEquationsTextField.setBackground(new Color(245, 245, 245));
 		addEquationsTextField.setToolTipText("Username");
-		addEquationsTextField.setBorder(new CompoundBorder(new LineBorder(new Color(30, 144, 255)), new EmptyBorder(0, 10, 0, 0)));
+		addEquationsTextField.setBorder(new CompoundBorder(new LineBorder(new Color(70, 130, 180)), new EmptyBorder(0, 10, 0, 0)));
 		GridBagConstraints gbc_addEquationsTextField = new GridBagConstraints();
 		gbc_addEquationsTextField.gridwidth = 3;
-		gbc_addEquationsTextField.insets = new Insets(0, 50, 10, 5);
+		gbc_addEquationsTextField.insets = new Insets(0, 55, 10, 5);
 		gbc_addEquationsTextField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_addEquationsTextField.gridx = 2;
 		gbc_addEquationsTextField.gridy = 5;
@@ -198,13 +198,13 @@ public class TeacherMenu extends JPanel implements ChangeListener
 		gbc_addEquationsButton.gridy = 5;
 		
 		removeEquationsTextField.setFont(new Font("Arial", Font.PLAIN, 20));
-		removeEquationsTextField.setForeground(new Color(70, 130, 180));
-		removeEquationsTextField.setBackground(new Color(240, 240, 250));
+		removeEquationsTextField.setForeground(new Color(0, 0, 128));
+		removeEquationsTextField.setBackground(new Color(245, 245, 245));
 		removeEquationsTextField.setToolTipText("Username");
-		removeEquationsTextField.setBorder(new CompoundBorder(new LineBorder(new Color(30, 144, 255)), new EmptyBorder(0, 10, 0, 0)));
+		removeEquationsTextField.setBorder(new CompoundBorder(new LineBorder(new Color(70, 130, 180)), new EmptyBorder(0, 10, 0, 0)));
 		GridBagConstraints gbc_removeEquationsTextField = new GridBagConstraints();
 		gbc_removeEquationsTextField.gridwidth = 3;
-		gbc_removeEquationsTextField.insets = new Insets(0, 50, 5, 5);
+		gbc_removeEquationsTextField.insets = new Insets(0, 55, 5, 5);
 		gbc_removeEquationsTextField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_removeEquationsTextField.gridx = 2;
 		gbc_removeEquationsTextField.gridy = 6;
@@ -284,7 +284,7 @@ public class TeacherMenu extends JPanel implements ChangeListener
 			public void actionPerformed(ActionEvent onClick)
 			{	
 				String newEquation = addEquationsTextField.getText();
-				if(newEquation != null)
+				if(newEquation != null && newEquation.length() > 1)
 				{
 					base.addEquation(newEquation);
 					updateQuestionInfo();
@@ -321,43 +321,16 @@ public class TeacherMenu extends JPanel implements ChangeListener
 						setUpTable();
 					}
 					else
-					{	JOptionPane.showMessageDialog(base.errorPanel, "No such equation.", "", JOptionPane.INFORMATION_MESSAGE);	}
+					{	JOptionPane.showMessageDialog(base.messagePanel, "No such equation.", "", JOptionPane.INFORMATION_MESSAGE);	}
 				}
 				removeEquationsTextField.setText("");
 			}
 		});
-	
-		/*
-		removeEquationsTextField.getDocument().addDocumentListener(new DocumentListener()
-		{
-            @Override
-            public void insertUpdate(DocumentEvent e) 
-            {
-                String text = removeEquationsTextField.getText();
-                if (text.trim().length() == 0) 
-                {	 rowSorter.setRowFilter(null);	} 
-                else 
-                {	rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));	}
-            }
-            @Override
-            public void removeUpdate(DocumentEvent e) 
-            {
-                String text = removeEquationsTextField.getText();
-                if (text.trim().length() == 0) 
-                {	rowSorter.setRowFilter(null);	} 
-                else 
-                {	rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));	}
-            }
-            @Override
-            public void changedUpdate(DocumentEvent e) 
-            {	}
-        });
-        */
 		
 		viewRecordsButton.addActionListener(new ActionListener()
 		{ 
 			public void actionPerformed(ActionEvent onClick)
-			{	base.changeState(ViewStates.viewRecords);	}
+			{	base.changeState(ViewStates.selectStudentRecords);	}
 		});
 	}
 
@@ -397,7 +370,6 @@ public class TeacherMenu extends JPanel implements ChangeListener
 		System.out.println(row);
 		String selection = (String) dataSet.getValueAt(row, 0);
 		removeEquationsTextField.setText(selection);
-		//setUpTable();
 	}
 	
 	private class SharedListSelectionHandler implements ListSelectionListener 
