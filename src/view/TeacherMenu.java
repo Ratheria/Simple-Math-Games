@@ -27,6 +27,7 @@ import adapter.Controller;
 import adapter.ViewStates;
 import model.CustomTableModel;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JButton;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -35,6 +36,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JSlider;
 import javax.swing.JTable;
@@ -55,7 +57,7 @@ public class TeacherMenu extends JPanel implements ChangeListener
 	private JLabel frequencyLabel;
 	private int numberOfQuestions;
 	private String questionString;
-	private List<String> questionList;
+	private ArrayList<String> questionList;
 	private String[][] questionMatrix;
 	private JTable dataSet;
 	private JScrollPane scrollPane;
@@ -285,6 +287,8 @@ public class TeacherMenu extends JPanel implements ChangeListener
 				if(newEquation != null)
 				{
 					base.addEquation(newEquation);
+					updateQuestionInfo();
+					setUpTable();
 				}
 				addEquationsTextField.setText("");
 			}
@@ -294,11 +298,11 @@ public class TeacherMenu extends JPanel implements ChangeListener
 		{ 
 			public void actionPerformed(ActionEvent onClick)
 			{	
-				//TODO
 				String equation = removeEquationsTextField.getText().trim();
 				if(equation != null && equation.length() > 0)
 				{
 					int location = questionList.indexOf(equation);
+					System.out.println(" location " + location);
 					if(location > -1)
 					{
 						questionList.remove(location);
@@ -311,12 +315,13 @@ public class TeacherMenu extends JPanel implements ChangeListener
 								questionString = questionString + questionList.get(i) + ":";
 							}
 							questionString = questionString.substring(0, questionString.length() - 1);
-							base.changeCustomEquations(questionString, baseFrequency, numberOfQuestions);
 						}
+						base.changeCustomEquations(questionString, baseFrequency, numberOfQuestions);
 						updateQuestionInfo();
 						setUpTable();
 					}
-					System.out.println(location + "l");
+					else
+					{	JOptionPane.showMessageDialog(base.errorPanel, "No such equation.", "", JOptionPane.INFORMATION_MESSAGE);	}
 				}
 				removeEquationsTextField.setText("");
 			}

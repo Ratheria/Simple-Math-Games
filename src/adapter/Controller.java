@@ -32,7 +32,7 @@ public class Controller
 	private String lastName;
 	private String classID;
 	private String equationString;
-	private List<String> customEquations;
+	private ArrayList<String> customEquations;
 
 	public void start()
 	{
@@ -171,7 +171,7 @@ public class Controller
 	public void addEquation(String newEquation)
 	{
 		newEquation = newEquation.trim();
-		if(newEquation != null)
+		if(newEquation != null && newEquation.length() > 2)
 		{
 			int whitespace = newEquation.indexOf(" "); 
 			while(whitespace != -1)
@@ -239,6 +239,7 @@ public class Controller
 				}
 			}
 		}
+		
 	}
 	
 	public void changeCustomEquations(String equationString, int frequency, int numberOfEquations)
@@ -295,15 +296,15 @@ public class Controller
 	public int getNumberOfEquations()
 	{	return numberOfEquations;	}
 
-	public List<String> getEquations()
+	public ArrayList<String> getEquations()
 	{	return customEquations;	}
 	
-	private List<String> getCustomEquationList(String equationString)
+	private ArrayList<String> getCustomEquationList(String equationString)
 	{
-		List<String> result = null;
+		ArrayList<String> result = null;
 		if(equationString != null)
 		{
-			result = Arrays.asList(equationString.split(":"));
+			result = new ArrayList<String>(Arrays.asList(equationString.split(":")));
 		}
 		return result;
 	}
