@@ -49,6 +49,7 @@ public class StudentMenu extends JPanel
 
 	private void setUpLayout() 
 	{
+		layout.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0};
 		layout.rowWeights = new double[]{0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0};
 		layout.columnWidths = new int[]{20, 0, 0, 0};
 		layout.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0};
@@ -99,12 +100,23 @@ public class StudentMenu extends JPanel
 		btnGame.setContentAreaFilled(false);
 		btnGame.setBorder(new LineBorder(new Color(135, 206, 250), 2));
 		GridBagConstraints gbc_btnGame = new GridBagConstraints();
-
 		gbc_btnGame.gridwidth = 4;
 		gbc_btnGame.insets = new Insets(5, 0, 15, 0);
 		gbc_btnGame.gridx = 0;
 		gbc_btnGame.gridy = 2;
-		
+
+		btnGame2.setFont(new Font("Arial", Font.PLAIN, 25));
+		btnGame2.setForeground(new Color(70, 130, 180));
+		btnGame2.setBackground(new Color(70, 130, 180));
+		btnGame2.setFocusPainted(false);
+		btnGame2.setContentAreaFilled(false);
+		btnGame2.setBorder(new LineBorder(new Color(135, 206, 250), 2));
+		GridBagConstraints gbc_btnGame2 = new GridBagConstraints();
+		gbc_btnGame2.gridwidth = 4;
+		gbc_btnGame2.insets = new Insets(5, 0, 15, 0);
+		gbc_btnGame2.gridx = 0;
+		gbc_btnGame2.gridy = 3;
+
 		btnGame3.setFont(new Font("Arial", Font.PLAIN, 25));
 		btnGame3.setForeground(new Color(70, 130, 180));
 		btnGame3.setBackground(new Color(70, 130, 180));
@@ -115,21 +127,7 @@ public class StudentMenu extends JPanel
 		gbc_btnGame3.gridwidth = 4;
 		gbc_btnGame3.insets = new Insets(5, 0, 15, 5);
 		gbc_btnGame3.gridx = 0;
-		gbc_btnGame3.gridy = 4;
-
-		btnGame2.setFont(new Font("Arial", Font.PLAIN, 25));
-		btnGame2.setForeground(new Color(70, 130, 180));
-		btnGame2.setBackground(new Color(70, 130, 180));
-		btnGame2.setFocusPainted(false);
-		btnGame2.setContentAreaFilled(false);
-		btnGame2.setBorder(new LineBorder(new Color(135, 206, 250), 2));
-		GridBagConstraints gbc_btnGame2 = new GridBagConstraints();
-		gbc_btnGame2.insets = new Insets(0, 0, 5, 5);
-		gbc_btnGame2.gridx = 2;
-		gbc_btnGame2.gridy = 2;
-
-
-		
+		gbc_btnGame3.gridy = 4;		
 		
 		viewStats.setFont(new Font("Arial", Font.PLAIN, 25));
 		viewStats.setForeground(new Color(70, 130, 180));
@@ -152,40 +150,30 @@ public class StudentMenu extends JPanel
 		add(viewStats, gbc_viewStats);
 	}
 
-	
 	private void setUpListeners() 
 	{	
 		settingsButton.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent onClick) 
-			{
-				base.changeState(ViewStates.settings);
-			}
+			{	base.changeState(ViewStates.settings);	}
 		});
 		
 		btnGame.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent onClick) 
-			{
-				base.changeState(ViewStates.game1);
-			}
-		});
-
-
-		btnGame3.addActionListener(new ActionListener() 
-		{
-			public void actionPerformed(ActionEvent onClick) 
-			{
-				base.changeState(ViewStates.game3);
-			}
+			{	base.changeState(ViewStates.game1);	}
 		});
 
 		btnGame2.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent onClick) 
-			{
-				base.changeState(ViewStates.game2);
-			}
+			{	base.changeState(ViewStates.game2);	}
+		});
+
+		btnGame3.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent onClick) 
+			{	base.changeState(ViewStates.game3);	}
 		});
 				
 	}
