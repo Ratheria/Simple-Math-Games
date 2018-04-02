@@ -88,7 +88,7 @@ public class Game2 extends JPanel implements KeyListener
 		JellyImageWidth= (base.frame.getWidth() - 250)/4;
 		JellyImageHeight = (base.frame.getHeight() - 250)/2;
 		try 
-		{	JellyImg = ImageIO.read(new File("Jellyfish.png"));	} 
+		{	JellyImg = ImageIO.read(this.getClass().getResourceAsStream("Jellyfish.png"));	} 
 		catch (IOException ex) 
 		{	System.out.println("File fish.png is missing.");	}
 		JellyImg =JellyImg.getScaledInstance( JellyImageWidth, JellyImageHeight,  java.awt.Image.SCALE_SMOOTH ) ;  //resizes fish image

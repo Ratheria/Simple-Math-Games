@@ -86,7 +86,7 @@ public class Game1 extends JPanel
 		fishIcon = new ImageIcon(fishImg);
 		questionBase = 15;
 		questionTypes = 0; //both, addition, subtraction
-		fishSpeed = 60;
+		fishSpeed = 40;
 		
 		this.setDoubleBuffered(true);
 		playGame();
