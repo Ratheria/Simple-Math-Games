@@ -29,7 +29,7 @@ public class Game1 extends JPanel
 {
 	private static final long serialVersionUID = -5262708339581599541L;
 	private Controller base;
-	private List<FishObject> currentFish;
+	private ArrayList<FishObject> currentFish;
 	private int width;
 	private int height;
 	private int maxFishVertical;
@@ -46,7 +46,7 @@ public class Game1 extends JPanel
 	private JLabel timerLabel;
 	private JLabel questionLabel;
 	private JLabel scoreLabel;
-	private Timer timer;
+	private Timer timeOutCount;
 	private Timer fishTimer;
 	private Timer displayTime;
 	private ActionListener timeOut;
@@ -100,14 +100,13 @@ public class Game1 extends JPanel
 		int randomPlacement = Controller.rng.nextInt(maxFishVertical);
 		for(int i = 0; i < maxFishVertical; i++)
 		{
-			int fishAnswer = Controller.rng.nextInt(100);
+			int fishAnswer = Controller.rng.nextInt(25);
 			while (fishAnswer == answer)
-			{	fishAnswer = Controller.rng.nextInt(100);	}
+			{	fishAnswer = Controller.rng.nextInt(25);	}
 			if(i == randomPlacement)
 			{	fishAnswer = answer;	}
 			currentFish.add(new FishObject(fishAnswer, i, this, fishIcon));
 		}
-		addFish();
 		playing = true;
 	}
 	
@@ -139,6 +138,7 @@ public class Game1 extends JPanel
 		add(timerLabel);
 		add(scoreLabel);
 		add(questionLabel);
+		addFish();
 	}
 	
 	private void setUpTimers()
@@ -159,7 +159,7 @@ public class Game1 extends JPanel
 				else
 				{	
 					timerLabel.setText("Time: 0:00");
-					timer.stop();
+					displayTime.stop();
 				}
 			}
 		};
@@ -174,7 +174,7 @@ public class Game1 extends JPanel
 				if(playing)
 				{	moveFish();	}
 				else
-				{	timer.stop();	}
+				{	fishTimer.stop();	}
 			}
 		};
 		fishTimer = new Timer(fishSpeed, fishMover);
@@ -185,7 +185,7 @@ public class Game1 extends JPanel
 		{
 			public void actionPerformed(ActionEvent evt) 
 			{
-				timer.stop();
+				timeOutCount.stop();
 				playing = false;
 				System.out.println("Time's up!");
 				JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "Time's up!", JOptionPane.PLAIN_MESSAGE);
@@ -193,9 +193,9 @@ public class Game1 extends JPanel
 				base.returnToMenu();
 			}
 		};
-		timer = new Timer(gamePeriod * 1000, timeOut);
-		timer.setRepeats(false);
-		timer.start();
+		timeOutCount = new Timer(gamePeriod * 1000, timeOut);
+		timeOutCount.setRepeats(false);
+		timeOutCount.start();
 	}
 
 	private void getQuestion()
@@ -322,7 +322,7 @@ public class Game1 extends JPanel
 		{
 			System.out.println("Correct answer went off screen.");
 			playing = false;
-			timer.stop();
+			timeOutCount.stop();
 			JOptionPane.showMessageDialog(base.messagePanel, "The correct answer went off screen.\nYour score was " + score + ".", "Game Over", JOptionPane.INFORMATION_MESSAGE);
 			clearCurrentFish();
 			base.returnToMenu();

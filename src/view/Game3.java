@@ -1,12 +1,10 @@
 /**
- *	@author Walker Flocker
  *	@author Ariana Fairbanks
  */
 
 package view;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
@@ -14,21 +12,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.File;
 import java.io.IOException;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 import adapter.Controller;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import java.util.ArrayList;
-import java.util.List;
-import java.awt.Canvas;
 import javax.swing.Timer;
 
 public class Game3 extends JPanel implements KeyListener
@@ -115,73 +106,47 @@ public class Game3 extends JPanel implements KeyListener
 		if (up)
 		{
 			if (sharkLocation.y > 0)
-			{
-				sharkLocation.y -= movementSpeed;
-			}
+			{	sharkLocation.y -= movementSpeed;	}
 		}
 		if (down)
 		{
 			if (sharkLocation.y < screenHeight)
-			{
-				sharkLocation.y += movementSpeed;
-			}
+			{	sharkLocation.y += movementSpeed;	}
 		}
 		if (right)
 		{
 			if (sharkLocation.x < screenWidth)
-			{
-				sharkLocation.x += movementSpeed;
-			}
+			{	sharkLocation.x += movementSpeed;	}
 		}
 		if (left)
 		{
 			if (sharkLocation.x > 0)
-			{
-				sharkLocation.x -= movementSpeed;
-			}
+			{	sharkLocation.x -= movementSpeed;	}
 		}
 		shark.setLocation(sharkLocation);
 	}
 
-	public void keyPressed(KeyEvent e) 
+	public void resolveKeyEvent(KeyEvent e, boolean value) 
 	{
 		if(e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W) 
-		{
-			up = true;
-		}
+		{	up = value;	}
 		if(e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S) 
-		{
-			down = true;
-		}
+		{	down = value;	}
 		if(e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A) 
-		{
-			left = true;
-		}
+		{	left = value;	}
 		if(e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D) 
-		{
-			right = true;
-		}
+		{	right = value;	}
+	}
+	
+	public void keyPressed(KeyEvent e) 
+	{
+		resolveKeyEvent(e, true);
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) 
 	{
-		if(e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W) 
-		{
-			up = false;
-		}
-		if(e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S) 
-		{
-			down = false;
-		}
-		if(e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A) 
-		{
-			left = false;
-		}
-		if(e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D) 
-		{
-			right = false;
-		}
+		resolveKeyEvent(e, false);
 	}
 
 	@Override

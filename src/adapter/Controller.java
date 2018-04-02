@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Random;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTable;
 
 import model.SQLiteData;
 import view.Frame;
