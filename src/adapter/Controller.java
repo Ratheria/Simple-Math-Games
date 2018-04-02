@@ -18,7 +18,7 @@ import view.Frame;
 public class Controller
 {
 	public static Random rng;
-	public static String[] studentRecordsHeader = {"Student ID", "Username", "First Name", "Last Name"};
+	public static String[] selectStudentRecordHeader = {"Student ID", "First Name", "Last Name"};
 	public static String[] allUsersHeader = {"User ID", "Username", "First Name", "Last Name", "Class ID"};
 	public Frame frame;
 	public JPanel messagePanel;
@@ -328,9 +328,7 @@ public class Controller
 	{
 		ArrayList<String> result = null;
 		if(equationString != null)
-		{
-			result = new ArrayList<String>(Arrays.asList(equationString.split(":")));
-		}
+		{	result = new ArrayList<String>(Arrays.asList(equationString.split(":")));	}
 		return result;
 	}
 	

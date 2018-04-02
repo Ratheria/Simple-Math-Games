@@ -42,6 +42,7 @@ public class Frame extends JFrame
 		DIMENSIONS = getSize();
 	}
 	
+	@SuppressWarnings("incomplete-switch")
 	public void updateState()
 	{
 		ViewStates state = base.getState();
@@ -51,18 +52,6 @@ public class Frame extends JFrame
 				panel.removeAll();
 				panel = new Login(base);
 				break;
-			case rootMenu:
-				panel.removeAll();
-				panel = new RootMenu(base);
-				break;
-			case teacherMenu:
-				panel.removeAll();
-				panel = new TeacherMenu(base);
-				break;
-			case studentMenu:
-				panel.removeAll();
-				panel = new StudentMenu(base);
-				break;
 			case settings:
 				panel.removeAll();
 				panel = new Settings(base);
@@ -71,7 +60,23 @@ public class Frame extends JFrame
 				panel.removeAll();
 				panel = new PassChange(base);
 				break;
-			case manageUsers:
+			case rootMenu:
+				panel.removeAll();
+				panel = new RootMenu(base);
+				break;
+			case teacherMenu:
+				panel.removeAll();
+				panel = new TeacherMenu(base);
+				break;
+			case selectStudentRecords:
+				panel.removeAll();
+				panel = new SelectStudentRecord(base);
+				break;
+			case studentMenu:
+				panel.removeAll();
+				panel = new StudentMenu(base);
+				break;
+			case addUsers:
 				panel.removeAll();
 				panel = new AddUsers(base);
 				break;			
@@ -79,17 +84,13 @@ public class Frame extends JFrame
 				panel.removeAll();
 				panel = new Game1(base);
 				break;
-			case game3:
-				panel.removeAll();
-				panel = new Game3(base);
-			case viewRecords:
-				panel.removeAll();
-				panel = new ViewRecords(base);
-				break;
 			case game2:
 				panel.removeAll();
 				panel = new Game2(base);
 				break;
+			case game3:
+				panel.removeAll();
+				panel = new Game3(base);
 		}	
 
 		setContentPane(panel);

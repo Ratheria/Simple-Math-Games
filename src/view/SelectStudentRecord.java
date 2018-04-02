@@ -35,7 +35,7 @@ import javax.swing.table.JTableHeader;
 import adapter.Controller;
 import model.CustomTableModel;
 
-public class ViewRecords extends JPanel 
+public class SelectStudentRecord extends JPanel 
 {
 	private static final long serialVersionUID = -7386656563185975615L;
 	private Controller base;
@@ -47,7 +47,7 @@ public class ViewRecords extends JPanel
     private TableRowSorter<TableModel> rowSorter;
 	private JScrollPane scrollPane;
 	
-	public ViewRecords(Controller base)
+	public SelectStudentRecord(Controller base)
 	{
 		this.base = base;
 		layout = new GridBagLayout();
@@ -58,7 +58,7 @@ public class ViewRecords extends JPanel
 		
 		ResultSet res = base.getStudents();
 		try 
-		{	studentRecordsSet = new JTable(CustomTableModel.buildTableModel(res, Controller.studentRecordsHeader));	}
+		{	studentRecordsSet = new JTable(CustomTableModel.buildTableModel(res, Controller.selectStudentRecordHeader));	}
 		catch (SQLException e) { e.printStackTrace(); }
 
 		rowSorter = new TableRowSorter<>(studentRecordsSet.getModel());

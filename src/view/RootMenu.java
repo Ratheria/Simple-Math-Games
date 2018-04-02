@@ -316,7 +316,7 @@ public class RootMenu extends JPanel
 		addUsersButton.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent onClick) 
-			{	base.changeState(ViewStates.manageUsers);	}
+			{	base.changeState(ViewStates.addUsers);	}
 		});
 	}
 	

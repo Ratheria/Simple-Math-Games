@@ -397,7 +397,8 @@ public class SQLiteData
 		{	getConnection();	}
 		try 
 		{
-			String query = "SELECT studentID, studentFirstName, studentLastName, date from STUDENT_SCORE_RECORDS WHERE classID = ?";
+			//TODO
+			String query = "SELECT studentID, studentFirstName, studentLastName from STUDENT_SCORE_RECORDS WHERE classID = ?";
 			preparedStatement = con.prepareStatement(query);
 			preparedStatement.setString(1, classID);
 			studentRecords = preparedStatement.executeQuery();

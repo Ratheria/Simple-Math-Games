@@ -7,16 +7,11 @@ package view;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
-import javax.swing.Timer;
-
-import adapter.Controller;
 
 public class FishObject extends JButton implements ActionListener
 {
