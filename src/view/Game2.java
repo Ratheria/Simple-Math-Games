@@ -14,12 +14,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.File;
 import java.io.IOException;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 import adapter.Controller;
 import javax.imageio.ImageIO;
@@ -29,7 +27,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import java.util.ArrayList;
 import java.util.List;
-import java.awt.Canvas;
 import javax.swing.Timer;
 
 public class Game2 extends JPanel implements KeyListener

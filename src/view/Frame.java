@@ -4,12 +4,8 @@
 package view;
 
 import java.awt.Dimension;
-import java.awt.Toolkit;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JTable;
-
 import adapter.Controller;
 import adapter.ViewStates;
 
@@ -22,7 +18,6 @@ public class Frame extends JFrame
 	private Login login;
 	private Dimension minSize;
 	
-
 	public Frame(Controller base)
 	{
 		this.base = base;
