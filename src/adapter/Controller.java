@@ -1,7 +1,10 @@
 /**
  *	@author Ariana Fairbanks
+ *	Special thanks to Ahmed Yakout and Kelsey Fairbanks.
  */
+
 package adapter;
+
 import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;
@@ -188,7 +191,6 @@ public class Controller
 				newEquation = newEquation.substring(0, whitespace) + newEquation.substring(whitespace + 1, currentLength);
 				whitespace = newEquation.indexOf(" "); 
 			}
-			
 			int plusLocation = newEquation.indexOf("+");
 			int minusLocation = newEquation.indexOf("-");
 			int stringLength = newEquation.length();
@@ -220,33 +222,38 @@ public class Controller
 			else
 			{
 				int answer = 0;
-				if(minusLocation > 0)
+				try
 				{
-					List<String> expressionHalves = Arrays.asList(newEquation.split("-"));
-					answer = Integer.parseInt(expressionHalves.get(0)) - Integer.parseInt(expressionHalves.get(1));
-				}
-				if(answer < 0)
-				{	JOptionPane.showMessageDialog(messagePanel, "Negative answer values are not supported.", "", JOptionPane.ERROR_MESSAGE);	}
-				else
-				{
-					boolean repeat = false;
-					for(String equation : customEquations)
+					if(minusLocation > 0)
 					{
-						if(equation.equals(newEquation))
-						{	repeat = true;	}
+						List<String> expressionHalves = Arrays.asList(newEquation.split("-"));
+						answer = Integer.parseInt(expressionHalves.get(0)) - Integer.parseInt(expressionHalves.get(1));
 					}
-					if(repeat)
-					{	JOptionPane.showMessageDialog(messagePanel, "That problem has already been added.", "", JOptionPane.ERROR_MESSAGE);	}
+					if(answer < 0)
+					{	JOptionPane.showMessageDialog(messagePanel, "Negative answer values are not supported.", "", JOptionPane.ERROR_MESSAGE);	}
 					else
 					{
-						if(numberOfEquations > 0)
-						{	equationString += ":";	}
-						equationString += newEquation;
-						numberOfEquations++;
-						changeCustomEquations(equationString, frequency, numberOfEquations);
-						JOptionPane.showMessageDialog(messagePanel, "Equation added.", "", JOptionPane.INFORMATION_MESSAGE);
+						boolean repeat = false;
+						for(String equation : customEquations)
+						{
+							if(equation.equals(newEquation))
+							{	repeat = true;	}
+						}
+						if(repeat)
+						{	JOptionPane.showMessageDialog(messagePanel, "That problem has already been added.", "", JOptionPane.ERROR_MESSAGE);	}
+						else
+						{
+							if(numberOfEquations > 0)
+							{	equationString += ":";	}
+							equationString += newEquation;
+							numberOfEquations++;
+							changeCustomEquations(equationString, frequency, numberOfEquations);
+							JOptionPane.showMessageDialog(messagePanel, "Equation added.", "", JOptionPane.INFORMATION_MESSAGE);
+						}
 					}
 				}
+				catch(NumberFormatException e)
+				{	JOptionPane.showMessageDialog(messagePanel, "Invalid characters detected.", "", JOptionPane.ERROR_MESSAGE);	}
 			}
 		}
 		

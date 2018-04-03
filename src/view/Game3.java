@@ -35,6 +35,8 @@ public class Game3 extends JPanel implements KeyListener
 	private int screenWidth;
 	private int screenHeight;
 	private int movementSpeed;
+	private int sharkHeight;
+	private int sharkWidth;
 	private boolean up;
 	private boolean down;
 	private boolean right;
@@ -51,11 +53,13 @@ public class Game3 extends JPanel implements KeyListener
 		screenHeight = base.frame.getHeight();
 		sharkLocation = new Point(screenWidth / 2, screenHeight / 2);
 		movementSpeed = 2;
+		sharkHeight = 100;
+		sharkWidth = 150;
 		try 
 		{	sharkImg = ImageIO.read(this.getClass().getResourceAsStream("shark.png"));	} 
 		catch (IOException ex) 
 		{	System.out.println("File \"shark.png\" is missing.");	}
-		sharkImg = sharkImg.getScaledInstance(125, 75,  java.awt.Image.SCALE_SMOOTH );
+		sharkImg = sharkImg.getScaledInstance(sharkWidth, sharkHeight,  java.awt.Image.SCALE_SMOOTH );
 		sharkIcon = new ImageIcon(sharkImg);
 		shark = new JLabel(sharkIcon);
 		up = false;
@@ -110,12 +114,12 @@ public class Game3 extends JPanel implements KeyListener
 		}
 		if (down)
 		{
-			if (sharkLocation.y < screenHeight)
+			if (sharkLocation.y < screenHeight - sharkHeight)
 			{	sharkLocation.y += movementSpeed;	}
 		}
 		if (right)
 		{
-			if (sharkLocation.x < screenWidth)
+			if (sharkLocation.x < screenWidth - sharkWidth)
 			{	sharkLocation.x += movementSpeed;	}
 		}
 		if (left)
