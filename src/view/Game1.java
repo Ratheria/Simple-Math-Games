@@ -188,7 +188,7 @@ public class Game1 extends JPanel
 				else
 				{	
 					timerLabel.setText("Time: 0:00");
-					displayTime.stop();
+					stopTimers();
 				}
 			}
 		};
@@ -214,8 +214,9 @@ public class Game1 extends JPanel
 		{
 			public void actionPerformed(ActionEvent evt) 
 			{
-				timeOutCount.stop();
 				playing = false;
+				timerLabel.setText("Time: 0:00");
+				stopTimers();
 				System.out.println("Time's up!");
 				JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "Time's up!", JOptionPane.PLAIN_MESSAGE);
 				clearCurrentFish();
@@ -227,6 +228,13 @@ public class Game1 extends JPanel
 		timeOutCount.start();
 	}
 
+	private void stopTimers()
+	{
+		displayTime.stop();
+		timeOutCount.stop();
+		fishTimer.stop();
+	}
+	
 	private void getQuestion()
 	{
 		int random = Controller.rng.nextInt(10);
@@ -350,6 +358,8 @@ public class Game1 extends JPanel
 		if(fish.getAnswer() == answer)
 		{
 			System.out.println("Correct answer went off screen.");
+			if(score > 0)
+			{	score -= 5;	}
 			playing = false;
 			timeOutCount.stop();
 			JOptionPane.showMessageDialog(base.messagePanel, "The correct answer went off screen.\nYour score was " + score + ".", "Game Over", JOptionPane.INFORMATION_MESSAGE);
@@ -372,7 +382,8 @@ public class Game1 extends JPanel
 		{
 			System.out.println("Incorrect answer given.");
 			removeFish(fish);
-			score -= 5;
+			if(score > 0)
+			{	score -= 5;	}
 			updateScore(false);
 		}
 	}

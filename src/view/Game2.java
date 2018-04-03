@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -58,6 +59,8 @@ public class Game2 extends JPanel implements KeyListener
 	private int answerIndex;
 	private int numberOfColumns;
 	private int maxY;
+	private int jellyWidth;
+	private int jellyHeight;
 	private int xSpacing;
 	private int movement;
 	private String question;
@@ -67,12 +70,13 @@ public class Game2 extends JPanel implements KeyListener
 	private int speed;
 	private boolean playing;
 
+	//TODO Grid bag layout conversion?
+	
 	public Game2(Controller base) 
 	{
 		this.base = base;
 		theLayout = new SpringLayout();
 		columnLabels = new ArrayList<JLabel>();
-		movement = 2;
 		index = 1;
 		answerIndex = 0;
 		numberOfColumns = 3;
@@ -87,14 +91,15 @@ public class Game2 extends JPanel implements KeyListener
 		menu = new JButton(" Exit Game ");
 		maxY = base.frame.getHeight();
 		xSpacing = (base.frame.getWidth())/numberOfColumns;
+		jellyWidth = xSpacing/3;
+		jellyHeight = xSpacing/2;
 		jellyLocation = new Point();
 		try 
 		{	jellyImg = ImageIO.read(this.getClass().getResourceAsStream("Jellyfish.png"));	} 
 		catch (IOException ex) 
 		{	System.out.println("File \"Jellyfish.png\" is missing.");	}
-		jellyImg = jellyImg.getScaledInstance(xSpacing/3, xSpacing/2,  java.awt.Image.SCALE_SMOOTH );
+		jellyImg = jellyImg.getScaledInstance(jellyWidth, jellyHeight, java.awt.Image.SCALE_SMOOTH );
 		jellyIcon = new ImageIcon(jellyImg);
-		jelly = new JButton(jellyIcon);
 		questionBase = 15;
 		questionTypes = 0; //both, addition, subtraction
 		speed = 40;
@@ -112,12 +117,15 @@ public class Game2 extends JPanel implements KeyListener
 	{
 		playing = true;
 		index = 1;
+		movement = 2;
 		jellyLocation.y = 50;
 		getQuestion();
+		jelly = new JButton(question, jellyIcon);
+		jelly.setFont(new Font("Tahoma", Font.BOLD, 18));
+		jelly.setForeground(new Color(25, 25, 112));
 		int randomPlacement = Controller.rng.nextInt(numberOfColumns);
 		columnLabels = null;
 		columnLabels = new ArrayList<JLabel>();
-		System.out.println(randomPlacement);
 		for(int i = 0; i < numberOfColumns; i++)
 		{
 			int columnAnswer = Controller.rng.nextInt(25);
@@ -182,7 +190,7 @@ public class Game2 extends JPanel implements KeyListener
 	
 	private void setUpVar()
 	{
-		int currentX = (xSpacing/3) + (30);
+		int currentX = (xSpacing/3) + 30;
 		label1 = columnLabels.get(0);
 		label1.setForeground(new Color(70, 130, 180));
 		label1.setFont(new Font("Arial", Font.PLAIN, 30));
@@ -201,18 +209,17 @@ public class Game2 extends JPanel implements KeyListener
 		label3.setForeground(new Color(70, 130, 180));
 		label3.setFont(new Font("Arial", Font.PLAIN, 30));
 		theLayout.putConstraint(SpringLayout.SOUTH, label3, -25, SpringLayout.SOUTH, this);
-		theLayout.putConstraint(SpringLayout.EAST, label3, currentX, SpringLayout.WEST, this);
+		theLayout.putConstraint(SpringLayout.WEST, label3, currentX, SpringLayout.WEST, this);
 		add(label3);
 		
 		jelly.setLocation(jellyLocation);
 		jelly.setFocusable(false);
-		jelly.setDisabledIcon(jellyIcon);
-		jelly.setEnabled(false);
 		jelly.setFocusPainted(false);
     	jelly.setOpaque(false);
     	jelly.setContentAreaFilled(false);
     	jelly.setBorderPainted(false);
-    	jelly.setText(question);
+    	jelly.setMargin(new Insets(0,0,0,0));
+        jelly.setHorizontalTextPosition(JButton.CENTER);
 		
 		add(jelly);
 	}
@@ -237,7 +244,7 @@ public class Game2 extends JPanel implements KeyListener
 					displayTime.stop();
 					playing = false;
 					System.out.println("Time's up!");
-					JOptionPane.showMessageDialog(base.messagePanel, "Your score was "  + ".", "Time's up!", JOptionPane.PLAIN_MESSAGE);
+					JOptionPane.showMessageDialog(base.messagePanel, "Your score was "  + score + ".", "Time's up!", JOptionPane.PLAIN_MESSAGE);
 					remove(jelly);
 					base.returnToMenu();
 				}
@@ -273,7 +280,7 @@ public class Game2 extends JPanel implements KeyListener
 	private void updateScore(boolean correct) 
 	{	
 		//TODO
-		scoreLabel.setText("Score: " + Integer.toString(score));	
+		scoreLabel.setText("Score: " + score);	
 	}
 	
 	private void getQuestion()
@@ -358,7 +365,8 @@ public class Game2 extends JPanel implements KeyListener
 		{
 			System.out.println("Incorrect answer given.");
 			JOptionPane.showMessageDialog(base.messagePanel, question.substring(0, question.indexOf("?")) + " " + answer, "Incorrect", JOptionPane.INFORMATION_MESSAGE);
-			score -= 5;
+			if(score > 0)
+			{	score -= 5;	}
 		}
 		updateScore(index == answerIndex);
 		removeVar();
@@ -375,7 +383,7 @@ public class Game2 extends JPanel implements KeyListener
 	
 	private void updateJellyLocation()
 	{
-		jellyLocation.x = (index * xSpacing) + 50;
+		jellyLocation.x = (index * xSpacing) + jellyWidth;
 		jelly.setLocation(jellyLocation);
 	}
 	
@@ -391,6 +399,10 @@ public class Game2 extends JPanel implements KeyListener
 			index++;	
 			repaint();
 		}
+		if((e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W)) 
+		{	movement = 2;	}
+		if((e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S)) 
+		{	movement = 8;	}
 	}
 
 	@Override

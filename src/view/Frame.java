@@ -37,7 +37,6 @@ public class Frame extends JFrame
 		DIMENSIONS = getSize();
 	}
 	
-	@SuppressWarnings("incomplete-switch")
 	public void updateState()
 	{
 		ViewStates state = base.getState();
@@ -86,8 +85,8 @@ public class Frame extends JFrame
 			case game3:
 				panel.removeAll();
 				panel = new Game3(base);
+				break;
 		}	
-
 		setContentPane(panel);
 		panel.revalidate();
 		panel.repaint();
