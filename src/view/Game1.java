@@ -60,7 +60,7 @@ public class Game1 extends JPanel
 	private int questionTypes;	//TODO
 	private int fishSpeed;
 	private int questionsAnsweredCorrectly;
-	private int numQuestionsAsked;
+	private int numQuestionsAsked; //TODO guesses
 	private boolean playing;
 	
 	public Game1(Controller base) 

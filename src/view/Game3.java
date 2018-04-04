@@ -9,6 +9,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -50,21 +51,21 @@ public class Game3 extends JPanel implements KeyListener {
 	private boolean right;
 	private boolean left;
 	private boolean playing;
+	private boolean guessed1;
+	private boolean guessed2;
+	private boolean guessed3;
 	private ActionListener screenRefresh;
 	private Timer refreshTimer;
-	private int[] answerList;
 	private int frequency;
 	private List<String> questionList;
 	private JLabel answerLabel1;
 	private JLabel answerLabel2;
 	private JLabel answerLabel3;
-	private Point answerLabel1Location;
-	private Point answerLabel2Location;
-	private Point answerLabel3Location;
 	private JLabel scoreLabel;
 	private JLabel timerLabel;
 	private String question;
-	private String answer;
+	private int answer;
+	private int randomPlacement;
 	private int score;
 	private static final int GAME_PERIOD = 60;
 	private int sec;
@@ -74,26 +75,21 @@ public class Game3 extends JPanel implements KeyListener {
 		frequency = base.getFrequency();
 		questionList = base.getEquations();
 		theLayout = new SpringLayout();
-		answerList = new int[2];
 		question = "";
-		answer = "0";
+		answer = 0;
 		score = 0;
 		timerLabel = new JLabel("Time: " + (GAME_PERIOD / 60) + ":" + (GAME_PERIOD % 60));
 		scoreLabel = new JLabel("Score: 0");
 		screenWidth = base.frame.getWidth();
 		screenHeight = base.frame.getHeight();
 		defaultSharkLocation = new Point(30, 110);
-		sharkLocation = defaultSharkLocation;
+		sharkLocation = new Point();
 		answerLabel1 = new JLabel();
 		answerLabel2 = new JLabel();
 		answerLabel3 = new JLabel();
-		int tempInt = screenWidth - 150;
-		answerLabel1Location = new Point(tempInt, 110);
-		answerLabel2Location = new Point(tempInt, 230);
-		answerLabel3Location = new Point(tempInt, 350);
 		movementSpeed = 3;
-		sharkWidth = (base.frame.getWidth() - 660);
-		sharkHeight = (base.frame.getHeight() - 450);
+		sharkWidth = (base.frame.getWidth()/5);
+		sharkHeight = (base.frame.getHeight()/5);
 
 		try {
 			sharkImg = ImageIO.read(this.getClass().getResourceAsStream("shark.png"));
@@ -109,9 +105,11 @@ public class Game3 extends JPanel implements KeyListener {
 		down = false;
 		right = false;
 		left = false;
+		guessed1 = false;
+		guessed2 = false;
+		guessed3 = false;
 		playing = true;
 
-		getQuestion();
 		addKeyListener(this);
 		setFocusable(true);
 		requestFocus();
@@ -121,11 +119,6 @@ public class Game3 extends JPanel implements KeyListener {
 	}
 
 	private void setUpLayout() {
-		setLayout(theLayout);
-		setBorder(new LineBorder(new Color(70, 130, 180), 10));
-		setBackground(new Color(213, 248, 255));
-		setBackground(new Color(208, 243, 255));
-
 		setLayout(theLayout);
 		setBorder(new LineBorder(new Color(70, 130, 180), 10));
 		setForeground(new Color(173, 216, 230));
@@ -142,15 +135,26 @@ public class Game3 extends JPanel implements KeyListener {
 		scoreLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		theLayout.putConstraint(SpringLayout.SOUTH, scoreLabel, -25, SpringLayout.SOUTH, this);
 		theLayout.putConstraint(SpringLayout.EAST, scoreLabel, -50, SpringLayout.EAST, this);
-
-		shark.setLocation(sharkLocation);
-		shark.setText(question);
-		shark.setHorizontalTextPosition(SwingConstants.LEFT);
-
-		addAnswerLabels();
+		
+		answerLabel1.setForeground(new Color(70, 130, 180));
+		answerLabel1.setFont(new Font("Arial", Font.BOLD, 30));
+		answerLabel2.setForeground(new Color(70, 130, 180));
+		answerLabel2.setFont(new Font("Arial", Font.BOLD, 30));
+		answerLabel3.setForeground(new Color(70, 130, 180));
+		answerLabel3.setFont(new Font("Arial", Font.BOLD, 30));
+		
+		answerLabel1.setLocation(screenWidth - 150, 110);
+		answerLabel2.setLocation(screenWidth - 150, 230);
+		answerLabel3.setLocation(screenWidth - 150, 350);
+		answerLabel1.setBounds(answerLabel1.getX(), answerLabel1.getY(), 50, 25);
+		answerLabel2.setBounds(answerLabel2.getX(), answerLabel2.getY(), 50, 25);
+		answerLabel3.setBounds(answerLabel3.getX(), answerLabel3.getY(), 50, 25);
+		
+		add(answerLabel1);
+		add(answerLabel2);
+		add(answerLabel3);
 		add(timerLabel);
 		add(scoreLabel);
-		add(shark);
 	}
 
 	private void setUpTimers() {
@@ -174,19 +178,18 @@ public class Game3 extends JPanel implements KeyListener {
 
 		gameRestarter = new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				base.returnToMenu();
+				timer.stop();
 				System.out.println("Time's up!");
 				JPanel gameOverPanel = new JPanel();
 				JOptionPane.showMessageDialog(gameOverPanel, "Your score was " + score + ".", "Time's up!", JOptionPane.PLAIN_MESSAGE);
+				base.returnToMenu();
 			}
 		};
 		timer = new Timer(GAME_PERIOD * 1000, gameRestarter); // time parameter
 																// milliseconds
 		timer.setRepeats(false);
 		timer.start();
-	}
-
-	private void playGame() {
+		
 		screenRefresh = new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				if (playing) {
@@ -202,54 +205,58 @@ public class Game3 extends JPanel implements KeyListener {
 		refreshTimer.start();
 		refreshTimer.setRepeats(true);
 	}
+	
+	private void playGame() {
+		getQuestion();
+		//TODO
+		shark = new JLabel(sharkIcon);
+		sharkLocation.x = defaultSharkLocation.x;
+		sharkLocation.y = defaultSharkLocation.y;
+		shark.setText(question);
+		add(shark);
+		repaint();
+		guessed1 = false;
+		guessed2 = false;
+		guessed3 = false;
+		randomPlacement = Controller.rng.nextInt(3);
+		for(int i = 0; i < 3; i++)
+		{
+			int randomAnswer = Controller.rng.nextInt(25);
+			while (randomAnswer == answer)
+			{	randomAnswer = Controller.rng.nextInt(25);	}
+			if(i == randomPlacement)
+			{	randomAnswer = answer;	}
+			switch(i)
+			{
+				case 0:	answerLabel1.setText("= " + randomAnswer);	break;
+				case 1: answerLabel2.setText("= " + randomAnswer);	break;
+				case 2: answerLabel3.setText("= " + randomAnswer);	break;
+			}
+		}
+	}
 
 	private void moveShark() {
 		if (up) {
 			if (sharkLocation.y > 0) {
 				sharkLocation.y -= movementSpeed;
-				if (checkAnswer()) {
-					updateScore();
-					getQuestion();
-				}
 			}
-			else 
-				resetShark();
 		}
 		if (down) {
 			if (sharkLocation.y < screenHeight - sharkHeight) {
 				sharkLocation.y += movementSpeed;
-				if (checkAnswer()) {
-					updateScore();
-					getQuestion();
-				}
 			}
-			else
-				resetShark();
 		}
 		if (right) {
 			if (sharkLocation.x < screenWidth - sharkWidth) {
 				sharkLocation.x += movementSpeed;
-				if (checkAnswer()) {
-					updateScore();
-					getQuestion();
-//					setUpLayout();
-				}
 			}
-			else
-				resetShark();
 		}
 		if (left) {
 			if (sharkLocation.x > 0) {
 				sharkLocation.x -= movementSpeed;
-				if (checkAnswer()) {
-					updateScore();
-					getQuestion();
-				}
 			}
-			else
-				resetShark();
 		}
-		shark.setLocation(sharkLocation);
+		checkAnswer();
 	}
 
 	public void resolveKeyEvent(KeyEvent e, boolean value) {
@@ -282,47 +289,6 @@ public class Game3 extends JPanel implements KeyListener {
 	@Override
 	public void keyTyped(KeyEvent e) {
 	}
-
-	private void generateRandomAnswers() {
-		for (int i = 0; i < 2; i++) {
-			int random = Controller.rng.nextInt(15);
-			answerList[i] = random;
-			// System.out.println(answerList[i]);
-		}
-	}
-
-	
-	private void addAnswerLabels() {
-		generateRandomAnswers();
-
-		// TODO randomize the way answers are added to labels
-		answerLabel1.setText("= " + Integer.toString(answerList[0]));
-		answerLabel2.setText("= " + Integer.toString(answerList[1]));
-		answerLabel3.setText("= " + answer);
-
-		answerLabel1.setHorizontalAlignment(SwingConstants.LEFT);
-		answerLabel1.setForeground(new Color(70, 130, 180));
-		answerLabel1.setFont(new Font("Arial", Font.BOLD, 30));
-		theLayout.putConstraint(SpringLayout.EAST, answerLabel1, 0, SpringLayout.EAST, this);
-		theLayout.putConstraint(SpringLayout.NORTH, answerLabel1, 110, SpringLayout.NORTH, this);
-
-		answerLabel2.setHorizontalAlignment(SwingConstants.LEFT);
-		answerLabel2.setForeground(new Color(70, 130, 180));
-		answerLabel2.setFont(new Font("Arial", Font.BOLD, 30));
-		theLayout.putConstraint(SpringLayout.EAST, answerLabel2, 0, SpringLayout.EAST, this);
-		theLayout.putConstraint(SpringLayout.NORTH, answerLabel2, 120, SpringLayout.SOUTH, answerLabel1);
-
-		answerLabel3.setHorizontalAlignment(SwingConstants.LEFT);
-		answerLabel3.setForeground(new Color(70, 130, 180));
-		answerLabel3.setFont(new Font("Arial", Font.BOLD, 30));
-		theLayout.putConstraint(SpringLayout.EAST, answerLabel3, 0, SpringLayout.EAST, this);
-		theLayout.putConstraint(SpringLayout.NORTH, answerLabel3, 120, SpringLayout.SOUTH, answerLabel2);
-
-		add(answerLabel1);
-		add(answerLabel2);
-		add(answerLabel3);
-	}
-
 	
 	private void getQuestion() {
 		int random = Controller.rng.nextInt(10);
@@ -332,26 +298,22 @@ public class Game3 extends JPanel implements KeyListener {
 		else {
 			generateQuestion();
 		}
-		while (Integer.parseInt(answer) < 0) {
-			// generates a new question if the answer is negative
+		while (answer < 0) {
 			generateQuestion();
 		}
 	}
 
 	
 	private void questionFromList() {
-		// Assumes only a + or - operator
 		int random = Controller.rng.nextInt(questionList.size());
-		System.out.println(random);
 		question = questionList.get(random);
-		System.out.println(question);
 		if (question.contains("+")) {
 			int operator = question.indexOf("+");
 			int firstInteger = Integer
 					.parseInt(question.substring(0, operator));
 			int secondInteger = Integer.parseInt(question
 					.substring(operator + 1));
-			answer = Integer.toString(firstInteger + secondInteger);
+			answer = firstInteger + secondInteger;
 			question = firstInteger + " + " + secondInteger + " = ? ";
 		} 
 		else {
@@ -360,67 +322,80 @@ public class Game3 extends JPanel implements KeyListener {
 					.parseInt(question.substring(0, operator));
 			int secondInteger = Integer.parseInt(question
 					.substring(operator + 1));
-			answer = Integer.toString(firstInteger - secondInteger);
+			answer = firstInteger - secondInteger;
 			question = firstInteger + " - " + secondInteger + " = ? ";
 		}
 	}
-
-	// TODO also need questions about place value
 	
 	private void generateQuestion() {
 		int random = Controller.rng.nextInt(2);
 		if (random < 1) {
 			int firstInteger = Controller.rng.nextInt(30);
 			int secondInteger = Controller.rng.nextInt(30);
-			answer = Integer.toString(firstInteger - secondInteger);
+			answer = firstInteger - secondInteger;
 			question = firstInteger + " - " + secondInteger + " = ? ";
 		} 
 		else {
 			int firstInteger = Controller.rng.nextInt(30);
 			int secondInteger = Controller.rng.nextInt(30);
-			answer = Integer.toString(firstInteger + secondInteger);
+			answer = firstInteger + secondInteger;
 			question = firstInteger + " + " + secondInteger + " = ? ";
 		}
 	}
 
 	
-	private void updateScore() {
-		score += 5;
+	private void updateScore(boolean correct) {
+		if(correct)
+		{	score += 50;	}
+		else if(score > 0)
+		{	score -= 5;		}
 		scoreLabel.setText("Score: " + Integer.toString(score));
 	}
 
 	
-	private void resetShark() {
-		sharkLocation = defaultSharkLocation;
-		repaint();
-	}
-	
-	private boolean checkAnswer() {
-		// if the shark is over the correct answer, it's correct
-		// make a Point for each answer label
-		// if shark location is equal to answer label Point location, we good
-		// give range of points maybe? Both vertical and horizontal??
-		
-		System.out.println("Shark X: " + shark.getX());
-		System.out.println("Shark Y: " + shark.getY());
-//		System.out.println("Answer X:" + answerLabel3.getX());
-//		System.out.println("Answer Y: " + answerLabel3.getY());
-		if ((shark.getX() >= (answerLabel3.getX() - 320)) && (shark.getY() >= 350 && shark.getY() <= 450)) {
-//			System.out.println("yep, equal");
-			return true;
+	private void checkAnswer() {
+		int intersect = -1;
+		Rectangle sharkBounds = shark.getBounds();
+		if(sharkBounds.intersects(answerLabel1.getBounds()) && !guessed1)
+		{	
+			intersect = 0;	
+			guessed1 = true;
+			answerLabel1.setText("");
+			//TODO
 		}
-		return false;
+		else if(sharkBounds.intersects(answerLabel2.getBounds()) && !guessed2) 
+		{	
+			intersect = 1;	
+			guessed2 = true;
+			answerLabel2.setText("");
+		}
+		else if(sharkBounds.intersects(answerLabel3.getBounds()) && !guessed3)
+		{	
+			intersect = 2;	
+			guessed3 = true;
+			answerLabel3.setText("");
+		}
+
+		if(intersect == randomPlacement)
+		{
+			updateScore(true);
+			remove(shark);
+			playGame();
+		}
+		else if(intersect != -1)
+		{
+			updateScore(false);
+		}
 	}
 	
 	@Override
 	public void paint(Graphics g)
 	{
 		requestFocus();
-		shark.setText(question);
+		answerLabel1.setLocation(screenWidth - 150, 110);
+		answerLabel2.setLocation(screenWidth - 150, 230);
+		answerLabel3.setLocation(screenWidth - 150, 350);
 		shark.setLocation(sharkLocation);
-		answerLabel1.setLocation(answerLabel1Location);
-		answerLabel2.setLocation(answerLabel2Location);
-		answerLabel3.setLocation(answerLabel3Location);
 		super.paint(g);
 	}
 	
