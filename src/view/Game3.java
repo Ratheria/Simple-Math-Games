@@ -29,12 +29,12 @@ import javax.swing.Timer;
 
 public class Game3 extends JPanel implements KeyListener {
 	private static final long serialVersionUID = 8585306608329719982L;
-	@SuppressWarnings("unused")
 	private Controller base;
 	private SpringLayout theLayout;
 	private JLabel shark;
 	private Image sharkImg;
 	private ImageIcon sharkIcon;
+	private Point defaultSharkLocation;
 	private Point sharkLocation;
 	private Timer timer;
 	private Timer displayTime;
@@ -78,17 +78,19 @@ public class Game3 extends JPanel implements KeyListener {
 		question = "";
 		answer = "0";
 		score = 0;
-		answerLabel1 = new JLabel();
-		answerLabel2 = new JLabel();
-		answerLabel3 = new JLabel();
-		answerLabel1Location = new Point(0, 110);
-		answerLabel2Location = new Point(0, 230);
-		answerLabel3Location = new Point(0, 350);
 		timerLabel = new JLabel("Time: " + (GAME_PERIOD / 60) + ":" + (GAME_PERIOD % 60));
 		scoreLabel = new JLabel("Score: 0");
 		screenWidth = base.frame.getWidth();
 		screenHeight = base.frame.getHeight();
-		sharkLocation = new Point(30, 110);
+		defaultSharkLocation = new Point(30, 110);
+		sharkLocation = defaultSharkLocation;
+		answerLabel1 = new JLabel();
+		answerLabel2 = new JLabel();
+		answerLabel3 = new JLabel();
+		int tempInt = screenWidth - 150;
+		answerLabel1Location = new Point(tempInt, 110);
+		answerLabel2Location = new Point(tempInt, 230);
+		answerLabel3Location = new Point(tempInt, 350);
 		movementSpeed = 3;
 		sharkWidth = (base.frame.getWidth() - 660);
 		sharkHeight = (base.frame.getHeight() - 450);
@@ -208,7 +210,6 @@ public class Game3 extends JPanel implements KeyListener {
 				if (checkAnswer()) {
 					updateScore();
 					getQuestion();
-					repaint();
 				}
 			}
 			else 
@@ -220,7 +221,6 @@ public class Game3 extends JPanel implements KeyListener {
 				if (checkAnswer()) {
 					updateScore();
 					getQuestion();
-					repaint();
 				}
 			}
 			else
@@ -232,7 +232,6 @@ public class Game3 extends JPanel implements KeyListener {
 				if (checkAnswer()) {
 					updateScore();
 					getQuestion();
-					repaint();
 //					setUpLayout();
 				}
 			}
@@ -245,7 +244,6 @@ public class Game3 extends JPanel implements KeyListener {
 				if (checkAnswer()) {
 					updateScore();
 					getQuestion();
-					repaint();
 				}
 			}
 			else
@@ -285,21 +283,6 @@ public class Game3 extends JPanel implements KeyListener {
 	public void keyTyped(KeyEvent e) {
 	}
 
-	
-	
-	@Override
-	public void paint(Graphics g) {
-		requestFocus();
-		shark.setText(question);
-//		sharkLocation.setLocation(30, 100);
-		answerLabel1.setLocation(answerLabel1.getLocation());
-		answerLabel2.setLocation(answerLabel2.getLocation());
-		answerLabel3.setLocation(answerLabel3.getLocation());
-		// place all labels
-		super.paint(g);
-	}
-
-	
 	private void generateRandomAnswers() {
 		for (int i = 0; i < 2; i++) {
 			int random = Controller.rng.nextInt(15);
@@ -408,9 +391,8 @@ public class Game3 extends JPanel implements KeyListener {
 
 	
 	private void resetShark() {
-		remove(shark);
-		sharkLocation.setLocation(30, 100);
-		add(shark);
+		sharkLocation = defaultSharkLocation;
+		repaint();
 	}
 	
 	private boolean checkAnswer() {
@@ -429,4 +411,17 @@ public class Game3 extends JPanel implements KeyListener {
 		}
 		return false;
 	}
+	
+	@Override
+	public void paint(Graphics g)
+	{
+		requestFocus();
+		shark.setText(question);
+		shark.setLocation(sharkLocation);
+		answerLabel1.setLocation(answerLabel1Location);
+		answerLabel2.setLocation(answerLabel2Location);
+		answerLabel3.setLocation(answerLabel3Location);
+		super.paint(g);
+	}
+	
 }
