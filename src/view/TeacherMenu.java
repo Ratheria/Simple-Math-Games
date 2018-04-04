@@ -9,15 +9,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.RowFilter;
 import javax.swing.SwingConstants;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.JTableHeader;
@@ -35,9 +32,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 import javax.swing.JSlider;
 import javax.swing.JTable;
 
@@ -291,6 +286,7 @@ public class TeacherMenu extends JPanel implements ChangeListener
 					setUpTable();
 				}
 				addEquationsTextField.setText("");
+				addEquationsTextField.requestFocus();
 			}
 		});
 		
@@ -302,7 +298,6 @@ public class TeacherMenu extends JPanel implements ChangeListener
 				if(equation != null && equation.length() > 0)
 				{
 					int location = questionList.indexOf(equation);
-					System.out.println(" location " + location);
 					if(location > -1)
 					{
 						questionList.remove(location);
@@ -337,7 +332,6 @@ public class TeacherMenu extends JPanel implements ChangeListener
 	@Override
 	public void stateChanged(ChangeEvent e) 
 	{
-		//in case there are more things listening for change later
 		if(e.getSource().equals(frequencySlider))
 		{	sliderChanged();	}
 	}
@@ -367,7 +361,6 @@ public class TeacherMenu extends JPanel implements ChangeListener
 	private void updateField()
 	{
 		int row = dataSet.getSelectedRow();
-		System.out.println(row);
 		String selection = (String) dataSet.getValueAt(row, 0);
 		removeEquationsTextField.setText(selection);
 	}

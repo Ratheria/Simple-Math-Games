@@ -68,6 +68,8 @@ public class Game2 extends JPanel implements KeyListener
 	private int questionBase;
 	private int questionTypes;	//TODO
 	private int speed;
+	private int numQuestionsAsked;
+	private int questionsAnsweredCorrectly;
 	private boolean playing;
 
 	//TODO Grid bag layout conversion?
@@ -103,6 +105,8 @@ public class Game2 extends JPanel implements KeyListener
 		questionBase = 15;
 		questionTypes = 0; //both, addition, subtraction
 		speed = 40;
+		numQuestionsAsked = 0;
+		questionsAnsweredCorrectly = 0;
 		
 		addKeyListener(this);
 		setFocusable(true);
@@ -120,6 +124,7 @@ public class Game2 extends JPanel implements KeyListener
 		movement = 2;
 		jellyLocation.y = 50;
 		getQuestion();
+		numQuestionsAsked++;
 		jelly = new JButton(question, jellyIcon);
 		jelly.setVerticalTextPosition(SwingConstants.TOP);
 		jelly.setFont(new Font("Tahoma", Font.BOLD, 18));
@@ -221,6 +226,7 @@ public class Game2 extends JPanel implements KeyListener
     	jelly.setBorderPainted(false);
     	jelly.setMargin(new Insets(0,0,0,0));
         jelly.setHorizontalTextPosition(JButton.CENTER);
+        
 		
 		add(jelly);
 	}
@@ -244,7 +250,9 @@ public class Game2 extends JPanel implements KeyListener
 				{
 					displayTime.stop();
 					playing = false;
+					score -= 5;
 					System.out.println("Time's up!");
+					base.addGameRecord(2, numQuestionsAsked, questionsAnsweredCorrectly);
 					JOptionPane.showMessageDialog(base.messagePanel, "Your score was "  + score + ".", "Time's up!", JOptionPane.PLAIN_MESSAGE);
 					remove(jelly);
 					base.returnToMenu();
@@ -359,6 +367,7 @@ public class Game2 extends JPanel implements KeyListener
 		if(index == answerIndex)
 		{
 			System.out.println("Correct answer given.");
+			questionsAnsweredCorrectly++;
 			JOptionPane.showMessageDialog(base.messagePanel, question.substring(0, question.indexOf("?")) + " " + answer, "Correct!", JOptionPane.INFORMATION_MESSAGE);
 			score += 50;
 		}

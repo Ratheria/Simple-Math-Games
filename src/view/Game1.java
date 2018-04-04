@@ -59,6 +59,8 @@ public class Game1 extends JPanel
 	private int questionBase;
 	private int questionTypes;	//TODO
 	private int fishSpeed;
+	private int questionsAnsweredCorrectly;
+	private int numQuestionsAsked;
 	private boolean playing;
 	
 	public Game1(Controller base) 
@@ -90,8 +92,9 @@ public class Game1 extends JPanel
 		questionBase = 15;
 		questionTypes = 0; //both, addition, subtraction
 		fishSpeed = 40;
+		numQuestionsAsked = 0;
+		questionsAnsweredCorrectly = 0;
 		
-		this.setDoubleBuffered(true);
 		playGame();
 		setUpLayout();
 		setUpListeners();
@@ -101,6 +104,7 @@ public class Game1 extends JPanel
 	private void playGame()
 	{
 		getQuestion();
+		numQuestionsAsked++;
 		int randomPlacement = Controller.rng.nextInt(maxFishVertical);
 		for(int i = 0; i < maxFishVertical; i++)
 		{
@@ -162,8 +166,10 @@ public class Game1 extends JPanel
 			public void actionPerformed(ActionEvent onClick) 
 			{	
 				timeOutCount.stop();
+				displayTime.stop();
+				fishTimer.stop();
 				playing = false;
-				//TODO
+				//TODO are you sure? data lost
 				clearCurrentFish();
 				base.returnToMenu();
 			}
@@ -217,6 +223,7 @@ public class Game1 extends JPanel
 				playing = false;
 				timerLabel.setText("Time: 0:00");
 				stopTimers();
+				base.addGameRecord(1, numQuestionsAsked, questionsAnsweredCorrectly);
 				System.out.println("Time's up!");
 				JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "Time's up!", JOptionPane.PLAIN_MESSAGE);
 				clearCurrentFish();
@@ -307,7 +314,11 @@ public class Game1 extends JPanel
 	
 	private void updateScore(boolean correct) 
 	{	
-		//TODO
+		if(correct)
+		{
+			questionsAnsweredCorrectly++;
+			//TODO
+		}
 		scoreLabel.setText("Score: " + Integer.toString(score));	
 	}
 
@@ -362,6 +373,7 @@ public class Game1 extends JPanel
 			{	score -= 5;	}
 			playing = false;
 			timeOutCount.stop();
+			base.addGameRecord(1, numQuestionsAsked, questionsAnsweredCorrectly);
 			JOptionPane.showMessageDialog(base.messagePanel, "The correct answer went off screen.\nYour score was " + score + ".", "Game Over", JOptionPane.INFORMATION_MESSAGE);
 			clearCurrentFish();
 			base.returnToMenu();

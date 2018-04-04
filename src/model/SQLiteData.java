@@ -370,20 +370,20 @@ public class SQLiteData
 		catch (SQLException e) {e.printStackTrace();}
 	}
 	
-	public void addStudentScoreRecord(int studentID, String firstName, String lastName, String classID, String date)
+	public void addGameRecord(int studentID, int gameID, int questionsAsked, int questionsCorrect, String classID)
 	{
-		//studentID firstName lastName classID recordID
 		if (con == null)
 		{	getConnection();	}
 		try 
 		{
 			PreparedStatement preparedStatement;
-			preparedStatement = con.prepareStatement("INSERT INTO STUDENT_SCORE_RECORDS VALUES(?, ?, ?, ?, ?, ?);");
+			preparedStatement = con.prepareStatement("INSERT INTO STUDENT_SCORE_RECORDS VALUES(?, ?, ?, ?, ?, ?, ?);");
 			preparedStatement.setInt(1, studentID);
-			preparedStatement.setString(2, firstName);
-			preparedStatement.setString(3, lastName);
-			preparedStatement.setString(4, classID);
-			preparedStatement.setString(5, date);
+			preparedStatement.setInt(2, gameID);
+			preparedStatement.setInt(3, questionsAsked);
+			preparedStatement.setInt(4, questionsCorrect);
+			preparedStatement.setString(5, classID);
+			preparedStatement.setString(6, Controller.dtf.format(LocalDateTime.now()));
 			preparedStatement.executeUpdate();
 		}
 		catch (SQLException e) {e.printStackTrace();}
@@ -399,6 +399,7 @@ public class SQLiteData
 		{
 			//TODO
 			String query = "SELECT studentID, studentFirstName, studentLastName from STUDENT_SCORE_RECORDS WHERE classID = ?";
+			//+ "studentID INTEGER," + "gameID INTEGER," + "questionsAsked INTEGER," + "questionsCorrect INTEGER," + "classID VARCHAR(5)," + "date VARCHAR(19)," + "recordID INTEGER,"
 			preparedStatement = con.prepareStatement(query);
 			preparedStatement.setString(1, classID);
 			studentRecords = preparedStatement.executeQuery();
@@ -543,16 +544,13 @@ public class SQLiteData
 					System.out.println("Building Student Score Records table.");
 					state = con.createStatement();
 					state.executeUpdate("CREATE TABLE STUDENT_SCORE_RECORDS("
-							+ "studentID INTEGER," + "studentFirstName VARCHAR(30)," + "studentLastName VARCHAR(30)," + "classID VARCHAR(5)," + "date VARCHAR(19)," + "recordID INTEGER,"
+							+ "studentID INTEGER," + "gameID INTEGER," + "questionsAsked INTEGER," + "questionsCorrect INTEGER," + "classID VARCHAR(5)," + "date VARCHAR(19)," + "recordID INTEGER,"
 							+ "PRIMARY KEY (recordID),"  
 							+ "FOREIGN KEY (studentID) REFERENCES USER(ID));");
 					
-					DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
-					LocalDateTime now = LocalDateTime.now(); 
-					addStudentScoreRecord(222222, "Default", "Student", "1A", dtf.format(now));
-					addStudentScoreRecord(222222, "Default", "Student", "1A", dtf.format(now));
-					addStudentScoreRecord(222222, "Default", "Student", "1A", dtf.format(now));
-					addStudentScoreRecord(111111, "Default", "Teacher", "1A", dtf.format(now));
+					//addStudentScoreRecord(222222, "Default", "Student", "1A", dtf.format(now));
+					//addStudentScoreRecord(222222, "Default", "Student", "1A", dtf.format(now));
+
 
 				}
 			}
