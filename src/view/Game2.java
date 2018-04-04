@@ -121,6 +121,7 @@ public class Game2 extends JPanel implements KeyListener
 		jellyLocation.y = 50;
 		getQuestion();
 		jelly = new JButton(question, jellyIcon);
+		jelly.setVerticalTextPosition(SwingConstants.TOP);
 		jelly.setFont(new Font("Tahoma", Font.BOLD, 18));
 		jelly.setForeground(new Color(25, 25, 112));
 		int randomPlacement = Controller.rng.nextInt(numberOfColumns);
