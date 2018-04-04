@@ -57,44 +57,49 @@ public class Game1 extends JPanel
 	private Image fishImg;
 	private ImageIcon fishIcon;
 	private int questionBase;
-	private int questionTypes;	//TODO
+	private int questionTypes; // TODO
 	private int fishSpeed;
 	private int questionsAnsweredCorrectly;
-	private int numQuestionsAsked; //TODO guesses
+	private int numQuestionsAsked; // TODO guesses
 	private boolean playing;
-	
-	public Game1(Controller base) 
+
+	public Game1(Controller base)
 	{
 		this.base = base;
 		currentFish = new ArrayList<FishObject>();
 		width = base.frame.getWidth();
 		height = base.frame.getHeight();
-		maxFishVertical = (height - 250)/60;
+		maxFishVertical = (height - 250) / 60;
 		frequency = base.getFrequency();
 		answer = 0;
 		score = 0;
-		gamePeriod = 40; //seconds
+		gamePeriod = 40; // seconds
 		theLayout = new SpringLayout();
 		question = "Question";
 		questionList = base.getEquations();
-		timerLabel = new JLabel("Time: "+(gamePeriod/60)+":"+ (gamePeriod%60));
+		timerLabel = new JLabel("Time: " + (gamePeriod / 60) + ":" + (gamePeriod % 60));
 		questionLabel = new JLabel(question);
 		questionLabel.setBackground(new Color(245, 245, 245));
 		scoreLabel = new JLabel("Score: 0");
 		menu = new JButton(" Exit Game ");
-		fishImageWidth = (width - 250)/8;
-		fishImageHeight = (height - 250)/5;
-		try 
-		{	fishImg = ImageIO.read(this.getClass().getResourceAsStream("fish.png"));	} 
-		catch (IOException ex){	System.out.println("File fish.png is missing.");	}
-		fishImg = fishImg.getScaledInstance(fishImageWidth, fishImageHeight,  java.awt.Image.SCALE_SMOOTH );
+		fishImageWidth = (width - 250) / 8;
+		fishImageHeight = (height - 250) / 5;
+		try
+		{
+			fishImg = ImageIO.read(this.getClass().getResourceAsStream("fish.png"));
+		}
+		catch (IOException ex)
+		{
+			System.out.println("File fish.png is missing.");
+		}
+		fishImg = fishImg.getScaledInstance(fishImageWidth, fishImageHeight, java.awt.Image.SCALE_SMOOTH);
 		fishIcon = new ImageIcon(fishImg);
 		questionBase = 15;
-		questionTypes = 0; //both, addition, subtraction
+		questionTypes = 0; // both, addition, subtraction
 		fishSpeed = 40;
 		numQuestionsAsked = 0;
 		questionsAnsweredCorrectly = 0;
-		
+
 		playGame();
 		setUpLayout();
 		setUpListeners();
@@ -106,20 +111,24 @@ public class Game1 extends JPanel
 		getQuestion();
 		numQuestionsAsked++;
 		int randomPlacement = Controller.rng.nextInt(maxFishVertical);
-		for(int i = 0; i < maxFishVertical; i++)
+		for (int i = 0; i < maxFishVertical; i++)
 		{
 			int fishAnswer = Controller.rng.nextInt(25);
 			while (fishAnswer == answer)
-			{	fishAnswer = Controller.rng.nextInt(25);	}
-			if(i == randomPlacement)
-			{	fishAnswer = answer;	}
+			{
+				fishAnswer = Controller.rng.nextInt(25);
+			}
+			if (i == randomPlacement)
+			{
+				fishAnswer = answer;
+			}
 			currentFish.add(new FishObject(fishAnswer, i, this, fishIcon));
 		}
 		addFish();
 		playing = true;
 	}
-	
-	private void setUpLayout() 
+
+	private void setUpLayout()
 	{
 		setLayout(theLayout);
 		setBorder(new LineBorder(new Color(70, 130, 180), 10));
@@ -152,73 +161,82 @@ public class Game1 extends JPanel
 		menu.setBorder(new LineBorder(new Color(135, 206, 250), 2));
 		theLayout.putConstraint(SpringLayout.SOUTH, menu, -25, SpringLayout.SOUTH, this);
 		theLayout.putConstraint(SpringLayout.WEST, menu, 50, SpringLayout.WEST, this);
-		
+
 		add(timerLabel);
 		add(scoreLabel);
 		add(questionLabel);
 		add(menu);
 	}
-	
-	private void setUpListeners() 
-	{	
-		menu.addActionListener(new ActionListener() 
+
+	private void setUpListeners()
+	{
+		menu.addActionListener(new ActionListener()
 		{
-			public void actionPerformed(ActionEvent onClick) 
-			{	
+			public void actionPerformed(ActionEvent onClick)
+			{
 				timeOutCount.stop();
 				displayTime.stop();
 				fishTimer.stop();
 				playing = false;
-				//TODO are you sure? data lost
+				// TODO are you sure? data lost
 				clearCurrentFish();
 				base.returnToMenu();
 			}
 		});
 	}
-	
+
 	private void setUpTimers()
 	{
 		currentTime = gamePeriod - 1;
-		timeDisplayer = new ActionListener() 
+		timeDisplayer = new ActionListener()
 		{
-			public void actionPerformed(ActionEvent evt) 
+			public void actionPerformed(ActionEvent evt)
 			{
-				if(playing)
+				if (playing)
 				{
-					if((currentTime % 60) < 10)
-					{	timerLabel.setText("Time: " + (int)(currentTime/60)+ ":0" + (int)(currentTime%60));	}
+					if ((currentTime % 60) < 10)
+					{
+						timerLabel.setText("Time: " + (int) (currentTime / 60) + ":0" + (int) (currentTime % 60));
+					}
 					else
-					{	timerLabel.setText("Time: " + (int)(currentTime/60)+ ":" + (int)(currentTime%60));	}
+					{
+						timerLabel.setText("Time: " + (int) (currentTime / 60) + ":" + (int) (currentTime % 60));
+					}
 					currentTime--;
 				}
 				else
-				{	
+				{
 					timerLabel.setText("Time: 0:00");
 					stopTimers();
 				}
 			}
 		};
-		displayTime = new Timer(1000, timeDisplayer); //time parameter milliseconds
+		displayTime = new Timer(1000, timeDisplayer); // time parameter
+														// milliseconds
 		displayTime.start();
 		displayTime.setRepeats(true);
-		
+
 		fishMover = new ActionListener()
 		{
 			public void actionPerformed(ActionEvent event)
-			{	
-				if(playing)
-				{	moveFish();	}
+			{
+				if (playing)
+				{
+					moveFish();
+				}
 				else
-				{	fishTimer.stop();	}
+				{
+					fishTimer.stop();
+				}
 			}
 		};
 		fishTimer = new Timer(fishSpeed, fishMover);
 		fishTimer.start();
 		fishTimer.setRepeats(true);
-		
-		timeOut = new ActionListener() 
+
+		timeOut = new ActionListener()
 		{
-			public void actionPerformed(ActionEvent evt) 
+			public void actionPerformed(ActionEvent evt)
 			{
 				playing = false;
 				timerLabel.setText("Time: 0:00");
@@ -241,16 +259,22 @@ public class Game1 extends JPanel
 		timeOutCount.stop();
 		fishTimer.stop();
 	}
-	
+
 	private void getQuestion()
 	{
 		int random = Controller.rng.nextInt(10);
-		if(frequency > 0 && random <= frequency && questionList != null)
-		{	questionFromList();	}
+		if (frequency > 0 && random <= frequency && questionList != null)
+		{
+			questionFromList();
+		}
 		else
-		{	generateQuestion();	}
-		while(answer < 0)
-		{	generateQuestion();	}
+		{
+			generateQuestion();
+		}
+		while (answer < 0)
+		{
+			generateQuestion();
+		}
 		questionLabel.setText(question);
 	}
 
@@ -258,7 +282,7 @@ public class Game1 extends JPanel
 	{
 		int random = Controller.rng.nextInt(questionList.size());
 		question = questionList.get(random);
-		if(question.contains("+"))
+		if (question.contains("+"))
 		{
 			int operator = question.indexOf("+");
 			int firstInteger = Integer.parseInt(question.substring(0, operator));
@@ -278,14 +302,18 @@ public class Game1 extends JPanel
 
 	private void generateQuestion()
 	{
-		switch(questionTypes)
+		switch (questionTypes)
 		{
 			case 0:
 				int random = Controller.rng.nextInt(2);
-				if(random < 1)
-				{	generateAddition();	}
+				if (random < 1)
+				{
+					generateAddition();
+				}
 				else
-				{	generateSubtraction();	}
+				{
+					generateSubtraction();
+				}
 				break;
 			case 1:
 				generateAddition();
@@ -303,7 +331,7 @@ public class Game1 extends JPanel
 		answer = firstInteger - secondInteger;
 		question = firstInteger + " - " + secondInteger + " = ? ";
 	}
-	
+
 	private void generateSubtraction()
 	{
 		int firstInteger = Controller.rng.nextInt(questionBase);
@@ -311,15 +339,15 @@ public class Game1 extends JPanel
 		answer = firstInteger + secondInteger;
 		question = firstInteger + " + " + secondInteger + " = ? ";
 	}
-	
-	private void updateScore(boolean correct) 
-	{	
-		if(correct)
+
+	private void updateScore(boolean correct)
+	{
+		if (correct)
 		{
 			questionsAnsweredCorrectly++;
-			//TODO
+			// TODO
 		}
-		scoreLabel.setText("Score: " + Integer.toString(score));	
+		scoreLabel.setText("Score: " + Integer.toString(score));
 	}
 
 	private void removeFish(FishObject fish)
@@ -330,51 +358,56 @@ public class Game1 extends JPanel
 
 	private void clearCurrentFish()
 	{
-		for(FishObject fish : currentFish)
-		{	this.remove(fish);	}
+		for (FishObject fish : currentFish)
+		{
+			this.remove(fish);
+		}
 		currentFish = new ArrayList<FishObject>();
 		repaint();
 	}
-	
+
 	private void moveFish()
-	{	
-		for(FishObject fish : currentFish)
-		{	
-			fish.updateFishLocation();	
+	{
+		for (FishObject fish : currentFish)
+		{
+			fish.updateFishLocation();
 			repaint(fish.getBounds());
 		}
 	}
-	
+
 	private void addFish()
 	{
-		for(FishObject fish : currentFish)
+		for (FishObject fish : currentFish)
 		{
-	  		fish.setFocusPainted(false);
+			fish.setFocusPainted(false);
 			fish.setFont(new Font("Ariel", Font.PLAIN, 20));
 			fish.setForeground(Color.WHITE);
-	    	add(fish);
+			add(fish);
 		}
 	}
 
 	private void refreshFishLocation()
 	{
-		for(FishObject fish : currentFish)
+		for (FishObject fish : currentFish)
 		{
-	    	fish.setLocation(fish.getXValue(), fish.getYValue());
+			fish.setLocation(fish.getXValue(), fish.getYValue());
 		}
 	}
-	
+
 	public void fishWentOffScreen(FishObject fish)
 	{
-		if(fish.getAnswer() == answer)
+		if (fish.getAnswer() == answer)
 		{
 			System.out.println("Correct answer went off screen.");
-			if(score > 0)
-			{	score -= 5;	}
+			if (score > 0)
+			{
+				score -= 5;
+			}
 			playing = false;
 			timeOutCount.stop();
 			base.addGameRecord(1, numQuestionsAsked, questionsAnsweredCorrectly);
-			JOptionPane.showMessageDialog(base.messagePanel, "The correct answer went off screen.\nYour score was " + score + ".", "Game Over", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(base.messagePanel, "The correct answer went off screen.\nYour score was " + score + ".", "Game Over",
+					JOptionPane.INFORMATION_MESSAGE);
 			clearCurrentFish();
 			base.returnToMenu();
 		}
@@ -382,7 +415,7 @@ public class Game1 extends JPanel
 
 	public void fishWasSelected(FishObject fish)
 	{
-		if(fish.getAnswer() == answer)
+		if (fish.getAnswer() == answer)
 		{
 			System.out.println("Correct answer given.");
 			score += 50;
@@ -394,17 +427,19 @@ public class Game1 extends JPanel
 		{
 			System.out.println("Incorrect answer given.");
 			removeFish(fish);
-			if(score > 0)
-			{	score -= 5;	}
+			if (score > 0)
+			{
+				score -= 5;
+			}
 			updateScore(false);
 		}
 	}
-	
-	@Override 
+
+	@Override
 	public void paint(Graphics g)
 	{
 		refreshFishLocation();
 		super.paint(g);
 	}
-	
+
 }

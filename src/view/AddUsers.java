@@ -48,7 +48,7 @@ public class AddUsers extends JPanel
 	private JTextField addClassIDTextField;
 	private JButton manageUserButton;
 	private int value;
-	
+
 	public AddUsers(Controller base)
 	{
 		this.base = base;
@@ -57,7 +57,8 @@ public class AddUsers extends JPanel
 		header = new JLabel(" Add Users ");
 		backButton = new JButton(" BACK ");
 		importUsersButton = new JButton(" IMPORT USERS FROM CSV ");
-		userOptions = new JComboBox<String>(new DefaultComboBoxModel<String>(new String[] {" Add New Student", " Add New Teacher", " Add New Admin"}));
+		userOptions = new JComboBox<String>(new DefaultComboBoxModel<String>(new String[]
+		{ " Add New Student", " Add New Teacher", " Add New Admin" }));
 		addFirstName = new JLabel("First Name");
 		addFirstNameTextField = new JTextField();
 		addLastName = new JLabel("Last Name");
@@ -73,12 +74,16 @@ public class AddUsers extends JPanel
 		setUpListeners();
 	}
 
-	private void setUpLayout() 
+	private void setUpLayout()
 	{
-		layout.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-		layout.rowWeights = new double[]{0.0, 2.0, 0.0, 2.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0};
-		layout.columnWidths = new int[]{0, 0, 0, 0, 0};
-		layout.columnWeights = new double[]{0.0, 0.0, 1.0, 1.0, 0.0};
+		layout.rowHeights = new int[]
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+		layout.rowWeights = new double[]
+		{ 0.0, 2.0, 0.0, 2.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0 };
+		layout.columnWidths = new int[]
+		{ 0, 0, 0, 0, 0 };
+		layout.columnWeights = new double[]
+		{ 0.0, 0.0, 1.0, 1.0, 0.0 };
 		setLayout(layout);
 		setBorder(new LineBorder(new Color(128, 128, 128), 10));
 		setForeground(new Color(105, 105, 105));
@@ -91,7 +96,7 @@ public class AddUsers extends JPanel
 		gbc_displayName.insets = new Insets(15, 10, 5, 0);
 		gbc_displayName.gridx = 1;
 		gbc_displayName.gridy = 0;
-		
+
 		backButton.setFont(new Font("Arial", Font.PLAIN, 25));
 		backButton.setForeground(new Color(105, 105, 105));
 		backButton.setBackground(new Color(105, 105, 105));
@@ -102,8 +107,8 @@ public class AddUsers extends JPanel
 		gbc_settingsButton.anchor = GridBagConstraints.NORTHWEST;
 		gbc_settingsButton.insets = new Insets(15, 20, 5, 5);
 		gbc_settingsButton.gridx = 0;
-		gbc_settingsButton.gridy = 0;		
-		
+		gbc_settingsButton.gridy = 0;
+
 		importUsersButton.setVerticalAlignment(SwingConstants.TOP);
 		importUsersButton.setFont(new Font("Arial", Font.PLAIN, 20));
 		importUsersButton.setForeground(new Color(105, 105, 105));
@@ -116,7 +121,7 @@ public class AddUsers extends JPanel
 		gbc_importUsersButton.insets = new Insets(0, 0, 5, 0);
 		gbc_importUsersButton.gridx = 0;
 		gbc_importUsersButton.gridy = 2;
-		
+
 		userOptions.setForeground(new Color(105, 105, 105));
 		userOptions.setFont(new Font("Arial", Font.PLAIN, 20));
 		GridBagConstraints gbc_userOptions = new GridBagConstraints();
@@ -125,7 +130,7 @@ public class AddUsers extends JPanel
 		gbc_userOptions.insets = new Insets(10, 30, 10, 5);
 		gbc_userOptions.gridx = 0;
 		gbc_userOptions.gridy = 4;
-		
+
 		addFirstName.setVerticalAlignment(SwingConstants.TOP);
 		addFirstName.setForeground(new Color(105, 105, 105));
 		addFirstName.setFont(new Font("Arial", Font.PLAIN, 25));
@@ -135,7 +140,7 @@ public class AddUsers extends JPanel
 		gbc_addFirstName.insets = new Insets(10, 60, 5, 0);
 		gbc_addFirstName.gridx = 0;
 		gbc_addFirstName.gridy = 6;
-		
+
 		addFirstNameTextField.setFont(new Font("Arial", Font.PLAIN, 20));
 		addFirstNameTextField.setBackground(new Color(220, 220, 220));
 		addFirstNameTextField.setForeground(new Color(0, 0, 0));
@@ -146,7 +151,7 @@ public class AddUsers extends JPanel
 		gbc_addFirstNameTextField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_addFirstNameTextField.gridx = 0;
 		gbc_addFirstNameTextField.gridy = 7;
-		
+
 		addLastName.setVerticalAlignment(SwingConstants.TOP);
 		addLastName.setForeground(new Color(105, 105, 105));
 		addLastName.setFont(new Font("Arial", Font.PLAIN, 25));
@@ -156,7 +161,7 @@ public class AddUsers extends JPanel
 		gbc_addLastName.insets = new Insets(10, 60, 5, 0);
 		gbc_addLastName.gridx = 0;
 		gbc_addLastName.gridy = 8;
-		
+
 		addLastNameTextField.setFont(new Font("Arial", Font.PLAIN, 20));
 		addLastNameTextField.setBackground(new Color(220, 220, 220));
 		addLastNameTextField.setForeground(new Color(0, 0, 0));
@@ -167,7 +172,7 @@ public class AddUsers extends JPanel
 		gbc_addLastNameTextField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_addLastNameTextField.gridx = 0;
 		gbc_addLastNameTextField.gridy = 9;
-		
+
 		addID.setVerticalAlignment(SwingConstants.TOP);
 		addID.setForeground(new Color(105, 105, 105));
 		addID.setFont(new Font("Arial", Font.PLAIN, 25));
@@ -177,7 +182,7 @@ public class AddUsers extends JPanel
 		gbc_addID.insets = new Insets(10, 60, 5, 0);
 		gbc_addID.gridx = 0;
 		gbc_addID.gridy = 10;
-		
+
 		addIDTextField.setFont(new Font("Arial", Font.PLAIN, 20));
 		addIDTextField.setBackground(new Color(220, 220, 220));
 		addIDTextField.setForeground(new Color(0, 0, 0));
@@ -188,7 +193,7 @@ public class AddUsers extends JPanel
 		gbc_addIDTextField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_addIDTextField.gridx = 0;
 		gbc_addIDTextField.gridy = 11;
-		
+
 		addClassID.setVerticalAlignment(SwingConstants.TOP);
 		addClassID.setForeground(new Color(105, 105, 105));
 		addClassID.setFont(new Font("Arial", Font.PLAIN, 25));
@@ -198,7 +203,7 @@ public class AddUsers extends JPanel
 		gbc_addClassID.insets = new Insets(10, 60, 5, 0);
 		gbc_addClassID.gridx = 0;
 		gbc_addClassID.gridy = 12;
-		
+
 		addClassIDTextField.setFont(new Font("Arial", Font.PLAIN, 20));
 		addClassIDTextField.setBackground(new Color(220, 220, 220));
 		addClassIDTextField.setForeground(new Color(0, 0, 0));
@@ -209,7 +214,7 @@ public class AddUsers extends JPanel
 		gbc_addClassIDTextField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_addClassIDTextField.gridx = 0;
 		gbc_addClassIDTextField.gridy = 13;
-		
+
 		manageUserButton.setVerticalAlignment(SwingConstants.TOP);
 		manageUserButton.setForeground(new Color(105, 105, 105));
 		manageUserButton.setBackground(new Color(105, 105, 105));
@@ -223,7 +228,7 @@ public class AddUsers extends JPanel
 		gbc_addUserButton.insets = new Insets(0, 0, 20, 20);
 		gbc_addUserButton.gridx = 3;
 		gbc_addUserButton.gridy = 16;
-		
+
 		add(header, gbc_displayName);
 		add(backButton, gbc_settingsButton);
 		add(importUsersButton, gbc_importUsersButton);
@@ -238,71 +243,90 @@ public class AddUsers extends JPanel
 		add(addClassIDTextField, gbc_addClassIDTextField);
 		add(manageUserButton, gbc_addUserButton);
 	}
-	
-	private void setUpListeners() 
+
+	private void setUpListeners()
 	{
-		
-		backButton.addActionListener(new ActionListener() 
+
+		backButton.addActionListener(new ActionListener()
 		{
-			public void actionPerformed(ActionEvent onClick) 
-			{	base.returnToMenu();	}
+			public void actionPerformed(ActionEvent onClick)
+			{
+				base.returnToMenu();
+			}
 		});
-		
-		importUsersButton.addActionListener(new ActionListener() 
+
+		importUsersButton.addActionListener(new ActionListener()
 		{
-			public void actionPerformed(ActionEvent onClick) 
+			public void actionPerformed(ActionEvent onClick)
 			{
 				JPanel temp = new JPanel();
-			    fileChoose.setFileFilter(new FileFilter() 
-			    {
-			        @Override
-			        public boolean accept(File f) 
-			        {	return f.getName().endsWith(".csv");	}
-			        @Override
-			        public String getDescription() 
-			        {	return "CSV files";	}
-			    });
-				int valueReturned = fileChoose.showOpenDialog(temp);
-				if(valueReturned == JFileChooser.APPROVE_OPTION)
-				{	base.importUsers(fileChoose.getSelectedFile());	}
-			}
-		});
-		
-		userOptions.addActionListener(new ActionListener() 
-		{
-			public void actionPerformed(ActionEvent e) 
-			{
-				if(value != userOptions.getSelectedIndex())
-				{	value = userOptions.getSelectedIndex();	}
-			}
-		});
-		
-		manageUserButton.addActionListener(new ActionListener() 
-		{
-			public void actionPerformed(ActionEvent onClick) 
-			{
-				switch(value)
+				fileChoose.setFileFilter(new FileFilter()
 				{
-					case 0:	addUser(3);	break;
-					case 1:	addUser(2);	break;
-					case 2:	addUser(1);	break;
+					@Override
+					public boolean accept(File f)
+					{
+						return f.getName().endsWith(".csv");
+					}
+
+					@Override
+					public String getDescription()
+					{
+						return "CSV files";
+					}
+				});
+				int valueReturned = fileChoose.showOpenDialog(temp);
+				if (valueReturned == JFileChooser.APPROVE_OPTION)
+				{
+					base.importUsers(fileChoose.getSelectedFile());
 				}
 			}
 		});
-	
+
+		userOptions.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				if (value != userOptions.getSelectedIndex())
+				{
+					value = userOptions.getSelectedIndex();
+				}
+			}
+		});
+
+		manageUserButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent onClick)
+			{
+				switch (value)
+				{
+					case 0:
+						addUser(3);
+						break;
+					case 1:
+						addUser(2);
+						break;
+					case 2:
+						addUser(1);
+						break;
+				}
+			}
+		});
+
 	}
-	
+
 	private void addUser(int permissionLevel)
 	{
 		String firstName = addFirstNameTextField.getText().trim();
 		String lastName = addLastNameTextField.getText().trim();
 		String idString = addIDTextField.getText().trim();
 		String classID = addClassIDTextField.getText().trim();
-		if(firstName.length() > 0 && lastName.length() > 0 && idString.length() > 0)
+		if (firstName.length() > 0 && lastName.length() > 0 && idString.length() > 0)
 		{
-			if(classID.length() < 1)
-			{	classID = "00";	}
-			base.addUser(firstName, lastName, idString, classID, permissionLevel);	
+			if (classID.length() < 1)
+			{
+				classID = "00";
+			}
+			base.addUser(firstName, lastName, idString, classID, permissionLevel);
 		}
 		else
 		{
@@ -315,5 +339,5 @@ public class AddUsers extends JPanel
 		addClassIDTextField.setText("");
 		addFirstNameTextField.requestFocus();
 	}
-	
+
 }

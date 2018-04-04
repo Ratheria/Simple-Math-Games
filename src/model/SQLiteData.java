@@ -15,7 +15,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import adapter.Controller;
 
@@ -544,7 +543,8 @@ public class SQLiteData
 					System.out.println("Building Student Score Records table.");
 					state = con.createStatement();
 					state.executeUpdate("CREATE TABLE STUDENT_SCORE_RECORDS("
-							+ "studentID INTEGER," + "gameID INTEGER," + "questionsAsked INTEGER," + "questionsCorrect INTEGER," + "classID VARCHAR(5)," + "date VARCHAR(19)," + "recordID INTEGER,"
+							+ "studentID INTEGER," + "gameID INTEGER," + "questionsAsked INTEGER," + "questionsCorrect INTEGER,"  
+							+ "date VARCHAR(19)," + "recordID INTEGER,"
 							+ "PRIMARY KEY (recordID),"  
 							+ "FOREIGN KEY (studentID) REFERENCES USER(ID));");
 					

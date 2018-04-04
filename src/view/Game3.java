@@ -28,7 +28,8 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
-public class Game3 extends JPanel implements KeyListener {
+public class Game3 extends JPanel implements KeyListener
+{
 	private static final long serialVersionUID = 8585306608329719982L;
 	private Controller base;
 	private SpringLayout theLayout;
@@ -70,7 +71,8 @@ public class Game3 extends JPanel implements KeyListener {
 	private static final int GAME_PERIOD = 60;
 	private int sec;
 
-	public Game3(Controller base) {
+	public Game3(Controller base)
+	{
 		this.base = base;
 		frequency = base.getFrequency();
 		questionList = base.getEquations();
@@ -88,13 +90,15 @@ public class Game3 extends JPanel implements KeyListener {
 		answerLabel2 = new JLabel();
 		answerLabel3 = new JLabel();
 		movementSpeed = 3;
-		sharkWidth = (base.frame.getWidth()/5);
-		sharkHeight = (base.frame.getHeight()/5);
+		sharkWidth = (base.frame.getWidth() / 5);
+		sharkHeight = (base.frame.getHeight() / 5);
 
-		try {
+		try
+		{
 			sharkImg = ImageIO.read(this.getClass().getResourceAsStream("shark.png"));
-		} 
-		catch (IOException ex) {
+		}
+		catch (IOException ex)
+		{
 			System.out.println("File \"shark.png\" is missing.");
 		}
 
@@ -118,7 +122,8 @@ public class Game3 extends JPanel implements KeyListener {
 		playGame();
 	}
 
-	private void setUpLayout() {
+	private void setUpLayout()
+	{
 		setLayout(theLayout);
 		setBorder(new LineBorder(new Color(70, 130, 180), 10));
 		setForeground(new Color(173, 216, 230));
@@ -135,21 +140,21 @@ public class Game3 extends JPanel implements KeyListener {
 		scoreLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		theLayout.putConstraint(SpringLayout.SOUTH, scoreLabel, -25, SpringLayout.SOUTH, this);
 		theLayout.putConstraint(SpringLayout.EAST, scoreLabel, -50, SpringLayout.EAST, this);
-		
+
 		answerLabel1.setForeground(new Color(70, 130, 180));
 		answerLabel1.setFont(new Font("Arial", Font.BOLD, 30));
 		answerLabel2.setForeground(new Color(70, 130, 180));
 		answerLabel2.setFont(new Font("Arial", Font.BOLD, 30));
 		answerLabel3.setForeground(new Color(70, 130, 180));
 		answerLabel3.setFont(new Font("Arial", Font.BOLD, 30));
-		
+
 		answerLabel1.setLocation(screenWidth - 150, 110);
 		answerLabel2.setLocation(screenWidth - 150, 230);
 		answerLabel3.setLocation(screenWidth - 150, 350);
 		answerLabel1.setBounds(answerLabel1.getX(), answerLabel1.getY(), 50, 25);
 		answerLabel2.setBounds(answerLabel2.getX(), answerLabel2.getY(), 50, 25);
 		answerLabel3.setBounds(answerLabel3.getX(), answerLabel3.getY(), 50, 25);
-		
+
 		add(answerLabel1);
 		add(answerLabel2);
 		add(answerLabel3);
@@ -157,27 +162,32 @@ public class Game3 extends JPanel implements KeyListener {
 		add(scoreLabel);
 	}
 
-	private void setUpTimers() {
+	private void setUpTimers()
+	{
 		sec = GAME_PERIOD - 1;
-		timeDisplayer = new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				if ((sec % 60) < 10) {
-					timerLabel.setText("Time: " + (sec / 60) + ":0"
-							+ (sec % 60));
-				} else {
-					timerLabel
-							.setText("Time: " + (sec / 60) + ":" + (sec % 60));
+		timeDisplayer = new ActionListener()
+		{
+			public void actionPerformed(ActionEvent evt)
+			{
+				if ((sec % 60) < 10)
+				{
+					timerLabel.setText("Time: " + (sec / 60) + ":0" + (sec % 60));
+				}
+				else
+				{
+					timerLabel.setText("Time: " + (sec / 60) + ":" + (sec % 60));
 				}
 				sec--;
 			}
 		};
-		displayTime = new Timer(1000, timeDisplayer); // time parameter
-														// milliseconds
+		displayTime = new Timer(1000, timeDisplayer);
 		displayTime.start();
 		displayTime.setRepeats(true);
 
-		gameRestarter = new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
+		gameRestarter = new ActionListener()
+		{
+			public void actionPerformed(ActionEvent evt)
+			{
 				timer.stop();
 				System.out.println("Time's up!");
 				JPanel gameOverPanel = new JPanel();
@@ -185,18 +195,21 @@ public class Game3 extends JPanel implements KeyListener {
 				base.returnToMenu();
 			}
 		};
-		timer = new Timer(GAME_PERIOD * 1000, gameRestarter); // time parameter
-																// milliseconds
+		timer = new Timer(GAME_PERIOD * 1000, gameRestarter);
 		timer.setRepeats(false);
 		timer.start();
-		
-		screenRefresh = new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				if (playing) {
+
+		screenRefresh = new ActionListener()
+		{
+			public void actionPerformed(ActionEvent event)
+			{
+				if (playing)
+				{
 					moveShark();
 					repaint();
-				} 
-				else {
+				}
+				else
+				{
 					refreshTimer.stop();
 				}
 			}
@@ -205,10 +218,11 @@ public class Game3 extends JPanel implements KeyListener {
 		refreshTimer.start();
 		refreshTimer.setRepeats(true);
 	}
-	
-	private void playGame() {
+
+	private void playGame()
+	{
 		getQuestion();
-		//TODO
+		// TODO
 		shark = new JLabel(sharkIcon);
 		sharkLocation.x = defaultSharkLocation.x;
 		sharkLocation.y = defaultSharkLocation.y;
@@ -219,123 +233,151 @@ public class Game3 extends JPanel implements KeyListener {
 		guessed2 = false;
 		guessed3 = false;
 		randomPlacement = Controller.rng.nextInt(3);
-		for(int i = 0; i < 3; i++)
+		for (int i = 0; i < 3; i++)
 		{
 			int randomAnswer = Controller.rng.nextInt(25);
 			while (randomAnswer == answer)
-			{	randomAnswer = Controller.rng.nextInt(25);	}
-			if(i == randomPlacement)
-			{	randomAnswer = answer;	}
-			switch(i)
 			{
-				case 0:	answerLabel1.setText("= " + randomAnswer);	break;
-				case 1: answerLabel2.setText("= " + randomAnswer);	break;
-				case 2: answerLabel3.setText("= " + randomAnswer);	break;
+				randomAnswer = Controller.rng.nextInt(25);
+			}
+			if (i == randomPlacement)
+			{
+				randomAnswer = answer;
+			}
+			switch (i)
+			{
+				case 0:
+					answerLabel1.setText("= " + randomAnswer);
+					break;
+				case 1:
+					answerLabel2.setText("= " + randomAnswer);
+					break;
+				case 2:
+					answerLabel3.setText("= " + randomAnswer);
+					break;
 			}
 		}
 	}
 
-	private void moveShark() {
-		if (up) {
-			if (sharkLocation.y > 0) {
+	private void moveShark()
+	{
+		if (up)
+		{
+			if (sharkLocation.y > 0)
+			{
 				sharkLocation.y -= movementSpeed;
 			}
 		}
-		if (down) {
-			if (sharkLocation.y < screenHeight - sharkHeight) {
+		if (down)
+		{
+			if (sharkLocation.y < screenHeight - sharkHeight)
+			{
 				sharkLocation.y += movementSpeed;
 			}
 		}
-		if (right) {
-			if (sharkLocation.x < screenWidth - sharkWidth) {
+		if (right)
+		{
+			if (sharkLocation.x < screenWidth - sharkWidth)
+			{
 				sharkLocation.x += movementSpeed;
 			}
 		}
-		if (left) {
-			if (sharkLocation.x > 0) {
+		if (left)
+		{
+			if (sharkLocation.x > 0)
+			{
 				sharkLocation.x -= movementSpeed;
 			}
 		}
 		checkAnswer();
 	}
 
-	public void resolveKeyEvent(KeyEvent e, boolean value) {
-		if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W) {
+	public void resolveKeyEvent(KeyEvent e, boolean value)
+	{
+		if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W)
+		{
 			up = value;
 		}
-		if (e.getKeyCode() == KeyEvent.VK_DOWN
-				|| e.getKeyCode() == KeyEvent.VK_S) {
+		if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S)
+		{
 			down = value;
 		}
-		if (e.getKeyCode() == KeyEvent.VK_LEFT
-				|| e.getKeyCode() == KeyEvent.VK_A) {
+		if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A)
+		{
 			left = value;
 		}
-		if (e.getKeyCode() == KeyEvent.VK_RIGHT
-				|| e.getKeyCode() == KeyEvent.VK_D) {
+		if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D)
+		{
 			right = value;
 		}
 	}
 
-	public void keyPressed(KeyEvent e) {
+	public void keyPressed(KeyEvent e)
+	{
 		resolveKeyEvent(e, true);
 	}
 
 	@Override
-	public void keyReleased(KeyEvent e) {
+	public void keyReleased(KeyEvent e)
+	{
 		resolveKeyEvent(e, false);
 	}
 
 	@Override
-	public void keyTyped(KeyEvent e) {
-	}
-	
-	private void getQuestion() {
+	public void keyTyped(KeyEvent e)
+	{}
+
+	private void getQuestion()
+	{
 		int random = Controller.rng.nextInt(10);
-		if (frequency > 0 && random <= frequency) {
+		if (frequency > 0 && random <= frequency)
+		{
 			questionFromList();
-		} 
-		else {
+		}
+		else
+		{
 			generateQuestion();
 		}
-		while (answer < 0) {
+		while (answer < 0)
+		{
 			generateQuestion();
 		}
 	}
 
-	
-	private void questionFromList() {
+	private void questionFromList()
+	{
 		int random = Controller.rng.nextInt(questionList.size());
 		question = questionList.get(random);
-		if (question.contains("+")) {
+		if (question.contains("+"))
+		{
 			int operator = question.indexOf("+");
-			int firstInteger = Integer
-					.parseInt(question.substring(0, operator));
-			int secondInteger = Integer.parseInt(question
-					.substring(operator + 1));
+			int firstInteger = Integer.parseInt(question.substring(0, operator));
+			int secondInteger = Integer.parseInt(question.substring(operator + 1));
 			answer = firstInteger + secondInteger;
 			question = firstInteger + " + " + secondInteger + " = ? ";
-		} 
-		else {
+		}
+		else
+		{
 			int operator = question.indexOf("-");
-			int firstInteger = Integer
-					.parseInt(question.substring(0, operator));
-			int secondInteger = Integer.parseInt(question
-					.substring(operator + 1));
+			int firstInteger = Integer.parseInt(question.substring(0, operator));
+			int secondInteger = Integer.parseInt(question.substring(operator + 1));
 			answer = firstInteger - secondInteger;
 			question = firstInteger + " - " + secondInteger + " = ? ";
 		}
 	}
-	
-	private void generateQuestion() {
+
+	private void generateQuestion()
+	{
 		int random = Controller.rng.nextInt(2);
-		if (random < 1) {
+		if (random < 1)
+		{
 			int firstInteger = Controller.rng.nextInt(30);
 			int secondInteger = Controller.rng.nextInt(30);
 			answer = firstInteger - secondInteger;
 			question = firstInteger + " - " + secondInteger + " = ? ";
-		} 
-		else {
+		}
+		else
+		{
 			int firstInteger = Controller.rng.nextInt(30);
 			int secondInteger = Controller.rng.nextInt(30);
 			answer = firstInteger + secondInteger;
@@ -343,51 +385,55 @@ public class Game3 extends JPanel implements KeyListener {
 		}
 	}
 
-	
-	private void updateScore(boolean correct) {
-		if(correct)
-		{	score += 50;	}
-		else if(score > 0)
-		{	score -= 5;		}
+	private void updateScore(boolean correct)
+	{
+		if (correct)
+		{
+			score += 50;
+		}
+		else if (score > 0)
+		{
+			score -= 5;
+		}
 		scoreLabel.setText("Score: " + Integer.toString(score));
 	}
 
-	
-	private void checkAnswer() {
+	private void checkAnswer()
+	{
 		int intersect = -1;
 		Rectangle sharkBounds = shark.getBounds();
-		if(sharkBounds.intersects(answerLabel1.getBounds()) && !guessed1)
-		{	
-			intersect = 0;	
+		if (sharkBounds.intersects(answerLabel1.getBounds()) && !guessed1)
+		{
+			intersect = 0;
 			guessed1 = true;
 			answerLabel1.setText("");
-			//TODO
+			// TODO
 		}
-		else if(sharkBounds.intersects(answerLabel2.getBounds()) && !guessed2) 
-		{	
-			intersect = 1;	
+		else if (sharkBounds.intersects(answerLabel2.getBounds()) && !guessed2)
+		{
+			intersect = 1;
 			guessed2 = true;
 			answerLabel2.setText("");
 		}
-		else if(sharkBounds.intersects(answerLabel3.getBounds()) && !guessed3)
-		{	
-			intersect = 2;	
+		else if (sharkBounds.intersects(answerLabel3.getBounds()) && !guessed3)
+		{
+			intersect = 2;
 			guessed3 = true;
 			answerLabel3.setText("");
 		}
 
-		if(intersect == randomPlacement)
+		if (intersect == randomPlacement)
 		{
 			updateScore(true);
 			remove(shark);
 			playGame();
 		}
-		else if(intersect != -1)
+		else if (intersect != -1)
 		{
 			updateScore(false);
 		}
 	}
-	
+
 	@Override
 	public void paint(Graphics g)
 	{
@@ -398,5 +444,5 @@ public class Game3 extends JPanel implements KeyListener {
 		shark.setLocation(sharkLocation);
 		super.paint(g);
 	}
-	
+
 }

@@ -2,6 +2,7 @@
  *	@author Ariana Fairbanks
  */
 package view;
+
 import javax.swing.*;
 import adapter.Controller;
 import adapter.ViewStates;
@@ -25,14 +26,14 @@ public class PassChange extends JPanel
 	private GridBagLayout layout;
 	private JLabel oldPassLabel;
 	private JLabel newPassLabel;
-	private JLabel headLabel; 
+	private JLabel headLabel;
 	private JTextField oPTextField;
 	private JTextField nPTextField;
 	private JButton enterButton;
 	private JButton backButton;
-	
+
 	public PassChange(Controller base)
-	{	
+	{
 		this.base = base;
 		layout = new GridBagLayout();
 		oldPassLabel = new JLabel("Old Pass: ");
@@ -42,17 +43,21 @@ public class PassChange extends JPanel
 		nPTextField = new JTextField();
 		enterButton = new JButton("ENTER");
 		backButton = new JButton("BACK");
-		
+
 		setUpLayout();
 		setUpListeners();
 	}
-	
+
 	private void setUpLayout()
 	{
-		layout.columnWidths = new int[]{0, 0};
-		layout.rowHeights = new int[]{0, 0, 36, 0, 47};
-		layout.columnWeights = new double[]{0.0, 1.0};
-		layout.rowWeights = new double[]{0.0, 1.0, 0.0, 0.0, 1.0};
+		layout.columnWidths = new int[]
+		{ 0, 0 };
+		layout.rowHeights = new int[]
+		{ 0, 0, 36, 0, 47 };
+		layout.columnWeights = new double[]
+		{ 0.0, 1.0 };
+		layout.rowWeights = new double[]
+		{ 0.0, 1.0, 0.0, 0.0, 1.0 };
 		setLayout(layout);
 		setBorder(new LineBorder(new Color(70, 130, 180), 10));
 		setForeground(new Color(135, 206, 235));
@@ -65,7 +70,7 @@ public class PassChange extends JPanel
 		gbc_usernameLabel.insets = new Insets(5, 40, 5, 5);
 		gbc_usernameLabel.gridx = 0;
 		gbc_usernameLabel.gridy = 2;
-				
+
 		newPassLabel.setFont(new Font("Arial", Font.PLAIN, 40));
 		newPassLabel.setForeground(new Color(70, 130, 180));
 		GridBagConstraints gbc_passwordLabel = new GridBagConstraints();
@@ -89,28 +94,28 @@ public class PassChange extends JPanel
 		oPTextField.setFont(new Font("Arial", Font.PLAIN, 25));
 		oPTextField.setBackground(new Color(240, 240, 245));
 		oPTextField.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(0, 0, 128)),
-                BorderFactory.createEmptyBorder(0, 25, 0, 0)));
+				BorderFactory.createEmptyBorder(0, 25, 0, 0)));
 		GridBagConstraints gbc_uTextField = new GridBagConstraints();
 		gbc_uTextField.gridwidth = 2;
 		gbc_uTextField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_uTextField.insets = new Insets(5, 5, 5, 40);
 		gbc_uTextField.gridx = 1;
 		gbc_uTextField.gridy = 2;
-		
+
 		nPTextField.setHorizontalAlignment(SwingConstants.LEFT);
 		nPTextField.setForeground(new Color(70, 130, 180));
 		nPTextField.setFont(new Font("Arial", Font.PLAIN, 25));
 		nPTextField.setBackground(new Color(240, 240, 245));
 		nPTextField.setColumns(5);
 		nPTextField.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(0, 0, 128)),
-                BorderFactory.createEmptyBorder(0, 25, 0, 0)));
+				BorderFactory.createEmptyBorder(0, 25, 0, 0)));
 		GridBagConstraints gbc_pTextField = new GridBagConstraints();
 		gbc_pTextField.gridwidth = 2;
 		gbc_pTextField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_pTextField.insets = new Insets(5, 5, 5, 40);
 		gbc_pTextField.gridx = 1;
 		gbc_pTextField.gridy = 3;
-		
+
 		enterButton.setFont(new Font("Arial", Font.PLAIN, 30));
 		enterButton.setForeground(new Color(135, 206, 250));
 		enterButton.setBackground(new Color(0, 0, 0));
@@ -122,7 +127,7 @@ public class PassChange extends JPanel
 		gbc_enterButton.insets = new Insets(5, 5, 40, 40);
 		gbc_enterButton.gridx = 2;
 		gbc_enterButton.gridy = 4;
-		
+
 		backButton.setFont(new Font("Arial", Font.PLAIN, 30));
 		backButton.setForeground(new Color(70, 130, 180));
 		backButton.setBackground(new Color(0, 0, 0));
@@ -135,7 +140,7 @@ public class PassChange extends JPanel
 		gbc_backButton.gridx = 0;
 		gbc_backButton.gridy = 0;
 		add(backButton, gbc_backButton);
-		
+
 		add(oldPassLabel, gbc_usernameLabel);
 		add(newPassLabel, gbc_passwordLabel);
 		add(headLabel, gbc_loginLabel);
@@ -143,42 +148,48 @@ public class PassChange extends JPanel
 		add(nPTextField, gbc_pTextField);
 		add(enterButton, gbc_enterButton);
 	}
-	
+
 	private void setUpListeners()
 	{
 		nPTextField.addActionListener(new ActionListener()
 		{
 			@Override
-			public void actionPerformed(ActionEvent e) 
-			{	changePass();	}
+			public void actionPerformed(ActionEvent e)
+			{
+				changePass();
+			}
 		});
-		
-		enterButton.addActionListener(new ActionListener() 
+
+		enterButton.addActionListener(new ActionListener()
 		{
-			public void actionPerformed(ActionEvent onClick) 
-			{	changePass();	}
+			public void actionPerformed(ActionEvent onClick)
+			{
+				changePass();
+			}
 		});
-		
-		backButton.addActionListener(new ActionListener() 
+
+		backButton.addActionListener(new ActionListener()
 		{
-			public void actionPerformed(ActionEvent onClick) 
-			{	base.changeState(ViewStates.settings);	}
+			public void actionPerformed(ActionEvent onClick)
+			{
+				base.changeState(ViewStates.settings);
+			}
 		});
 	}
-	
+
 	private void changePass()
 	{
 		String newPass = nPTextField.getText();
 		String oldPass = oPTextField.getText();
 		int oLength = oldPass.length();
 		int nLength = newPass.length();
-		if(oLength > 0 && nLength > 0)
+		if (oLength > 0 && nLength > 0)
 		{
-			if(oLength > 15)
+			if (oLength > 15)
 			{
 				oldPass = oldPass.substring(0, 15);
 			}
-			if(nLength > 15)
+			if (nLength > 15)
 			{
 				newPass = newPass.substring(0, 15);
 			}
@@ -187,7 +198,8 @@ public class PassChange extends JPanel
 		else
 		{
 			JPanel errorPanel = new JPanel();
-			JOptionPane.showMessageDialog(errorPanel, "Please enter the old password and the new password desired.", "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(errorPanel, "Please enter the old password and the new password desired.", "Error",
+					JOptionPane.ERROR_MESSAGE);
 		}
 		oPTextField.setText("");
 		nPTextField.setText("");

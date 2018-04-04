@@ -39,7 +39,7 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.SwingConstants;
 
-public class RootMenu extends JPanel 
+public class RootMenu extends JPanel
 {
 	private static final long serialVersionUID = -5873415761431343161L;
 	private Controller base;
@@ -51,12 +51,12 @@ public class RootMenu extends JPanel
 	private JTextField searchField;
 	private JButton operationButton;
 	private JTable dataSet;
-    private TableRowSorter<TableModel> rowSorter;
+	private TableRowSorter<TableModel> rowSorter;
 	private ListSelectionModel listSelectionModel;
 	private JScrollPane scrollPane;
 	private JButton addUsersButton;
 	private int value;
-	
+
 	public RootMenu(Controller base)
 	{
 		this.base = base;
@@ -64,8 +64,9 @@ public class RootMenu extends JPanel
 		displayName = new JLabel(" ");
 		displayName.setVerticalAlignment(SwingConstants.BOTTOM);
 		settingsButton = new JButton("     ");
-		//TODO update user
-		userOptions = new JComboBox<String>(new DefaultComboBoxModel<String>(new String[] {" Unlock User Account", " Reset Password", " Delete User"}));
+		// TODO update user
+		userOptions = new JComboBox<String>(new DefaultComboBoxModel<String>(new String[]
+		{ " Unlock User Account", " Reset Password", " Delete User" }));
 		userField = new JTextField();
 		operationButton = new JButton(" UNLOCK ACCOUNT ");
 		searchField = new JTextField();
@@ -80,30 +81,39 @@ public class RootMenu extends JPanel
 	private void setUpTable()
 	{
 		ResultSet res = base.getAllUsers();
-		try 
-		{	dataSet = new JTable(CustomTableModel.buildTableModel(res, Controller.allUsersHeader));	}
-		catch (SQLException e) { e.printStackTrace(); }	
+		try
+		{
+			dataSet = new JTable(CustomTableModel.buildTableModel(res, Controller.allUsersHeader));
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
 		rowSorter = new TableRowSorter<>(dataSet.getModel());
 		dataSet.setRowSorter(rowSorter);
 		dataSet.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		listSelectionModel = dataSet.getSelectionModel();
 		listSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        listSelectionModel.addListSelectionListener(new SharedListSelectionHandler());
-        dataSet.setSelectionModel(listSelectionModel);
-		
-        removeAll();
-        revalidate();
-        repaint();
+		listSelectionModel.addListSelectionListener(new SharedListSelectionHandler());
+		dataSet.setSelectionModel(listSelectionModel);
+
+		removeAll();
+		revalidate();
+		repaint();
 		setUpLayout();
 		setUpListeners();
 	}
-	
-	private void setUpLayout() 
+
+	private void setUpLayout()
 	{
-		layout.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0};
-		layout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0};
-		layout.columnWidths = new int[]{0, 0, 0, 0, 0};
-		layout.columnWeights = new double[]{0.0, 0.0, 1.0, 1.0, 0.0};
+		layout.rowHeights = new int[]
+		{ 0, 0, 0, 0, 0, 0, 0 };
+		layout.rowWeights = new double[]
+		{ 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0 };
+		layout.columnWidths = new int[]
+		{ 0, 0, 0, 0, 0 };
+		layout.columnWeights = new double[]
+		{ 0.0, 0.0, 1.0, 1.0, 0.0 };
 		setLayout(layout);
 		setBorder(new LineBorder(new Color(128, 128, 128), 10));
 		setForeground(new Color(105, 105, 105));
@@ -117,7 +127,7 @@ public class RootMenu extends JPanel
 		gbc_displayName.insets = new Insets(20, 10, 5, 0);
 		gbc_displayName.gridx = 1;
 		gbc_displayName.gridy = 0;
-				
+
 		settingsButton.setFont(new Font("Arial", Font.PLAIN, 25));
 		settingsButton.setForeground(new Color(192, 192, 192));
 		settingsButton.setBackground(new Color(211, 211, 211));
@@ -128,7 +138,7 @@ public class RootMenu extends JPanel
 		gbc_settingsButton.insets = new Insets(20, 20, 5, 5);
 		gbc_settingsButton.gridx = 0;
 		gbc_settingsButton.gridy = 0;
-		
+
 		userOptions.setForeground(new Color(105, 105, 105));
 		userOptions.setFont(new Font("Arial", Font.PLAIN, 20));
 		GridBagConstraints gbc_userOptions = new GridBagConstraints();
@@ -137,7 +147,7 @@ public class RootMenu extends JPanel
 		gbc_userOptions.insets = new Insets(15, 40, 5, 5);
 		gbc_userOptions.gridx = 0;
 		gbc_userOptions.gridy = 1;
-		
+
 		userField.setFont(new Font("Arial", Font.PLAIN, 20));
 		userField.setBackground(new Color(220, 220, 220));
 		userField.setForeground(new Color(0, 0, 0));
@@ -149,7 +159,7 @@ public class RootMenu extends JPanel
 		gbc_userField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_userField.gridx = 0;
 		gbc_userField.gridy = 2;
-		
+
 		operationButton.setFont(new Font("Arial", Font.PLAIN, 20));
 		operationButton.setForeground(new Color(105, 105, 105));
 		operationButton.setBackground(new Color(0, 0, 0));
@@ -161,7 +171,7 @@ public class RootMenu extends JPanel
 		gbc_operationButton.insets = new Insets(10, 10, 10, 40);
 		gbc_operationButton.gridx = 4;
 		gbc_operationButton.gridy = 2;
-		
+
 		searchField.setFont(new Font("Arial", Font.PLAIN, 20));
 		searchField.setBackground(new Color(220, 220, 220));
 		searchField.setForeground(new Color(0, 0, 0));
@@ -173,7 +183,7 @@ public class RootMenu extends JPanel
 		gbc_searchField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_searchField.gridx = 0;
 		gbc_searchField.gridy = 3;
-		
+
 		dataSet.setForeground(new Color(0, 0, 0));
 		dataSet.setFont(new Font("Times New Roman", Font.PLAIN, 18));
 		dataSet.setBackground(new Color(245, 245, 245));
@@ -197,20 +207,20 @@ public class RootMenu extends JPanel
 		gbc_dataSet.insets = new Insets(15, 20, 15, 20);
 		gbc_dataSet.fill = GridBagConstraints.BOTH;
 		gbc_dataSet.gridx = 0;
-		
-  		addUsersButton.setFont(new Font("Arial", Font.PLAIN, 30));
-  		addUsersButton.setForeground(new Color(105, 105, 105));
-  		addUsersButton.setBackground(new Color(105, 105, 105));
-  		addUsersButton.setFocusPainted(false);
+
+		addUsersButton.setFont(new Font("Arial", Font.PLAIN, 30));
+		addUsersButton.setForeground(new Color(105, 105, 105));
+		addUsersButton.setBackground(new Color(105, 105, 105));
+		addUsersButton.setFocusPainted(false);
 		addUsersButton.setContentAreaFilled(false);
-  		addUsersButton.setBorder(new LineBorder(new Color(105, 105, 105), 2, true));
+		addUsersButton.setBorder(new LineBorder(new Color(105, 105, 105), 2, true));
 		GridBagConstraints gbc_manageUsersButton = new GridBagConstraints();
 		gbc_manageUsersButton.gridwidth = 2;
 		gbc_manageUsersButton.anchor = GridBagConstraints.EAST;
 		gbc_manageUsersButton.insets = new Insets(0, 0, 20, 20);
 		gbc_manageUsersButton.gridx = 3;
 		gbc_manageUsersButton.gridy = 6;
-		
+
 		add(displayName, gbc_displayName);
 		add(settingsButton, gbc_settingsButton);
 		add(userOptions, gbc_userOptions);
@@ -220,49 +230,63 @@ public class RootMenu extends JPanel
 		add(scrollPane, gbc_dataSet);
 		add(addUsersButton, gbc_manageUsersButton);
 	}
-	
-	private void setUpListeners() 
+
+	private void setUpListeners()
 	{
-		
-		settingsButton.addActionListener(new ActionListener() 
+
+		settingsButton.addActionListener(new ActionListener()
 		{
-			public void actionPerformed(ActionEvent onClick) 
-			{	base.changeState(ViewStates.settings);	}
+			public void actionPerformed(ActionEvent onClick)
+			{
+				base.changeState(ViewStates.settings);
+			}
 		});
-		
+
 		searchField.getDocument().addDocumentListener(new DocumentListener()
 		{
-            @Override
-            public void insertUpdate(DocumentEvent e) 
-            {
-                String text = searchField.getText();
-                if (text.trim().length() == 0) 
-                {	 rowSorter.setRowFilter(null);	} 
-                else 
-                {	rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));	}
-            }
-            @Override
-            public void removeUpdate(DocumentEvent e) 
-            {
-                String text = searchField.getText();
-                if (text.trim().length() == 0) 
-                {	rowSorter.setRowFilter(null);	} 
-                else 
-                {	rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));	}
-            }
-            @Override
-            public void changedUpdate(DocumentEvent e) 
-            {	throw new UnsupportedOperationException("Not supported."); }
-        });	
-		
-		userOptions.addActionListener(new ActionListener() 
-		{
-			public void actionPerformed(ActionEvent e) 
+			@Override
+			public void insertUpdate(DocumentEvent e)
 			{
-				if(value != userOptions.getSelectedIndex())
-				{	
-					value = userOptions.getSelectedIndex();	
-					switch(value)
+				String text = searchField.getText();
+				if (text.trim().length() == 0)
+				{
+					rowSorter.setRowFilter(null);
+				}
+				else
+				{
+					rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+				}
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e)
+			{
+				String text = searchField.getText();
+				if (text.trim().length() == 0)
+				{
+					rowSorter.setRowFilter(null);
+				}
+				else
+				{
+					rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+				}
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e)
+			{
+				throw new UnsupportedOperationException("Not supported.");
+			}
+		});
+
+		userOptions.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				if (value != userOptions.getSelectedIndex())
+				{
+					value = userOptions.getSelectedIndex();
+					switch (value)
 					{
 						case 0:
 							operationButton.setText(" UNLOCK ACCOUNT ");
@@ -277,16 +301,16 @@ public class RootMenu extends JPanel
 				}
 			}
 		});
-		
-		operationButton.addActionListener(new ActionListener() 
+
+		operationButton.addActionListener(new ActionListener()
 		{
-			public void actionPerformed(ActionEvent onClick) 
+			public void actionPerformed(ActionEvent onClick)
 			{
 				String inputText = userField.getText().trim();
-				if(inputText != null && inputText.length() > 0)
+				if (inputText != null && inputText.length() > 0)
 				{
 					int id = Integer.parseInt(inputText);
-					switch(value)
+					switch (value)
 					{
 						case 0:
 							base.unlockAccount(id);
@@ -295,46 +319,54 @@ public class RootMenu extends JPanel
 							base.resetPassword(id);
 							break;
 						case 2:
-							if(id != 0)
+							if (id != 0)
 							{
 								int valueReturned = JOptionPane.showConfirmDialog(base.messagePanel, "Are you sure you want to delete this user?");
-								if(valueReturned == JOptionPane.OK_OPTION)
-								{	
-									base.deleteUser(id);	
+								if (valueReturned == JOptionPane.OK_OPTION)
+								{
+									base.deleteUser(id);
 									setUpTable();
 								}
 							}
 							else
-							{	JOptionPane.showMessageDialog(base.messagePanel, "You can not delete the root user.", "", JOptionPane.INFORMATION_MESSAGE);	}
+							{
+								JOptionPane.showMessageDialog(base.messagePanel, "You can not delete the root user.", "",
+										JOptionPane.INFORMATION_MESSAGE);
+							}
 							break;
 					}
 					userField.setText("");
 				}
 			}
 		});
-		
-		addUsersButton.addActionListener(new ActionListener() 
+
+		addUsersButton.addActionListener(new ActionListener()
 		{
-			public void actionPerformed(ActionEvent onClick) 
-			{	base.changeState(ViewStates.addUsers);	}
+			public void actionPerformed(ActionEvent onClick)
+			{
+				base.changeState(ViewStates.addUsers);
+			}
 		});
 	}
-	
+
 	private void updateField()
 	{
 		int row = dataSet.getSelectedRow();
 		String selection = "" + (Integer) dataSet.getValueAt(row, 0);
 		userField.setText(selection);
 	}
-	
-	private class SharedListSelectionHandler implements ListSelectionListener 
-	{		
-	    public void valueChanged(ListSelectionEvent e) 
-	    {
-	        ListSelectionModel lsm = (ListSelectionModel)e.getSource();
-	        if (lsm.isSelectionEmpty()){	} 
-	        else 
-	        {	updateField();	}
-	    }
+
+	private class SharedListSelectionHandler implements ListSelectionListener
+	{
+		public void valueChanged(ListSelectionEvent e)
+		{
+			ListSelectionModel lsm = (ListSelectionModel) e.getSource();
+			if (lsm.isSelectionEmpty())
+			{}
+			else
+			{
+				updateField();
+			}
+		}
 	}
 }

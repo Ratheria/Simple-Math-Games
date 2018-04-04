@@ -17,7 +17,7 @@ public class Frame extends JFrame
 	private JPanel panel;
 	private Login login;
 	private Dimension minSize;
-	
+
 	public Frame(Controller base)
 	{
 		this.base = base;
@@ -26,8 +26,8 @@ public class Frame extends JFrame
 		minSize = new Dimension(960, 600);
 		setName("My Parents Don't Know What I Do");
 		setTitle("My Parents Don't Know What I Do");
-		//setExtendedState(JFrame.MAXIMIZED_BOTH); 
-		//setUndecorated(true);
+		// setExtendedState(JFrame.MAXIMIZED_BOTH);
+		// setUndecorated(true);
 		setSize(minSize);
 		setMinimumSize(minSize);
 		setVisible(true);
@@ -36,7 +36,7 @@ public class Frame extends JFrame
 		setContentPane(panel);
 		DIMENSIONS = getSize();
 	}
-	
+
 	public void updateState()
 	{
 		ViewStates state = base.getState();
@@ -73,7 +73,7 @@ public class Frame extends JFrame
 			case addUsers:
 				panel.removeAll();
 				panel = new AddUsers(base);
-				break;			
+				break;
 			case game1:
 				panel.removeAll();
 				panel = new Game1(base);
@@ -86,10 +86,10 @@ public class Frame extends JFrame
 				panel.removeAll();
 				panel = new Game3(base);
 				break;
-		}	
+		}
 		setContentPane(panel);
 		panel.revalidate();
 		panel.repaint();
 	}
-	
+
 }

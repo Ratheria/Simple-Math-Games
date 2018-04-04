@@ -2,6 +2,7 @@
  *	@author Ariana Fairbanks
  */
 package view;
+
 import java.awt.Color;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -18,7 +19,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class StudentMenu extends JPanel 
+public class StudentMenu extends JPanel
 {
 	private static final long serialVersionUID = -9125821110680618384L;
 	private Controller base;
@@ -30,7 +31,6 @@ public class StudentMenu extends JPanel
 	private JButton btnGame2;
 	private JButton viewStats;
 
-	
 	public StudentMenu(Controller base)
 	{
 		this.base = base;
@@ -47,17 +47,21 @@ public class StudentMenu extends JPanel
 		setUpListeners();
 	}
 
-	private void setUpLayout() 
+	private void setUpLayout()
 	{
-		layout.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0};
-		layout.rowWeights = new double[]{0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0};
-		layout.columnWidths = new int[]{20, 0, 0, 0};
-		layout.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0};
+		layout.rowHeights = new int[]
+		{ 0, 0, 0, 0, 0, 0, 0 };
+		layout.rowWeights = new double[]
+		{ 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 };
+		layout.columnWidths = new int[]
+		{ 20, 0, 0, 0 };
+		layout.columnWeights = new double[]
+		{ 0.0, 0.0, 1.0, 0.0 };
 		setLayout(layout);
 		setBorder(new LineBorder(new Color(70, 130, 180), 10));
 		setForeground(new Color(0, 255, 255));
 		setBackground(new Color(245, 245, 245));
-		
+
 		displayName.setVerticalAlignment(SwingConstants.BOTTOM);
 		displayName.setForeground(new Color(70, 130, 180));
 		displayName.setFont(new Font("Arial", Font.PLAIN, 35));
@@ -68,20 +72,18 @@ public class StudentMenu extends JPanel
 		gbc_displayName.insets = new Insets(15, 10, 5, 0);
 		gbc_displayName.gridx = 1;
 		gbc_displayName.gridy = 0;
-		
-/*
-		logOut.setFont(new Font("Arial", Font.PLAIN, 30));
-		logOut.setForeground(new Color(135, 206, 250));
-		logOut.setBackground(new Color(0, 0, 0));
-		logOut.setFocusPainted(false);
-		logOut.setBorder(new LineBorder(new Color(70, 130, 180), 2, true));
-		GridBagConstraints gbc_logOut = new GridBagConstraints();
-		gbc_logOut.anchor = GridBagConstraints.EAST;
-		gbc_logOut.insets = new Insets(0, 0, 20, 20);
-		gbc_logOut.gridx = 3;
-		gbc_logOut.gridy = 3;
-*/
-		
+
+		/*
+		 * logOut.setFont(new Font("Arial", Font.PLAIN, 30));
+		 * logOut.setForeground(new Color(135, 206, 250));
+		 * logOut.setBackground(new Color(0, 0, 0));
+		 * logOut.setFocusPainted(false); logOut.setBorder(new LineBorder(new
+		 * Color(70, 130, 180), 2, true)); GridBagConstraints gbc_logOut = new
+		 * GridBagConstraints(); gbc_logOut.anchor = GridBagConstraints.EAST;
+		 * gbc_logOut.insets = new Insets(0, 0, 20, 20); gbc_logOut.gridx = 3;
+		 * gbc_logOut.gridy = 3;
+		 */
+
 		settingsButton.setFont(new Font("Arial", Font.PLAIN, 25));
 		settingsButton.setForeground(new Color(135, 206, 250));
 		settingsButton.setBackground(new Color(240, 240, 245));
@@ -92,7 +94,7 @@ public class StudentMenu extends JPanel
 		gbc_settingsButton.insets = new Insets(20, 25, 5, 5);
 		gbc_settingsButton.gridx = 0;
 		gbc_settingsButton.gridy = 0;
-		
+
 		btnGame.setFont(new Font("Arial", Font.PLAIN, 25));
 		btnGame.setForeground(new Color(70, 130, 180));
 		btnGame.setBackground(new Color(70, 130, 180));
@@ -127,8 +129,8 @@ public class StudentMenu extends JPanel
 		gbc_btnGame3.gridwidth = 4;
 		gbc_btnGame3.insets = new Insets(5, 0, 15, 5);
 		gbc_btnGame3.gridx = 0;
-		gbc_btnGame3.gridy = 4;		
-		
+		gbc_btnGame3.gridy = 4;
+
 		viewStats.setFont(new Font("Arial", Font.PLAIN, 25));
 		viewStats.setForeground(new Color(70, 130, 180));
 		viewStats.setBackground(new Color(70, 130, 180));
@@ -140,7 +142,7 @@ public class StudentMenu extends JPanel
 		gbc_viewStats.insets = new Insets(5, 0, 15, 5);
 		gbc_viewStats.gridx = 0;
 		gbc_viewStats.gridy = 5;
-		
+
 		add(displayName, gbc_displayName);
 		add(settingsButton, gbc_settingsButton);
 		add(btnGame, gbc_btnGame);
@@ -150,35 +152,40 @@ public class StudentMenu extends JPanel
 		add(viewStats, gbc_viewStats);
 	}
 
-	private void setUpListeners() 
-	{	
-		settingsButton.addActionListener(new ActionListener() 
+	private void setUpListeners()
+	{
+		settingsButton.addActionListener(new ActionListener()
 		{
-			public void actionPerformed(ActionEvent onClick) 
-			{	base.changeState(ViewStates.settings);	}
-		});
-		
-		btnGame.addActionListener(new ActionListener() 
-		{
-			public void actionPerformed(ActionEvent onClick) 
-			{	base.changeState(ViewStates.game1);	}
+			public void actionPerformed(ActionEvent onClick)
+			{
+				base.changeState(ViewStates.settings);
+			}
 		});
 
-		btnGame2.addActionListener(new ActionListener() 
+		btnGame.addActionListener(new ActionListener()
 		{
-			public void actionPerformed(ActionEvent onClick) 
-			{	base.changeState(ViewStates.game2);	}
+			public void actionPerformed(ActionEvent onClick)
+			{
+				base.changeState(ViewStates.game1);
+			}
 		});
 
-		btnGame3.addActionListener(new ActionListener() 
+		btnGame2.addActionListener(new ActionListener()
 		{
-			public void actionPerformed(ActionEvent onClick) 
-			{	base.changeState(ViewStates.game3);	}
+			public void actionPerformed(ActionEvent onClick)
+			{
+				base.changeState(ViewStates.game2);
+			}
 		});
-				
+
+		btnGame3.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent onClick)
+			{
+				base.changeState(ViewStates.game3);
+			}
+		});
+
 	}
-	
+
 }
-	
-		
-	

@@ -24,35 +24,39 @@ public class Settings extends JPanel
 	private JButton changePassButton;
 	private JButton logoutButton;
 	private JButton backButton;
-	
+
 	public Settings(Controller base)
-	{	
+	{
 		this.base = base;
 		layout = new GridBagLayout();
 		changePassButton = new JButton(" Change Password ");
 		logoutButton = new JButton(" Log Out ");
 		backButton = new JButton(" BACK ");
-		
+
 		setUpLayout();
 		setUpListeners();
 		setUpPanel();
 	}
-	
+
 	private void setUpPanel()
 	{
-		if(base.getPerms() == 3)
+		if (base.getPerms() == 3)
 		{
 			changePassButton.setEnabled(false);
 			changePassButton.setVisible(false);
 		}
 	}
-	
+
 	private void setUpLayout()
 	{
-		layout.columnWidths = new int[]{0, 0, 0};
-		layout.rowHeights = new int[]{0, 0, 0, 0, 20};
-		layout.columnWeights = new double[]{1.0, 0.0, 1.0};
-		layout.rowWeights = new double[]{1.0, 1.0, 1.0, 1.0, 1.0};
+		layout.columnWidths = new int[]
+		{ 0, 0, 0 };
+		layout.rowHeights = new int[]
+		{ 0, 0, 0, 0, 20 };
+		layout.columnWeights = new double[]
+		{ 1.0, 0.0, 1.0 };
+		layout.rowWeights = new double[]
+		{ 1.0, 1.0, 1.0, 1.0, 1.0 };
 		setLayout(layout);
 		setBorder(new LineBorder(new Color(70, 130, 180), 10));
 		setForeground(new Color(135, 206, 235));
@@ -69,7 +73,7 @@ public class Settings extends JPanel
 		gbc_changePassButton.gridwidth = 3;
 		gbc_changePassButton.gridx = 0;
 		gbc_changePassButton.gridy = 2;
-		
+
 		logoutButton.setFont(new Font("Arial", Font.PLAIN, 30));
 		logoutButton.setForeground(new Color(70, 130, 180));
 		logoutButton.setBackground(new Color(240, 240, 245));
@@ -80,7 +84,7 @@ public class Settings extends JPanel
 		gbc_logoutButton.gridwidth = 3;
 		gbc_logoutButton.gridx = 0;
 		gbc_logoutButton.gridy = 3;
-		
+
 		backButton.setFont(new Font("Arial", Font.PLAIN, 25));
 		backButton.setForeground(new Color(70, 130, 180));
 		backButton.setBackground(new Color(0, 0, 0));
@@ -96,27 +100,33 @@ public class Settings extends JPanel
 		add(logoutButton, gbc_logoutButton);
 		add(backButton, gbc_backButton);
 	}
-	
+
 	private void setUpListeners()
 	{
-		
-		changePassButton.addActionListener(new ActionListener() 
+
+		changePassButton.addActionListener(new ActionListener()
 		{
-			public void actionPerformed(ActionEvent onClick) 
-			{	base.changeState(ViewStates.passwordChange);	}
+			public void actionPerformed(ActionEvent onClick)
+			{
+				base.changeState(ViewStates.passwordChange);
+			}
 		});
-		
-		logoutButton.addActionListener(new ActionListener() 
+
+		logoutButton.addActionListener(new ActionListener()
 		{
-			public void actionPerformed(ActionEvent onClick) 
-			{	base.logout();	}
+			public void actionPerformed(ActionEvent onClick)
+			{
+				base.logout();
+			}
 		});
-		
-		backButton.addActionListener(new ActionListener() 
+
+		backButton.addActionListener(new ActionListener()
 		{
-			public void actionPerformed(ActionEvent onClick) 
-			{	base.returnToMenu();	}
+			public void actionPerformed(ActionEvent onClick)
+			{
+				base.returnToMenu();
+			}
 		});
 	}
-	
+
 }

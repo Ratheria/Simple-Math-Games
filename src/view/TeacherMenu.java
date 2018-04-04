@@ -56,11 +56,12 @@ public class TeacherMenu extends JPanel implements ChangeListener
 	private String[][] questionMatrix;
 	private JTable dataSet;
 	private JScrollPane scrollPane;
-    private TableRowSorter<TableModel> rowSorter;
+	private TableRowSorter<TableModel> rowSorter;
 	private ListSelectionModel listSelectionModel;
 	private int baseFrequency;
-	private final String[] columnName = {"Current Problems"};
-	
+	private final String[] columnName =
+	{ "Current Problems" };
+
 	public TeacherMenu(Controller base)
 	{
 		this.base = base;
@@ -76,7 +77,7 @@ public class TeacherMenu extends JPanel implements ChangeListener
 		removeEquationsButton = new JButton(" Remove Problem ");
 		baseFrequency = base.getFrequency();
 		dataSet = new JTable();
-		
+
 		setUpTable();
 	}
 
@@ -84,36 +85,47 @@ public class TeacherMenu extends JPanel implements ChangeListener
 	{
 		updateQuestionInfo();
 		questionMatrix = new String[numberOfQuestions][1];
-		
-		for(int i = 0; i < numberOfQuestions; i++)
-		{	questionMatrix[i][0] = questionList.get(i);	}
-		
-		try 
-		{	dataSet = new JTable(CustomTableModel.buildTableModel(questionMatrix, columnName));	}
-		catch (Exception e) { e.printStackTrace(); }
-		
+
+		for (int i = 0; i < numberOfQuestions; i++)
+		{
+			questionMatrix[i][0] = questionList.get(i);
+		}
+
+		try
+		{
+			dataSet = new JTable(CustomTableModel.buildTableModel(questionMatrix, columnName));
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
 		dataSet.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		rowSorter = new TableRowSorter<>(dataSet.getModel());
 		dataSet.setRowSorter(rowSorter);
 		removeEquationsTextField = new JTextField();
 		listSelectionModel = dataSet.getSelectionModel();
 		listSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        listSelectionModel.addListSelectionListener(new SharedListSelectionHandler());
-        dataSet.setSelectionModel(listSelectionModel);
-        
-        removeAll();
-        revalidate();
-        repaint();
+		listSelectionModel.addListSelectionListener(new SharedListSelectionHandler());
+		dataSet.setSelectionModel(listSelectionModel);
+
+		removeAll();
+		revalidate();
+		repaint();
 		setUpLayout();
 		setUpListeners();
 	}
-	
-	private void setUpLayout() 
+
+	private void setUpLayout()
 	{
-		layout.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-		layout.rowWeights = new double[]{0.0, 1.0, 0.0, 0.0, 3.0, 0.0, 0.0, 4.0, 25.0, 2.0, 0.0};
-		layout.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 100};
-		layout.columnWeights = new double[]{0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0};
+		layout.rowHeights = new int[]
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+		layout.rowWeights = new double[]
+		{ 0.0, 1.0, 0.0, 0.0, 3.0, 0.0, 0.0, 4.0, 25.0, 2.0, 0.0 };
+		layout.columnWidths = new int[]
+		{ 0, 0, 0, 0, 0, 0, 100 };
+		layout.columnWeights = new double[]
+		{ 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0 };
 		setLayout(layout);
 		setBorder(new LineBorder(new Color(70, 130, 180), 10));
 		setForeground(new Color(0, 255, 255));
@@ -130,7 +142,7 @@ public class TeacherMenu extends JPanel implements ChangeListener
 		gbc_settingsButton.insets = new Insets(20, 25, 5, 5);
 		gbc_settingsButton.gridx = 0;
 		gbc_settingsButton.gridy = 0;
-		
+
 		displayName.setVerticalAlignment(SwingConstants.BOTTOM);
 		displayName.setForeground(new Color(70, 130, 180));
 		displayName.setFont(new Font("Arial", Font.PLAIN, 25));
@@ -141,7 +153,7 @@ public class TeacherMenu extends JPanel implements ChangeListener
 		gbc_displayName.insets = new Insets(20, 10, 5, 5);
 		gbc_displayName.gridx = 1;
 		gbc_displayName.gridy = 0;
-		
+
 		frequencyLabel.setForeground(new Color(70, 130, 180));
 		frequencyLabel.setFont(new Font("Arial", Font.PLAIN, 22));
 		frequencyLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -151,7 +163,7 @@ public class TeacherMenu extends JPanel implements ChangeListener
 		gbc_frequencyLabel.insets = new Insets(5, 5, 5, 5);
 		gbc_frequencyLabel.gridx = 0;
 		gbc_frequencyLabel.gridy = 2;
-		
+
 		frequencySlider.setValue(baseFrequency);
 		frequencySlider.setToolTipText("Frequency");
 		frequencySlider.setPaintLabels(true);
@@ -167,7 +179,7 @@ public class TeacherMenu extends JPanel implements ChangeListener
 		gbc_slider.insets = new Insets(0, 70, 5, 70);
 		gbc_slider.gridx = 0;
 		gbc_slider.gridy = 3;
-		
+
 		addEquationsTextField.setFont(new Font("Arial", Font.PLAIN, 20));
 		addEquationsTextField.setForeground(new Color(0, 0, 128));
 		addEquationsTextField.setBackground(new Color(245, 245, 245));
@@ -179,7 +191,7 @@ public class TeacherMenu extends JPanel implements ChangeListener
 		gbc_addEquationsTextField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_addEquationsTextField.gridx = 2;
 		gbc_addEquationsTextField.gridy = 5;
-		
+
 		addEquationsButton.setFont(new Font("Arial", Font.PLAIN, 20));
 		addEquationsButton.setForeground(new Color(70, 130, 180));
 		addEquationsButton.setBackground(new Color(70, 130, 180));
@@ -191,7 +203,7 @@ public class TeacherMenu extends JPanel implements ChangeListener
 		gbc_addEquationsButton.insets = new Insets(0, 10, 10, 15);
 		gbc_addEquationsButton.gridx = 5;
 		gbc_addEquationsButton.gridy = 5;
-		
+
 		removeEquationsTextField.setFont(new Font("Arial", Font.PLAIN, 20));
 		removeEquationsTextField.setForeground(new Color(0, 0, 128));
 		removeEquationsTextField.setBackground(new Color(245, 245, 245));
@@ -203,7 +215,7 @@ public class TeacherMenu extends JPanel implements ChangeListener
 		gbc_removeEquationsTextField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_removeEquationsTextField.gridx = 2;
 		gbc_removeEquationsTextField.gridy = 6;
-		
+
 		removeEquationsButton.setFont(new Font("Arial", Font.PLAIN, 20));
 		removeEquationsButton.setForeground(new Color(70, 130, 180));
 		removeEquationsButton.setBackground(new Color(70, 130, 180));
@@ -215,7 +227,7 @@ public class TeacherMenu extends JPanel implements ChangeListener
 		gbc_removeEquationsButton.insets = new Insets(0, 10, 5, 15);
 		gbc_removeEquationsButton.gridx = 5;
 		gbc_removeEquationsButton.gridy = 6;
-		
+
 		dataSet.setForeground(new Color(0, 0, 128));
 		dataSet.setFont(new Font("Times New Roman", Font.PLAIN, 30));
 		dataSet.setBackground(new Color(240, 240, 245));
@@ -238,20 +250,20 @@ public class TeacherMenu extends JPanel implements ChangeListener
 		gbc_dataSet.insets = new Insets(0, 55, 20, 15);
 		gbc_dataSet.fill = GridBagConstraints.BOTH;
 		gbc_dataSet.gridx = 3;
-		
-  		viewRecordsButton.setFont(new Font("Arial", Font.PLAIN, 25));
+
+		viewRecordsButton.setFont(new Font("Arial", Font.PLAIN, 25));
 		viewRecordsButton.setForeground(new Color(70, 130, 180));
 		viewRecordsButton.setBackground(new Color(70, 130, 180));
-  		viewRecordsButton.setFocusPainted(false);
-  		viewRecordsButton.setContentAreaFilled(false);
-  		viewRecordsButton.setBorder(new LineBorder(new Color(70, 130, 180), 2, true));
+		viewRecordsButton.setFocusPainted(false);
+		viewRecordsButton.setContentAreaFilled(false);
+		viewRecordsButton.setBorder(new LineBorder(new Color(70, 130, 180), 2, true));
 		GridBagConstraints gbc_viewRecordsButton = new GridBagConstraints();
 		gbc_viewRecordsButton.gridwidth = 3;
 		gbc_viewRecordsButton.anchor = GridBagConstraints.EAST;
 		gbc_viewRecordsButton.insets = new Insets(0, 0, 20, 20);
 		gbc_viewRecordsButton.gridx = 4;
 		gbc_viewRecordsButton.gridy = 10;
-		
+
 		add(settingsButton, gbc_settingsButton);
 		add(displayName, gbc_displayName);
 		add(frequencyLabel, gbc_frequencyLabel);
@@ -263,23 +275,25 @@ public class TeacherMenu extends JPanel implements ChangeListener
 		add(viewRecordsButton, gbc_viewRecordsButton);
 		add(scrollPane, gbc_dataSet);
 	}
-	
-	private void setUpListeners() 
+
+	private void setUpListeners()
 	{
 		frequencySlider.addChangeListener(this);
-		
-		settingsButton.addActionListener(new ActionListener() 
+
+		settingsButton.addActionListener(new ActionListener()
 		{
-			public void actionPerformed(ActionEvent onClick) 
-			{	base.changeState(ViewStates.settings);	}
-		});
-		
-		addEquationsButton.addActionListener(new ActionListener()
-		{ 
 			public void actionPerformed(ActionEvent onClick)
-			{	
+			{
+				base.changeState(ViewStates.settings);
+			}
+		});
+
+		addEquationsButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent onClick)
+			{
 				String newEquation = addEquationsTextField.getText();
-				if(newEquation != null && newEquation.length() > 1)
+				if (newEquation != null && newEquation.length() > 1)
 				{
 					base.addEquation(newEquation);
 					updateQuestionInfo();
@@ -289,23 +303,23 @@ public class TeacherMenu extends JPanel implements ChangeListener
 				addEquationsTextField.requestFocus();
 			}
 		});
-		
+
 		removeEquationsButton.addActionListener(new ActionListener()
-		{ 
+		{
 			public void actionPerformed(ActionEvent onClick)
-			{	
+			{
 				String equation = removeEquationsTextField.getText().trim();
-				if(equation != null && equation.length() > 0)
+				if (equation != null && equation.length() > 0)
 				{
 					int location = questionList.indexOf(equation);
-					if(location > -1)
+					if (location > -1)
 					{
 						questionList.remove(location);
 						numberOfQuestions--;
 						questionString = "";
-						if(numberOfQuestions > 0)
+						if (numberOfQuestions > 0)
 						{
-							for(int i = 0; i < numberOfQuestions; i++)
+							for (int i = 0; i < numberOfQuestions; i++)
 							{
 								questionString = questionString + questionList.get(i) + ":";
 							}
@@ -316,33 +330,39 @@ public class TeacherMenu extends JPanel implements ChangeListener
 						setUpTable();
 					}
 					else
-					{	JOptionPane.showMessageDialog(base.messagePanel, "No such equation.", "", JOptionPane.INFORMATION_MESSAGE);	}
+					{
+						JOptionPane.showMessageDialog(base.messagePanel, "No such equation.", "", JOptionPane.INFORMATION_MESSAGE);
+					}
 				}
 				removeEquationsTextField.setText("");
 			}
 		});
-		
+
 		viewRecordsButton.addActionListener(new ActionListener()
-		{ 
+		{
 			public void actionPerformed(ActionEvent onClick)
-			{	base.changeState(ViewStates.selectStudentRecords);	}
+			{
+				base.changeState(ViewStates.selectStudentRecords);
+			}
 		});
 	}
 
 	@Override
-	public void stateChanged(ChangeEvent e) 
+	public void stateChanged(ChangeEvent e)
 	{
-		if(e.getSource().equals(frequencySlider))
-		{	sliderChanged();	}
+		if (e.getSource().equals(frequencySlider))
+		{
+			sliderChanged();
+		}
 	}
-	
+
 	private void sliderChanged()
 	{
 		baseFrequency = base.getFrequency();
-		if(!frequencySlider.getValueIsAdjusting())
+		if (!frequencySlider.getValueIsAdjusting())
 		{
 			int currentValue = frequencySlider.getValue();
-			if(baseFrequency != currentValue)
+			if (baseFrequency != currentValue)
 			{
 				base.changeCustomEquations(base.getEquationString(), currentValue, base.getNumberOfEquations());
 				baseFrequency = base.getFrequency();
@@ -350,30 +370,33 @@ public class TeacherMenu extends JPanel implements ChangeListener
 			}
 		}
 	}
-	
+
 	private void updateQuestionInfo()
 	{
 		questionString = base.getEquationString();
 		questionList = base.getEquations();
 		numberOfQuestions = questionList.size();
 	}
-	
+
 	private void updateField()
 	{
 		int row = dataSet.getSelectedRow();
 		String selection = (String) dataSet.getValueAt(row, 0);
 		removeEquationsTextField.setText(selection);
 	}
-	
-	private class SharedListSelectionHandler implements ListSelectionListener 
-	{		
-	    public void valueChanged(ListSelectionEvent e) 
-	    {
-	        ListSelectionModel lsm = (ListSelectionModel)e.getSource();
-	        if (lsm.isSelectionEmpty()){	} 
-	        else 
-	        {	updateField();	}
-	    }
+
+	private class SharedListSelectionHandler implements ListSelectionListener
+	{
+		public void valueChanged(ListSelectionEvent e)
+		{
+			ListSelectionModel lsm = (ListSelectionModel) e.getSource();
+			if (lsm.isSelectionEmpty())
+			{}
+			else
+			{
+				updateField();
+			}
+		}
 	}
-	
+
 }

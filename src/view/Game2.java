@@ -66,15 +66,15 @@ public class Game2 extends JPanel implements KeyListener
 	private String question;
 	private int score;
 	private int questionBase;
-	private int questionTypes;	//TODO
+	private int questionTypes; // TODO
 	private int speed;
 	private int numQuestionsAsked;
 	private int questionsAnsweredCorrectly;
 	private boolean playing;
 
-	//TODO Grid bag layout conversion?
-	
-	public Game2(Controller base) 
+	// TODO Grid bag layout conversion?
+
+	public Game2(Controller base)
 	{
 		this.base = base;
 		theLayout = new SpringLayout();
@@ -85,29 +85,33 @@ public class Game2 extends JPanel implements KeyListener
 		frequency = base.getFrequency();
 		answer = 0;
 		score = 0;
-		gamePeriod = 40; //seconds
+		gamePeriod = 40; // seconds
 		question = "Question";
 		questionList = base.getEquations();
-		timerLabel = new JLabel("Time: "+(gamePeriod/60)+":"+ (gamePeriod%60));
+		timerLabel = new JLabel("Time: " + (gamePeriod / 60) + ":" + (gamePeriod % 60));
 		scoreLabel = new JLabel("Score: 0");
 		menu = new JButton(" Exit Game ");
 		maxY = base.frame.getHeight();
-		xSpacing = (base.frame.getWidth())/numberOfColumns;
-		jellyWidth = xSpacing/3;
-		jellyHeight = xSpacing/2;
+		xSpacing = (base.frame.getWidth()) / numberOfColumns;
+		jellyWidth = xSpacing / 3;
+		jellyHeight = xSpacing / 2;
 		jellyLocation = new Point();
-		try 
-		{	jellyImg = ImageIO.read(this.getClass().getResourceAsStream("Jellyfish.png"));	} 
-		catch (IOException ex) 
-		{	System.out.println("File \"Jellyfish.png\" is missing.");	}
-		jellyImg = jellyImg.getScaledInstance(jellyWidth, jellyHeight, java.awt.Image.SCALE_SMOOTH );
+		try
+		{
+			jellyImg = ImageIO.read(this.getClass().getResourceAsStream("Jellyfish.png"));
+		}
+		catch (IOException ex)
+		{
+			System.out.println("File \"Jellyfish.png\" is missing.");
+		}
+		jellyImg = jellyImg.getScaledInstance(jellyWidth, jellyHeight, java.awt.Image.SCALE_SMOOTH);
 		jellyIcon = new ImageIcon(jellyImg);
 		questionBase = 15;
-		questionTypes = 0; //both, addition, subtraction
+		questionTypes = 0; // both, addition, subtraction
 		speed = 40;
 		numQuestionsAsked = 0;
 		questionsAnsweredCorrectly = 0;
-		
+
 		addKeyListener(this);
 		setFocusable(true);
 		requestFocus();
@@ -116,7 +120,7 @@ public class Game2 extends JPanel implements KeyListener
 		setUpTimers();
 		setUpListeners();
 	}
-	
+
 	private void playGame()
 	{
 		playing = true;
@@ -132,40 +136,42 @@ public class Game2 extends JPanel implements KeyListener
 		int randomPlacement = Controller.rng.nextInt(numberOfColumns);
 		columnLabels = null;
 		columnLabels = new ArrayList<JLabel>();
-		for(int i = 0; i < numberOfColumns; i++)
+		for (int i = 0; i < numberOfColumns; i++)
 		{
 			int columnAnswer = Controller.rng.nextInt(25);
 			while (columnAnswer == answer)
-			{	columnAnswer = Controller.rng.nextInt(25);	}
-			if(i == randomPlacement)
-			{	
-				columnAnswer = answer;	
+			{
+				columnAnswer = Controller.rng.nextInt(25);
+			}
+			if (i == randomPlacement)
+			{
+				columnAnswer = answer;
 				answerIndex = i;
 			}
 			columnLabels.add(new JLabel(columnAnswer + ""));
 		}
 		setUpVar();
 	}
-	
-	private void setUpLayout() 
+
+	private void setUpLayout()
 	{
 		setLayout(theLayout);
 		setBorder(new LineBorder(new Color(70, 130, 180), 10));
 		setBackground(new Color(213, 248, 255));
 		setBackground(new Color(208, 243, 255));
-		
+
 		timerLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		timerLabel.setForeground(new Color(70, 130, 180));
 		timerLabel.setFont(new Font("Arial", Font.PLAIN, 30));
 		theLayout.putConstraint(SpringLayout.NORTH, timerLabel, 10, SpringLayout.NORTH, this);
 		theLayout.putConstraint(SpringLayout.WEST, timerLabel, 10, SpringLayout.WEST, this);
-		
+
 		scoreLabel.setFont(new Font("Arial", Font.PLAIN, 25));
 		scoreLabel.setForeground(new Color(70, 130, 180));
 		scoreLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		theLayout.putConstraint(SpringLayout.NORTH, scoreLabel, 0, SpringLayout.NORTH, menu);
 		theLayout.putConstraint(SpringLayout.EAST, scoreLabel, -20, SpringLayout.WEST, menu);
-		
+
 		menu.setFont(new Font("Arial", Font.PLAIN, 25));
 		menu.setForeground(new Color(70, 130, 180));
 		menu.setBackground(new Color(70, 130, 180));
@@ -174,29 +180,29 @@ public class Game2 extends JPanel implements KeyListener
 		menu.setBorder(new LineBorder(new Color(135, 206, 250), 2));
 		theLayout.putConstraint(SpringLayout.NORTH, menu, 10, SpringLayout.NORTH, this);
 		theLayout.putConstraint(SpringLayout.EAST, menu, -10, SpringLayout.EAST, this);
-		
+
 		add(timerLabel);
 		add(scoreLabel);
 		add(menu);
 	}
-	
-	private void setUpListeners() 
-	{	
-		menu.addActionListener(new ActionListener() 
+
+	private void setUpListeners()
+	{
+		menu.addActionListener(new ActionListener()
 		{
-			public void actionPerformed(ActionEvent onClick) 
-			{	
+			public void actionPerformed(ActionEvent onClick)
+			{
 				playing = false;
-				//TODO
+				// TODO
 				removeVar();
 				base.returnToMenu();
 			}
 		});
 	}
-	
+
 	private void setUpVar()
 	{
-		int currentX = (xSpacing/3) + 30;
+		int currentX = (xSpacing / 3) + 30;
 		label1 = columnLabels.get(0);
 		label1.setForeground(new Color(70, 130, 180));
 		label1.setFont(new Font("Arial", Font.PLAIN, 30));
@@ -217,97 +223,109 @@ public class Game2 extends JPanel implements KeyListener
 		theLayout.putConstraint(SpringLayout.SOUTH, label3, -25, SpringLayout.SOUTH, this);
 		theLayout.putConstraint(SpringLayout.WEST, label3, currentX, SpringLayout.WEST, this);
 		add(label3);
-		
+
 		jelly.setLocation(jellyLocation);
 		jelly.setFocusable(false);
 		jelly.setFocusPainted(false);
-    	jelly.setOpaque(false);
-    	jelly.setContentAreaFilled(false);
-    	jelly.setBorderPainted(false);
-    	jelly.setMargin(new Insets(0,0,0,0));
-        jelly.setHorizontalTextPosition(JButton.CENTER);
-        
-		
+		jelly.setOpaque(false);
+		jelly.setContentAreaFilled(false);
+		jelly.setBorderPainted(false);
+		jelly.setMargin(new Insets(0, 0, 0, 0));
+		jelly.setHorizontalTextPosition(JButton.CENTER);
+
 		add(jelly);
 	}
 
 	private void setUpTimers()
 	{
 		currentTime = gamePeriod - 1;
-		timeDisplayer = new ActionListener() 
+		timeDisplayer = new ActionListener()
 		{
-			public void actionPerformed(ActionEvent evt) 
+			public void actionPerformed(ActionEvent evt)
 			{
-				if(playing)
+				if (playing)
 				{
-					if((currentTime % 60) < 10)
-					{	timerLabel.setText("Time: " + (int)(currentTime/60)+ ":0" + (int)(currentTime%60));	}
+					if ((currentTime % 60) < 10)
+					{
+						timerLabel.setText("Time: " + (int) (currentTime / 60) + ":0" + (int) (currentTime % 60));
+					}
 					else
-					{	timerLabel.setText("Time: " + (int)(currentTime/60)+ ":" + (int)(currentTime%60));	}
+					{
+						timerLabel.setText("Time: " + (int) (currentTime / 60) + ":" + (int) (currentTime % 60));
+					}
 					currentTime--;
 				}
-				if(currentTime == 0)
+				if (currentTime == 0)
 				{
 					displayTime.stop();
 					playing = false;
 					score -= 5;
 					System.out.println("Time's up!");
 					base.addGameRecord(2, numQuestionsAsked, questionsAnsweredCorrectly);
-					JOptionPane.showMessageDialog(base.messagePanel, "Your score was "  + score + ".", "Time's up!", JOptionPane.PLAIN_MESSAGE);
+					JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "Time's up!", JOptionPane.PLAIN_MESSAGE);
 					remove(jelly);
 					base.returnToMenu();
 				}
 			}
 		};
-		displayTime = new Timer(1000, timeDisplayer); //time parameter milliseconds
+		displayTime = new Timer(1000, timeDisplayer); // time parameter
+														// milliseconds
 		displayTime.start();
 		displayTime.setRepeats(true);
-		
+
 		jellyMover = new ActionListener()
 		{
 			public void actionPerformed(ActionEvent event)
-			{	
-				if(playing)
-				{	
+			{
+				if (playing)
+				{
 					jellyLocation.y += movement;
-			    	if(jellyLocation.y >= maxY)
-			    	{	
-			    		wentOffScreen();
-			    	}
+					if (jellyLocation.y >= maxY)
+					{
+						wentOffScreen();
+					}
 					repaint();
 				}
 				else
-				{	jellyTimer.stop();	}
+				{
+					jellyTimer.stop();
+				}
 			}
 		};
 		jellyTimer = new Timer(speed, jellyMover);
 		jellyTimer.start();
 		jellyTimer.setRepeats(true);
-		
+
 	}
-	
-	private void updateScore(boolean correct) 
-	{	
-		//TODO
-		scoreLabel.setText("Score: " + score);	
+
+	private void updateScore(boolean correct)
+	{
+		// TODO
+		scoreLabel.setText("Score: " + score);
 	}
-	
+
 	private void getQuestion()
 	{
 		int random = Controller.rng.nextInt(10);
-		if(frequency > 0 && random <= frequency && questionList != null)
-		{	questionFromList();	}
+		if (frequency > 0 && random <= frequency && questionList != null)
+		{
+			questionFromList();
+		}
 		else
-		{	generateQuestion();	}
-		while(answer < 0)
-		{	generateQuestion();	}
+		{
+			generateQuestion();
+		}
+		while (answer < 0)
+		{
+			generateQuestion();
+		}
 	}
 
 	private void questionFromList()
 	{
 		int random = Controller.rng.nextInt(questionList.size());
 		question = questionList.get(random);
-		if(question.contains("+"))
+		if (question.contains("+"))
 		{
 			int operator = question.indexOf("+");
 			int firstInteger = Integer.parseInt(question.substring(0, operator));
@@ -327,14 +345,18 @@ public class Game2 extends JPanel implements KeyListener
 
 	private void generateQuestion()
 	{
-		switch(questionTypes)
+		switch (questionTypes)
 		{
 			case 0:
 				int random = Controller.rng.nextInt(2);
-				if(random < 1)
-				{	generateAddition();	}
+				if (random < 1)
+				{
+					generateAddition();
+				}
 				else
-				{	generateSubtraction();	}
+				{
+					generateSubtraction();
+				}
 				break;
 			case 1:
 				generateAddition();
@@ -352,7 +374,7 @@ public class Game2 extends JPanel implements KeyListener
 		answer = firstInteger - secondInteger;
 		question = firstInteger + " - " + secondInteger + " = ? ";
 	}
-	
+
 	private void generateSubtraction()
 	{
 		int firstInteger = Controller.rng.nextInt(questionBase);
@@ -360,29 +382,33 @@ public class Game2 extends JPanel implements KeyListener
 		answer = firstInteger + secondInteger;
 		question = firstInteger + " + " + secondInteger + " = ? ";
 	}
-	
+
 	private void wentOffScreen()
 	{
 		playing = false;
-		if(index == answerIndex)
+		if (index == answerIndex)
 		{
 			System.out.println("Correct answer given.");
 			questionsAnsweredCorrectly++;
-			JOptionPane.showMessageDialog(base.messagePanel, question.substring(0, question.indexOf("?")) + " " + answer, "Correct!", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(base.messagePanel, question.substring(0, question.indexOf("?")) + " " + answer, "Correct!",
+					JOptionPane.INFORMATION_MESSAGE);
 			score += 50;
 		}
 		else
 		{
 			System.out.println("Incorrect answer given.");
-			JOptionPane.showMessageDialog(base.messagePanel, question.substring(0, question.indexOf("?")) + " " + answer, "Incorrect", JOptionPane.INFORMATION_MESSAGE);
-			if(score > 0)
-			{	score -= 5;	}
+			JOptionPane.showMessageDialog(base.messagePanel, question.substring(0, question.indexOf("?")) + " " + answer, "Incorrect",
+					JOptionPane.INFORMATION_MESSAGE);
+			if (score > 0)
+			{
+				score -= 5;
+			}
 		}
 		updateScore(index == answerIndex);
 		removeVar();
 		playGame();
 	}
-	
+
 	private void removeVar()
 	{
 		remove(label1);
@@ -390,38 +416,42 @@ public class Game2 extends JPanel implements KeyListener
 		remove(label3);
 		remove(jelly);
 	}
-	
+
 	private void updateJellyLocation()
 	{
 		jellyLocation.x = (index * xSpacing) + jellyWidth;
 		jelly.setLocation(jellyLocation);
 	}
-	
-	public void keyPressed(KeyEvent e) 
+
+	public void keyPressed(KeyEvent e)
 	{
-		if((e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A) && index > 0) 
-		{	
-			index--;	
+		if ((e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A) && index > 0)
+		{
+			index--;
 			repaint();
 		}
-		if((e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D)	&& index < 2) 
-		{	
-			index++;	
+		if ((e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D) && index < 2)
+		{
+			index++;
 			repaint();
 		}
-		if((e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W)) 
-		{	movement = 2;	}
-		if((e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S)) 
-		{	movement = 8;	}
+		if ((e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W))
+		{
+			movement = 2;
+		}
+		if ((e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S))
+		{
+			movement = 8;
+		}
 	}
 
 	@Override
-	public void keyReleased(KeyEvent e) 
-	{	}
+	public void keyReleased(KeyEvent e)
+	{}
 
 	@Override
-	public void keyTyped(KeyEvent e) 
-	{	}
+	public void keyTyped(KeyEvent e)
+	{}
 
 	@Override
 	public void paint(Graphics g)
@@ -430,5 +460,5 @@ public class Game2 extends JPanel implements KeyListener
 		updateJellyLocation();
 		super.paint(g);;
 	}
-	
+
 }
