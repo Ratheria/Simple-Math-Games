@@ -38,7 +38,7 @@ public class Game1 extends JPanel
 	private int answer;
 	private int score;
 	private int gamePeriod;
-	private double currentTime;
+	private int currentTime;
 	private int fishImageWidth;
 	private int fishImageHeight;
 	private SpringLayout theLayout;
@@ -48,20 +48,25 @@ public class Game1 extends JPanel
 	private JLabel questionLabel;
 	private JLabel scoreLabel;
 	private JButton menu;
-	private Timer timeOutCount;
 	private Timer fishTimer;
 	private Timer displayTime;
-	private ActionListener timeOut;
 	private ActionListener fishMover;
 	private ActionListener timeDisplayer;
 	private Image fishImg;
 	private ImageIcon fishIcon;
+
 	private int questionBase;
 	private int questionTypes; // TODO
 	private int fishSpeed;
-	private int questionsAnsweredCorrectly;
-	private int numQuestionsAsked; // TODO guesses
+
+	private int questionsAnswered;
+	private int questionsCorrect;
+	private int guesses;
+
+	private int guessesThisQuestion; // TODO
+
 	private boolean playing;
+	private boolean reset;
 
 	public Game1(Controller base)
 	{
@@ -97,8 +102,9 @@ public class Game1 extends JPanel
 		questionBase = 15;
 		questionTypes = 0; // both, addition, subtraction
 		fishSpeed = 40;
-		numQuestionsAsked = 0;
-		questionsAnsweredCorrectly = 0;
+		questionsAnswered = 0;
+		questionsCorrect = 0;
+		guesses = 0;
 
 		playGame();
 		setUpLayout();
@@ -109,7 +115,6 @@ public class Game1 extends JPanel
 	private void playGame()
 	{
 		getQuestion();
-		numQuestionsAsked++;
 		int randomPlacement = Controller.rng.nextInt(maxFishVertical);
 		for (int i = 0; i < maxFishVertical; i++)
 		{
@@ -126,6 +131,7 @@ public class Game1 extends JPanel
 		}
 		addFish();
 		playing = true;
+		reset = false;
 	}
 
 	private void setUpLayout()
@@ -137,11 +143,11 @@ public class Game1 extends JPanel
 
 		timerLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		timerLabel.setForeground(new Color(70, 130, 180));
-		timerLabel.setFont(new Font("Arial", Font.PLAIN, 30));
+		timerLabel.setFont(new Font("Arial", Font.PLAIN, 35));
 		theLayout.putConstraint(SpringLayout.NORTH, timerLabel, 25, SpringLayout.NORTH, this);
 		theLayout.putConstraint(SpringLayout.EAST, timerLabel, -50, SpringLayout.EAST, this);
 
-		scoreLabel.setFont(new Font("Arial", Font.PLAIN, 25));
+		scoreLabel.setFont(new Font("Arial", Font.PLAIN, 30));
 		scoreLabel.setForeground(new Color(70, 130, 180));
 		scoreLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		theLayout.putConstraint(SpringLayout.SOUTH, scoreLabel, -25, SpringLayout.SOUTH, this);
@@ -149,11 +155,11 @@ public class Game1 extends JPanel
 
 		questionLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		questionLabel.setForeground(new Color(70, 130, 180));
-		questionLabel.setFont(new Font("Arial", Font.BOLD, 30));
+		questionLabel.setFont(new Font("Arial", Font.BOLD, 35));
 		theLayout.putConstraint(SpringLayout.WEST, questionLabel, 50, SpringLayout.WEST, this);
 		theLayout.putConstraint(SpringLayout.NORTH, questionLabel, 25, SpringLayout.NORTH, this);
 
-		menu.setFont(new Font("Arial", Font.PLAIN, 25));
+		menu.setFont(new Font("Arial", Font.PLAIN, 30));
 		menu.setForeground(new Color(70, 130, 180));
 		menu.setBackground(new Color(70, 130, 180));
 		menu.setFocusPainted(false);
@@ -174,13 +180,14 @@ public class Game1 extends JPanel
 		{
 			public void actionPerformed(ActionEvent onClick)
 			{
-				timeOutCount.stop();
-				displayTime.stop();
-				fishTimer.stop();
+				stopTimers();
 				playing = false;
-				// TODO are you sure? data lost
-				clearCurrentFish();
+				// TODO are you sure?
+				// if yes
+				base.addGameRecord(1, questionsAnswered, questionsCorrect, guesses, gamePeriod - currentTime);
+				JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "", JOptionPane.PLAIN_MESSAGE);
 				base.returnToMenu();
+				// else
 			}
 		});
 	}
@@ -204,16 +211,29 @@ public class Game1 extends JPanel
 					}
 					currentTime--;
 				}
-				else
+				else if (reset)
 				{
+					clearCurrentFish();
+					playGame();
+				}
+				else if (currentTime == 0)
+				{
+					playing = false;
 					timerLabel.setText("Time: 0:00");
 					stopTimers();
+					base.addGameRecord(1, questionsAnswered, questionsCorrect, guesses, gamePeriod);
+					System.out.println("Time's up!");
+					JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "Time's up!", JOptionPane.PLAIN_MESSAGE);
+					clearCurrentFish();
+					base.returnToMenu();
+				}
+				else if (!playing)
+				{
+					reset = true;
 				}
 			}
 		};
-		displayTime = new Timer(1000, timeDisplayer); // time parameter
-														// milliseconds
-		displayTime.start();
+		displayTime = new Timer(1000, timeDisplayer);
 		displayTime.setRepeats(true);
 
 		fishMover = new ActionListener()
@@ -224,39 +244,23 @@ public class Game1 extends JPanel
 				{
 					moveFish();
 				}
-				else
-				{
-					fishTimer.stop();
-				}
 			}
 		};
 		fishTimer = new Timer(fishSpeed, fishMover);
-		fishTimer.start();
 		fishTimer.setRepeats(true);
 
-		timeOut = new ActionListener()
-		{
-			public void actionPerformed(ActionEvent evt)
-			{
-				playing = false;
-				timerLabel.setText("Time: 0:00");
-				stopTimers();
-				base.addGameRecord(1, numQuestionsAsked, questionsAnsweredCorrectly);
-				System.out.println("Time's up!");
-				JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "Time's up!", JOptionPane.PLAIN_MESSAGE);
-				clearCurrentFish();
-				base.returnToMenu();
-			}
-		};
-		timeOutCount = new Timer(gamePeriod * 1000, timeOut);
-		timeOutCount.setRepeats(false);
-		timeOutCount.start();
+		startTimers();
+	}
+
+	private void startTimers()
+	{
+		displayTime.start();
+		fishTimer.start();
 	}
 
 	private void stopTimers()
 	{
 		displayTime.stop();
-		timeOutCount.stop();
 		fishTimer.stop();
 	}
 
@@ -344,10 +348,22 @@ public class Game1 extends JPanel
 	{
 		if (correct)
 		{
-			questionsAnsweredCorrectly++;
-			// TODO
+			questionsCorrect++;
+			score += 50;
+			scoreLabel.setText("Score: " + Integer.toString(score));
+			questionLabel.setText(question.substring(0, question.indexOf("?")) + " " + answer + "  Correct!");
+			repaint();
+			playing = false;
 		}
-		scoreLabel.setText("Score: " + Integer.toString(score));
+		else
+		{
+			guesses++;
+			if (score > 0)
+			{
+				score -= 5;
+				scoreLabel.setText("Score: " + Integer.toString(score));
+			}
+		}
 	}
 
 	private void removeFish(FishObject fish)
@@ -364,6 +380,7 @@ public class Game1 extends JPanel
 		}
 		currentFish = new ArrayList<FishObject>();
 		repaint();
+		questionsAnswered++;
 	}
 
 	private void moveFish()
@@ -399,15 +416,9 @@ public class Game1 extends JPanel
 		if (fish.getAnswer() == answer)
 		{
 			System.out.println("Correct answer went off screen.");
-			if (score > 0)
-			{
-				score -= 5;
-			}
 			playing = false;
-			timeOutCount.stop();
-			base.addGameRecord(1, numQuestionsAsked, questionsAnsweredCorrectly);
-			JOptionPane.showMessageDialog(base.messagePanel, "The correct answer went off screen.\nYour score was " + score + ".", "Game Over",
-					JOptionPane.INFORMATION_MESSAGE);
+			base.addGameRecord(1, questionsAnswered, questionsCorrect, guesses, gamePeriod - currentTime);
+			JOptionPane.showMessageDialog(base.messagePanel, "The correct answer went off screen.\nYour score was " + score + ".", "Game Over", JOptionPane.INFORMATION_MESSAGE);
 			clearCurrentFish();
 			base.returnToMenu();
 		}
@@ -418,19 +429,12 @@ public class Game1 extends JPanel
 		if (fish.getAnswer() == answer)
 		{
 			System.out.println("Correct answer given.");
-			score += 50;
 			updateScore(true);
-			clearCurrentFish();
-			playGame();
 		}
 		else
 		{
 			System.out.println("Incorrect answer given.");
 			removeFish(fish);
-			if (score > 0)
-			{
-				score -= 5;
-			}
 			updateScore(false);
 		}
 	}

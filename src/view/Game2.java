@@ -68,8 +68,11 @@ public class Game2 extends JPanel implements KeyListener
 	private int questionBase;
 	private int questionTypes; // TODO
 	private int speed;
+	
 	private int numQuestionsAsked;
-	private int questionsAnsweredCorrectly;
+	private int questionsAnsweredCorrectly; // TODO
+	private int guesses;
+	
 	private boolean playing;
 
 	// TODO Grid bag layout conversion?
@@ -261,15 +264,13 @@ public class Game2 extends JPanel implements KeyListener
 					playing = false;
 					score -= 5;
 					System.out.println("Time's up!");
-					base.addGameRecord(2, numQuestionsAsked, questionsAnsweredCorrectly);
 					JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "Time's up!", JOptionPane.PLAIN_MESSAGE);
 					remove(jelly);
 					base.returnToMenu();
 				}
 			}
 		};
-		displayTime = new Timer(1000, timeDisplayer); // time parameter
-														// milliseconds
+		displayTime = new Timer(1000, timeDisplayer);
 		displayTime.start();
 		displayTime.setRepeats(true);
 

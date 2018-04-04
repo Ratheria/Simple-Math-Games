@@ -323,9 +323,9 @@ public class Controller
 
 	}
 
-	public void addGameRecord(int gameID, int questionsAsked, int questionsCorrect)
+	public void addGameRecord(int gameID, int questionsAnswered, int questionsCorrect, int guesses, int totalSeconds)
 	{
-		database.addGameRecord(ID, gameID, questionsAsked, questionsCorrect, classID);
+		database.addGameRecord(ID, gameID, questionsAnswered, questionsCorrect, guesses, totalSeconds);
 	}
 
 	public void changeCustomEquations(String equationString, int frequency, int numberOfEquations)
@@ -360,13 +360,6 @@ public class Controller
 	{
 		ResultSet result = null;
 		result = database.getStudents(classID);
-		return result;
-	}
-
-	public ResultSet getStudentRecords()
-	{
-		ResultSet result = null;
-		result = database.selectStudentRecord(classID);
 		return result;
 	}
 

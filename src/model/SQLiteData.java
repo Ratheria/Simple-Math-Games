@@ -195,8 +195,12 @@ public class SQLiteData
 			{
 				if (con == null)
 				{	getConnection();	}
-				String query = "DELETE FROM USER WHERE ID = ?";
+				String query = "DELETE FROM GAME_RECORDS WHERE studentID = ?";
 				PreparedStatement preparedStatement = con.prepareStatement(query);
+				preparedStatement.setInt(1, ID);
+				preparedStatement.executeUpdate();
+				query = "DELETE FROM USER WHERE ID = ?";
+				preparedStatement = con.prepareStatement(query);
 				preparedStatement.setInt(1, ID);
 				preparedStatement.executeUpdate();
 			}
@@ -369,42 +373,24 @@ public class SQLiteData
 		catch (SQLException e) {e.printStackTrace();}
 	}
 	
-	public void addGameRecord(int studentID, int gameID, int questionsAsked, int questionsCorrect, String classID)
+	public void addGameRecord(int studentID, int gameID, int questionsAnswered, int questionsCorrect, int guesses, int totalSeconds)
 	{
 		if (con == null)
 		{	getConnection();	}
 		try 
 		{
 			PreparedStatement preparedStatement;
-			preparedStatement = con.prepareStatement("INSERT INTO STUDENT_SCORE_RECORDS VALUES(?, ?, ?, ?, ?, ?, ?);");
+			preparedStatement = con.prepareStatement("INSERT INTO GAME_RECORDS VALUES(?, ?, ?, ?, ?, ?, ?, ?);");
 			preparedStatement.setInt(1, studentID);
 			preparedStatement.setInt(2, gameID);
-			preparedStatement.setInt(3, questionsAsked);
+			preparedStatement.setInt(3, questionsAnswered);
 			preparedStatement.setInt(4, questionsCorrect);
-			preparedStatement.setString(5, classID);
-			preparedStatement.setString(6, Controller.dtf.format(LocalDateTime.now()));
+			preparedStatement.setInt(5, guesses);
+			preparedStatement.setInt(6, totalSeconds);
+			preparedStatement.setString(7, Controller.dtf.format(LocalDateTime.now()));
 			preparedStatement.executeUpdate();
 		}
 		catch (SQLException e) {e.printStackTrace();}
-	}
-	
-	public ResultSet selectStudentRecord(String classID)
-	{
-		ResultSet studentRecords = null;
-		PreparedStatement preparedStatement;
-		if (con == null)
-		{	getConnection();	}
-		try 
-		{
-			//TODO
-			String query = "SELECT studentID, studentFirstName, studentLastName from STUDENT_SCORE_RECORDS WHERE classID = ?";
-			//+ "studentID INTEGER," + "gameID INTEGER," + "questionsAsked INTEGER," + "questionsCorrect INTEGER," + "classID VARCHAR(5)," + "date VARCHAR(19)," + "recordID INTEGER,"
-			preparedStatement = con.prepareStatement(query);
-			preparedStatement.setString(1, classID);
-			studentRecords = preparedStatement.executeQuery();
-		}
-		catch (SQLException e) { e.printStackTrace(); }		
-		return studentRecords;
 	}
 	
 	public ResultSet getStudents(String classID)
@@ -534,25 +520,26 @@ public class SQLiteData
 				
 				// drop table if exists
 				//TODO Once we are done testing we want to get rid of this logic so it doesn't reset every time you open the application.
-				//state.execute("DROP TABLE IF EXISTS STUDENT_SCORE_RECORDS;");
-				ResultSet studentScoreRecords = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' " +
-						"AND name='STUDENT_SCORE_RECORDS'");
+				state.execute("DROP TABLE IF EXISTS GAME_RECORDS;");
+				ResultSet gameRecords = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' " +
+						"AND name='GAME_RECORDS'");
 				
-				if (!studentScoreRecords.next())
+				if (!gameRecords.next())
 				{
-					System.out.println("Building Student Score Records table.");
+					System.out.println("Building Game Records table.");
 					state = con.createStatement();
-					state.executeUpdate("CREATE TABLE STUDENT_SCORE_RECORDS("
-							+ "studentID INTEGER," + "gameID INTEGER," + "questionsAsked INTEGER," + "questionsCorrect INTEGER,"  
+					state.executeUpdate("CREATE TABLE GAME_RECORDS("
+							+ "studentID INTEGER," + "gameID INTEGER," 
+							+ "questionsAnswered INTEGER," + "questionsCorrect INTEGER," + "guesses INTEGER," + "totalSeconds INTEGER,"
 							+ "date VARCHAR(19)," + "recordID INTEGER,"
 							+ "PRIMARY KEY (recordID),"  
 							+ "FOREIGN KEY (studentID) REFERENCES USER(ID));");
-					
-					//addStudentScoreRecord(222222, "Default", "Student", "1A", dtf.format(now));
-					//addStudentScoreRecord(222222, "Default", "Student", "1A", dtf.format(now));
-
-
 				}
+				
+				
+				//TODO User high scores and general stats database (games played, total score(s))
+				//TODO overall high scores
+				
 			}
 			catch (SQLException e){ e.printStackTrace(); }
 		}
