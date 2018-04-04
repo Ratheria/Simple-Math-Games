@@ -7,6 +7,7 @@ package adapter;
 
 import java.io.File;
 import java.sql.*;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -19,6 +20,7 @@ import view.Frame;
 
 public class Controller
 {
+	public static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"); 
 	public static Random rng;
 	public static String[] selectStudentRecordHeader = {"Student ID", "First Name", "Last Name"};
 	public static String[] allUsersHeader = {"User ID", "Username", "First Name", "Last Name", "Class ID"};
@@ -99,9 +101,7 @@ public class Controller
 			changeState(lastState);
 		}
 		else
-		{
-			JOptionPane.showMessageDialog(messagePanel, "Incorrect password.", "Error", JOptionPane.ERROR_MESSAGE);
-		}
+		{	JOptionPane.showMessageDialog(messagePanel, "Incorrect password.", "Error", JOptionPane.ERROR_MESSAGE);	}
 	}
 	
 	public void returnToMenu()
@@ -229,6 +229,11 @@ public class Controller
 						List<String> expressionHalves = Arrays.asList(newEquation.split("-"));
 						answer = Integer.parseInt(expressionHalves.get(0)) - Integer.parseInt(expressionHalves.get(1));
 					}
+					else
+					{
+						List<String> expressionHalves = Arrays.asList(newEquation.split("\\+"));
+						answer = Integer.parseInt(expressionHalves.get(0)) + Integer.parseInt(expressionHalves.get(1));
+					}
 					if(answer < 0)
 					{	JOptionPane.showMessageDialog(messagePanel, "Negative answer values are not supported.", "", JOptionPane.ERROR_MESSAGE);	}
 					else
@@ -257,6 +262,11 @@ public class Controller
 			}
 		}
 		
+	}
+	
+	public void addGameRecord(int gameID, int questionsAsked, int questionsCorrect)
+	{
+		database.addGameRecord(ID, gameID, questionsAsked, questionsCorrect, classID);
 	}
 	
 	public void changeCustomEquations(String equationString, int frequency, int numberOfEquations)
