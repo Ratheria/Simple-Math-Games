@@ -45,6 +45,7 @@ public class Game2 extends JPanel implements KeyListener
 	private ImageIcon jellyIcon;
 	private JLabel timerLabel;
 	private JLabel scoreLabel;
+	private JLabel feedbackLabel;
 	private JLabel label1;
 	private JLabel label2;
 	private JLabel label3;
@@ -74,6 +75,7 @@ public class Game2 extends JPanel implements KeyListener
 	private int guesses;
 	
 	private boolean playing;
+	private boolean reset;
 
 	// TODO Grid bag layout conversion?
 
@@ -93,6 +95,7 @@ public class Game2 extends JPanel implements KeyListener
 		questionList = base.getEquations();
 		timerLabel = new JLabel("Time: " + (gamePeriod / 60) + ":" + (gamePeriod % 60));
 		scoreLabel = new JLabel("Score: 0");
+		feedbackLabel = new JLabel("");
 		menu = new JButton(" Exit Game ");
 		maxY = base.frame.getHeight();
 		xSpacing = (base.frame.getWidth()) / numberOfColumns;
@@ -126,7 +129,6 @@ public class Game2 extends JPanel implements KeyListener
 
 	private void playGame()
 	{
-		playing = true;
 		index = 1;
 		movement = 2;
 		jellyLocation.y = 50;
@@ -154,6 +156,8 @@ public class Game2 extends JPanel implements KeyListener
 			columnLabels.add(new JLabel(columnAnswer + ""));
 		}
 		setUpVar();
+		playing = true;
+		reset = false;
 	}
 
 	private void setUpLayout()
@@ -174,6 +178,13 @@ public class Game2 extends JPanel implements KeyListener
 		scoreLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		theLayout.putConstraint(SpringLayout.NORTH, scoreLabel, 0, SpringLayout.NORTH, menu);
 		theLayout.putConstraint(SpringLayout.EAST, scoreLabel, -20, SpringLayout.WEST, menu);
+		
+		feedbackLabel.setHorizontalAlignment(SwingConstants.LEFT);
+		feedbackLabel.setForeground(new Color(70, 130, 180));
+		feedbackLabel.setBackground(new Color(245, 245, 245));
+		feedbackLabel.setFont(new Font("Arial", Font.BOLD, 35));
+		theLayout.putConstraint(SpringLayout.WEST, feedbackLabel, (base.frame.getWidth()/3), SpringLayout.WEST, this);
+		theLayout.putConstraint(SpringLayout.NORTH, feedbackLabel, (base.frame.getHeight()/3), SpringLayout.NORTH, this);
 
 		menu.setFont(new Font("Arial", Font.PLAIN, 25));
 		menu.setForeground(new Color(70, 130, 180));
@@ -186,6 +197,7 @@ public class Game2 extends JPanel implements KeyListener
 
 		add(timerLabel);
 		add(scoreLabel);
+		add(feedbackLabel);
 		add(menu);
 	}
 
@@ -259,7 +271,12 @@ public class Game2 extends JPanel implements KeyListener
 					}
 					currentTime--;
 				}
-				if (currentTime == 0)
+				else if (reset)
+				{
+					removeVar();
+					playGame();
+				}
+				else if (currentTime == 0)
 				{
 					displayTime.stop();
 					playing = false;
@@ -268,6 +285,9 @@ public class Game2 extends JPanel implements KeyListener
 					JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "Time's up!", JOptionPane.PLAIN_MESSAGE);
 					remove(jelly);
 					base.returnToMenu();
+				}
+				else if (!playing){
+					reset = true;
 				}
 			}
 		};
@@ -287,10 +307,6 @@ public class Game2 extends JPanel implements KeyListener
 						wentOffScreen();
 					}
 					repaint();
-				}
-				else
-				{
-					jellyTimer.stop();
 				}
 			}
 		};
@@ -321,6 +337,7 @@ public class Game2 extends JPanel implements KeyListener
 		{
 			generateQuestion();
 		}
+		feedbackLabel.setText("");
 	}
 
 	private void questionFromList()
@@ -392,23 +409,22 @@ public class Game2 extends JPanel implements KeyListener
 		{
 			System.out.println("Correct answer given.");
 			questionsAnsweredCorrectly++;
-			JOptionPane.showMessageDialog(base.messagePanel, question.substring(0, question.indexOf("?")) + " " + answer, "Correct!",
-					JOptionPane.INFORMATION_MESSAGE);
+			feedbackLabel.setText("Correct!  " + question.substring(0, question.indexOf("?")) + answer);
+			repaint();
 			score += 50;
 		}
 		else
 		{
 			System.out.println("Incorrect answer given.");
-			JOptionPane.showMessageDialog(base.messagePanel, question.substring(0, question.indexOf("?")) + " " + answer, "Incorrect",
-					JOptionPane.INFORMATION_MESSAGE);
+			feedbackLabel.setText("Nice try!  " + question.substring(0, question.indexOf("?")) + answer);
+			removeVar();
+			repaint();
 			if (score > 0)
 			{
 				score -= 5;
 			}
 		}
 		updateScore(index == answerIndex);
-		removeVar();
-		playGame();
 	}
 
 	private void removeVar()
@@ -417,6 +433,7 @@ public class Game2 extends JPanel implements KeyListener
 		remove(label2);
 		remove(label3);
 		remove(jelly);
+		repaint();
 	}
 
 	private void updateJellyLocation()
