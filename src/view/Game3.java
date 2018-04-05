@@ -189,7 +189,7 @@ public class Game3 extends JPanel implements KeyListener
 		{
 			public void actionPerformed(ActionEvent onClick)
 			{
-				//stopTimers();
+				stopTimers();
 				playing = false;
 				// TODO are you sure?
 				// if yes
@@ -558,6 +558,12 @@ public class Game3 extends JPanel implements KeyListener
 		answerLabel3.setLocation(screenWidth - 150, 350);
 		shark.setLocation(sharkLocation);
 		super.paint(g);
+	}
+	
+	private void stopTimers()
+	{
+		displayTime.stop();
+		timer.stop();
 	}
 
 }

@@ -208,7 +208,7 @@ public class Game2 extends JPanel implements KeyListener
 			public void actionPerformed(ActionEvent onClick)
 			{
 				playing = false;
-				// TODO
+				stopTimers();
 				removeVar();
 				JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "", JOptionPane.PLAIN_MESSAGE);
 				base.returnToMenu();
@@ -478,6 +478,12 @@ public class Game2 extends JPanel implements KeyListener
 		requestFocus();
 		updateJellyLocation();
 		super.paint(g);;
+	}
+	
+	private void stopTimers()
+	{
+		displayTime.stop();
+		jellyTimer.stop();
 	}
 
 }
