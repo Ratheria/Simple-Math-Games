@@ -26,6 +26,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 public class Game3 extends JPanel implements KeyListener
@@ -70,6 +71,8 @@ public class Game3 extends JPanel implements KeyListener
 	private int score;
 	private static final int GAME_PERIOD = 60;
 	private int sec;
+	private JLabel rightlabel;
+	private JLabel wrongLabel;
 
 	public Game3(Controller base)
 	{
@@ -228,6 +231,21 @@ public class Game3 extends JPanel implements KeyListener
 		sharkLocation.y = defaultSharkLocation.y;
 		shark.setText(question);
 		add(shark);
+	
+		rightlabel = new JLabel("Correct!");
+		rightlabel.setForeground(new Color(0, 128, 0));
+		theLayout.putConstraint(SpringLayout.WEST, rightlabel, 10, SpringLayout.WEST, this);
+		theLayout.putConstraint(SpringLayout.SOUTH, rightlabel, -10, SpringLayout.SOUTH, this);
+		rightlabel.setVisible(false);
+		add(rightlabel);
+		
+		
+		wrongLabel = new JLabel("Incorrect");
+		wrongLabel.setForeground(new Color(255, 0, 0));
+		theLayout.putConstraint(SpringLayout.NORTH, wrongLabel, 0, SpringLayout.NORTH, rightlabel);
+		theLayout.putConstraint(SpringLayout.WEST, wrongLabel, 6, SpringLayout.EAST, rightlabel);
+		wrongLabel.setVisible(false);
+		add(wrongLabel);
 		repaint();
 		guessed1 = false;
 		guessed2 = false;
@@ -424,14 +442,37 @@ public class Game3 extends JPanel implements KeyListener
 
 		if (intersect == randomPlacement)
 		{
+			if (wrongLabel.isVisible()){
+				wrongLabel.setVisible(false);
+			}
+			labelFlash(rightlabel);
 			updateScore(true);
 			remove(shark);
 			playGame();
 		}
 		else if (intersect != -1)
 		{
+			labelFlash(wrongLabel);
 			updateScore(false);
 		}
+	}
+	
+	public void labelFlash(JLabel label) {
+	    new Thread(new Runnable() {
+	        public void run() {
+	        	label.setVisible(true);
+	            try {
+	                Thread.sleep(1000);
+	            } catch (InterruptedException e) {
+	                e.printStackTrace();
+	            }
+	            SwingUtilities.invokeLater(new Runnable() {
+	                public void run() {
+	                    label.setVisible(false);
+	                }
+	            });
+	        }
+	    }).start();
 	}
 
 	@Override

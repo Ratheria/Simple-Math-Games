@@ -57,7 +57,7 @@ public class Controller
 		try
 		{
 			boolean hasRes = res.next();
-			if (database.isLocked(ID) && hasRes)
+			if (database.isLocked(ID) && hasRes && !userName.equals("root"))
 			{
 				JOptionPane.showMessageDialog(errorPanel, "This account has been locked due to too many failed login attempts.", "Error", JOptionPane.ERROR_MESSAGE);
 			}
