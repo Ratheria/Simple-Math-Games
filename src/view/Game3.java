@@ -154,7 +154,7 @@ public class Game3 extends JPanel implements KeyListener
 		answerLabel1.setBounds(answerLabel1.getX(), answerLabel1.getY(), 50, 25);
 		answerLabel2.setBounds(answerLabel2.getX(), answerLabel2.getY(), 50, 25);
 		answerLabel3.setBounds(answerLabel3.getX(), answerLabel3.getY(), 50, 25);
-
+		
 		add(answerLabel1);
 		add(answerLabel2);
 		add(answerLabel3);
