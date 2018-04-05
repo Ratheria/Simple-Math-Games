@@ -26,6 +26,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 public class Game3 extends JPanel implements KeyListener
@@ -70,6 +71,10 @@ public class Game3 extends JPanel implements KeyListener
 	private int score;
 	private static final int GAME_PERIOD = 60;
 	private int sec;
+	private JLabel rightLabel;
+	private JLabel wrongLabel;
+	private int questionBase;
+	private int questionTypes; // TODO
 
 	public Game3(Controller base)
 	{
@@ -92,6 +97,8 @@ public class Game3 extends JPanel implements KeyListener
 		movementSpeed = 3;
 		sharkWidth = (base.frame.getWidth() / 5);
 		sharkHeight = (base.frame.getHeight() / 5);
+		questionBase = 15;
+		questionTypes = 0; // both, addition, subtraction
 
 		try
 		{
@@ -131,7 +138,7 @@ public class Game3 extends JPanel implements KeyListener
 
 		timerLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		timerLabel.setForeground(new Color(70, 130, 180));
-		timerLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+		timerLabel.setFont(new Font("Arial", Font.PLAIN, 30));
 		theLayout.putConstraint(SpringLayout.NORTH, timerLabel, 25, SpringLayout.NORTH, this);
 		theLayout.putConstraint(SpringLayout.EAST, timerLabel, -50, SpringLayout.EAST, this);
 
@@ -228,6 +235,7 @@ public class Game3 extends JPanel implements KeyListener
 		sharkLocation.y = defaultSharkLocation.y;
 		shark.setText(question);
 		add(shark);
+		addFeedbackLabels();
 		repaint();
 		guessed1 = false;
 		guessed2 = false;
@@ -257,6 +265,25 @@ public class Game3 extends JPanel implements KeyListener
 					break;
 			}
 		}
+	}
+
+	private void addFeedbackLabels()
+	{
+		rightLabel = new JLabel("Correct!");
+		theLayout.putConstraint(SpringLayout.WEST, rightLabel, 25, SpringLayout.WEST, this);
+		theLayout.putConstraint(SpringLayout.SOUTH, rightLabel, -25, SpringLayout.SOUTH, this);
+		rightLabel.setForeground(new Color(0, 128, 0));
+		rightLabel.setFont(new Font("Arial", Font.PLAIN, 35));
+		rightLabel.setVisible(false);
+		add(rightLabel);
+
+		wrongLabel = new JLabel("Incorrect");
+		wrongLabel.setForeground(new Color(255, 0, 0));
+		wrongLabel.setFont(new Font("Arial", Font.PLAIN, 35));
+		theLayout.putConstraint(SpringLayout.NORTH, wrongLabel, 0, SpringLayout.NORTH, rightLabel);
+		theLayout.putConstraint(SpringLayout.WEST, wrongLabel, 6, SpringLayout.EAST, rightLabel);
+		wrongLabel.setVisible(false);
+		add(wrongLabel);
 	}
 
 	private void moveShark()
@@ -330,7 +357,7 @@ public class Game3 extends JPanel implements KeyListener
 	private void getQuestion()
 	{
 		int random = Controller.rng.nextInt(10);
-		if (frequency > 0 && random <= frequency)
+		if (frequency > 0 && random <= frequency && questionList != null)
 		{
 			questionFromList();
 		}
@@ -368,21 +395,42 @@ public class Game3 extends JPanel implements KeyListener
 
 	private void generateQuestion()
 	{
-		int random = Controller.rng.nextInt(2);
-		if (random < 1)
+		switch (questionTypes)
 		{
-			int firstInteger = Controller.rng.nextInt(30);
-			int secondInteger = Controller.rng.nextInt(30);
-			answer = firstInteger - secondInteger;
-			question = firstInteger + " - " + secondInteger + " = ? ";
+			case 0:
+				int random = Controller.rng.nextInt(2);
+				if (random < 1)
+				{
+					generateAddition();
+				}
+				else
+				{
+					generateSubtraction();
+				}
+				break;
+			case 1:
+				generateAddition();
+				break;
+			case 2:
+				generateSubtraction();
+				break;
 		}
-		else
-		{
-			int firstInteger = Controller.rng.nextInt(30);
-			int secondInteger = Controller.rng.nextInt(30);
-			answer = firstInteger + secondInteger;
-			question = firstInteger + " + " + secondInteger + " = ? ";
-		}
+	}
+
+	private void generateAddition()
+	{
+		int firstInteger = Controller.rng.nextInt(questionBase);
+		int secondInteger = Controller.rng.nextInt(questionBase);
+		answer = firstInteger - secondInteger;
+		question = firstInteger + " - " + secondInteger + " = ? ";
+	}
+
+	private void generateSubtraction()
+	{
+		int firstInteger = Controller.rng.nextInt(questionBase);
+		int secondInteger = Controller.rng.nextInt(questionBase);
+		answer = firstInteger + secondInteger;
+		question = firstInteger + " + " + secondInteger + " = ? ";
 	}
 
 	private void updateScore(boolean correct)
@@ -424,14 +472,46 @@ public class Game3 extends JPanel implements KeyListener
 
 		if (intersect == randomPlacement)
 		{
+			if (wrongLabel.isVisible())
+			{
+				wrongLabel.setVisible(false);
+			}
+			labelFlash(rightLabel);
 			updateScore(true);
 			remove(shark);
 			playGame();
 		}
 		else if (intersect != -1)
 		{
+			labelFlash(wrongLabel);
 			updateScore(false);
 		}
+	}
+
+	public void labelFlash(JLabel label)
+	{
+		new Thread(new Runnable()
+		{
+			public void run()
+			{
+				label.setVisible(true);
+				try
+				{
+					Thread.sleep(1000);
+				}
+				catch (InterruptedException e)
+				{
+					e.printStackTrace();
+				}
+				SwingUtilities.invokeLater(new Runnable()
+				{
+					public void run()
+					{
+						label.setVisible(false);
+					}
+				});
+			}
+		}).start();
 	}
 
 	@Override

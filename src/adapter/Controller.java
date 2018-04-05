@@ -22,10 +22,8 @@ public class Controller
 {
 	public static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 	public static Random rng;
-	public static String[] selectStudentRecordHeader =
-	{ "Student ID", "First Name", "Last Name" };
-	public static String[] allUsersHeader =
-	{ "User ID", "Username", "First Name", "Last Name", "Class ID" };
+	public static String[] selectStudentRecordHeader = { "Student ID", "First Name", "Last Name" };
+	public static String[] allUsersHeader = { "User ID", "Username", "First Name", "Last Name", "Class ID" };
 	public Frame frame;
 	public JPanel messagePanel;
 	private SQLiteData database;
@@ -50,6 +48,22 @@ public class Controller
 		logout();
 	}
 
+	public void logout()
+	{
+		state = ViewStates.login;
+		lastState = ViewStates.login;
+		ID = 0;
+		firstName = "";
+		lastName = "";
+		classID = "";
+		permission = 3;
+		frequency = 0;
+		numberOfEquations = 0;
+		customEquations = null;
+		equationString = "";
+		frame.updateState();
+	}
+	
 	public void checkLogin(String userName, String pass)
 	{
 		JPanel errorPanel = new JPanel();
@@ -115,6 +129,13 @@ public class Controller
 		}
 	}
 
+	public void changeState(ViewStates nextState)
+	{
+		lastState = state;
+		state = nextState;
+		frame.updateState();
+	}
+	
 	public void returnToMenu()
 	{
 		if (permission < 2)
@@ -129,29 +150,6 @@ public class Controller
 		{
 			changeState(ViewStates.studentMenu);
 		}
-	}
-
-	public void logout()
-	{
-		state = ViewStates.login;
-		lastState = ViewStates.login;
-		ID = 0;
-		firstName = "";
-		lastName = "";
-		classID = "";
-		permission = 3;
-		frequency = 0;
-		numberOfEquations = 0;
-		customEquations = null;
-		equationString = "";
-		frame.updateState();
-	}
-
-	public void changeState(ViewStates nextState)
-	{
-		lastState = state;
-		state = nextState;
-		frame.updateState();
 	}
 
 	public void unlockAccount(int ID)
@@ -320,7 +318,6 @@ public class Controller
 				}
 			}
 		}
-
 	}
 
 	public void addGameRecord(int gameID, int questionsAnswered, int questionsCorrect, int guesses, int totalSeconds)
@@ -344,9 +341,6 @@ public class Controller
 		}
 		catch (SQLException e)
 		{}
-		System.out.println(equationString);
-		System.out.println(this.frequency);
-		System.out.println(numberOfEquations);
 	}
 
 	public ResultSet getAllUsers()
