@@ -23,6 +23,7 @@ import javax.swing.border.LineBorder;
 import adapter.Controller;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
@@ -75,6 +76,7 @@ public class Game3 extends JPanel implements KeyListener
 	private JLabel wrongLabel;
 	private int questionBase;
 	private int questionTypes; // TODO
+	private JButton menu;
 
 	public Game3(Controller base)
 	{
@@ -99,6 +101,7 @@ public class Game3 extends JPanel implements KeyListener
 		sharkHeight = (base.frame.getHeight() / 5);
 		questionBase = 15;
 		questionTypes = 0; // both, addition, subtraction
+		menu = new JButton(" Exit Game ");
 
 		try
 		{
@@ -126,6 +129,7 @@ public class Game3 extends JPanel implements KeyListener
 		requestFocus();
 		setUpLayout();
 		setUpTimers();
+		setUpListeners();
 		playGame();
 	}
 
@@ -162,11 +166,40 @@ public class Game3 extends JPanel implements KeyListener
 		answerLabel2.setBounds(answerLabel2.getX(), answerLabel2.getY(), 50, 25);
 		answerLabel3.setBounds(answerLabel3.getX(), answerLabel3.getY(), 50, 25);
 		
+		menu.setFont(new Font("Arial", Font.PLAIN, 30));
+		menu.setForeground(new Color(70, 130, 180));
+		menu.setBackground(new Color(70, 130, 180));
+		menu.setFocusPainted(false);
+		menu.setContentAreaFilled(false);
+		menu.setBorder(new LineBorder(new Color(135, 206, 250), 2));
+		theLayout.putConstraint(SpringLayout.SOUTH, menu, -25, SpringLayout.SOUTH, this);
+		theLayout.putConstraint(SpringLayout.WEST, menu, 50, SpringLayout.WEST, this);
+
 		add(answerLabel1);
 		add(answerLabel2);
 		add(answerLabel3);
 		add(timerLabel);
 		add(scoreLabel);
+		add(menu);
+	}
+	
+	private void setUpListeners()
+	{
+		menu.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent onClick)
+			{
+				//stopTimers();
+				playing = false;
+				// TODO are you sure?
+				// if yes
+				//base.addGameRecord(1, questionsAnswered, questionsCorrect, guesses, gamePeriod - currentTime);
+				JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "", JOptionPane.PLAIN_MESSAGE);
+				remove(shark);
+				base.returnToMenu();
+				// else
+			}
+		});
 	}
 
 	private void setUpTimers()

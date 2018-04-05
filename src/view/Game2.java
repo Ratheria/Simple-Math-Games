@@ -198,6 +198,7 @@ public class Game2 extends JPanel implements KeyListener
 				playing = false;
 				// TODO
 				removeVar();
+				JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "", JOptionPane.PLAIN_MESSAGE);
 				base.returnToMenu();
 			}
 		});
