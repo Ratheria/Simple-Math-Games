@@ -150,18 +150,21 @@ public class SQLiteData
 			res = preparedStatement.executeQuery();
 			int result = res.getInt("failedAttempts");
 			result += 1;
-			query = "UPDATE USER SET failedAttempts = ? WHERE ID = ?";
-			preparedStatement = con.prepareStatement(query);
-			preparedStatement.setInt(1, result);
-			preparedStatement.setInt(2, ID);
-			preparedStatement.executeUpdate();
-			if (result > 5)
+			if(ID != 0)
 			{
-				query = "UPDATE USER SET isLocked = ? WHERE ID = ?";
+				query = "UPDATE USER SET failedAttempts = ? WHERE ID = ?";
 				preparedStatement = con.prepareStatement(query);
-				preparedStatement.setBoolean(1, true);
+				preparedStatement.setInt(1, result);
 				preparedStatement.setInt(2, ID);
 				preparedStatement.executeUpdate();
+				if (result > 5)
+				{
+					query = "UPDATE USER SET isLocked = ? WHERE ID = ?";
+					preparedStatement = con.prepareStatement(query);
+					preparedStatement.setBoolean(1, true);
+					preparedStatement.setInt(2, ID);
+					preparedStatement.executeUpdate();
+				}
 			}
 		}
 		catch (SQLException e){e.printStackTrace();}
