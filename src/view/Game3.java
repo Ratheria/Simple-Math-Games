@@ -137,8 +137,8 @@ public class Game3 extends JPanel implements KeyListener
 	{
 		setLayout(theLayout);
 		setBorder(new LineBorder(new Color(70, 130, 180), 10));
-		setBackground(new Color(213, 248, 255));
-		setBackground(new Color(208, 243, 255));
+		setForeground(new Color(173, 216, 230));
+		setBackground(new Color(245, 245, 245));
 
 		timerLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		timerLabel.setForeground(new Color(70, 130, 180));
@@ -302,21 +302,19 @@ public class Game3 extends JPanel implements KeyListener
 
 	private void addFeedbackLabels()
 	{
-		rightLabel = new JLabel("Correct!  " + question.substring(0, question.indexOf("?")) + answer);
-		theLayout.putConstraint(SpringLayout.WEST, rightLabel, (base.frame.getWidth()/3), SpringLayout.WEST, this);
-		theLayout.putConstraint(SpringLayout.NORTH, rightLabel,  (base.frame.getHeight()/3), SpringLayout.NORTH, this);
-		rightLabel.setForeground(new Color(70, 130, 180));
-		rightLabel.setBackground(new Color(245, 245, 245));
-		rightLabel.setFont(new Font("Arial", Font.BOLD, 35));
+		rightLabel = new JLabel("Correct!");
+		theLayout.putConstraint(SpringLayout.WEST, rightLabel, 25, SpringLayout.WEST, this);
+		theLayout.putConstraint(SpringLayout.SOUTH, rightLabel, -25, SpringLayout.SOUTH, this);
+		rightLabel.setForeground(new Color(0, 128, 0));
+		rightLabel.setFont(new Font("Arial", Font.PLAIN, 35));
 		rightLabel.setVisible(false);
 		add(rightLabel);
 
-		wrongLabel = new JLabel("Nice try!  " + question.substring(0, question.indexOf("?")) + answer);
-		wrongLabel.setForeground(new Color(70, 130, 180));
-		wrongLabel.setBackground(new Color(245, 245, 245));
-		wrongLabel.setFont(new Font("Arial", Font.BOLD, 35));
-		theLayout.putConstraint(SpringLayout.NORTH, wrongLabel,  (base.frame.getHeight()/3), SpringLayout.NORTH, rightLabel);
-		theLayout.putConstraint(SpringLayout.WEST, wrongLabel, (base.frame.getWidth()/3), SpringLayout.EAST, rightLabel);
+		wrongLabel = new JLabel("Incorrect");
+		wrongLabel.setForeground(new Color(255, 0, 0));
+		wrongLabel.setFont(new Font("Arial", Font.PLAIN, 35));
+		theLayout.putConstraint(SpringLayout.NORTH, wrongLabel, 0, SpringLayout.NORTH, rightLabel);
+		theLayout.putConstraint(SpringLayout.WEST, wrongLabel, 6, SpringLayout.EAST, rightLabel);
 		wrongLabel.setVisible(false);
 		add(wrongLabel);
 	}
