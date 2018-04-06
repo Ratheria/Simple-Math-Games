@@ -507,10 +507,7 @@ public class Game3 extends JPanel implements KeyListener
 
 		if (intersect == randomPlacement)
 		{
-			if (wrongLabel.isVisible())
-			{
-				wrongLabel.setVisible(false);
-			}
+
 			labelFlash(rightLabel);
 			updateScore(true);
 			remove(shark);
