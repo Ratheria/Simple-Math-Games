@@ -315,8 +315,8 @@ public class Game3 extends JPanel implements KeyListener
 		wrongLabel.setForeground(new Color(70, 130, 180));
 		wrongLabel.setBackground(new Color(245, 245, 245));
 		wrongLabel.setFont(new Font("Arial", Font.BOLD, 35));
-		theLayout.putConstraint(SpringLayout.NORTH, wrongLabel,  (base.frame.getHeight()/3), SpringLayout.NORTH, rightLabel);
-		theLayout.putConstraint(SpringLayout.WEST, wrongLabel, (base.frame.getWidth()/3), SpringLayout.EAST, rightLabel);
+		theLayout.putConstraint(SpringLayout.NORTH, wrongLabel,  (base.frame.getHeight()/3), SpringLayout.NORTH, this);
+		theLayout.putConstraint(SpringLayout.WEST, wrongLabel, (base.frame.getWidth()/3), SpringLayout.EAST, this);
 		wrongLabel.setVisible(false);
 		add(wrongLabel);
 	}
