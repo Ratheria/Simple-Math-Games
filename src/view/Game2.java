@@ -276,7 +276,10 @@ public class Game2 extends JPanel implements KeyListener
 					removeVar();
 					playGame();
 				}
-				else if (currentTime == 0)
+				else if (!playing){
+					reset = true;
+				}
+				if (currentTime == 0)
 				{
 					displayTime.stop();
 					playing = false;
@@ -286,9 +289,7 @@ public class Game2 extends JPanel implements KeyListener
 					remove(jelly);
 					base.returnToMenu();
 				}
-				else if (!playing){
-					reset = true;
-				}
+				
 			}
 		};
 		displayTime = new Timer(1000, timeDisplayer);
