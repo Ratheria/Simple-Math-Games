@@ -262,7 +262,7 @@ public class Game3 extends JPanel implements KeyListener
 	private void playGame()
 	{
 		getQuestion();
-		// TODO
+		
 		shark = new JLabel(sharkIcon);
 		sharkLocation.x = defaultSharkLocation.x;
 		sharkLocation.y = defaultSharkLocation.y;
