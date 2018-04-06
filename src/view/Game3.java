@@ -311,10 +311,11 @@ public class Game3 extends JPanel implements KeyListener
 		add(rightLabel);
 
 		wrongLabel = new JLabel("Incorrect");
-		wrongLabel.setForeground(new Color(255, 0, 0));
-		wrongLabel.setFont(new Font("Arial", Font.PLAIN, 35));
-		theLayout.putConstraint(SpringLayout.NORTH, wrongLabel, 0, SpringLayout.NORTH, rightLabel);
-		theLayout.putConstraint(SpringLayout.WEST, wrongLabel, 6, SpringLayout.EAST, rightLabel);
+		wrongLabel.setForeground(new Color(70, 130, 180));
+		wrongLabel.setBackground(new Color(245, 245, 245));
+		wrongLabel.setFont(new Font("Arial", Font.BOLD, 35));
+		theLayout.putConstraint(SpringLayout.NORTH, wrongLabel,  (base.frame.getHeight()/3), SpringLayout.NORTH, this);
+		theLayout.putConstraint(SpringLayout.WEST, wrongLabel, (base.frame.getWidth()/3), SpringLayout.EAST, this);
 		wrongLabel.setVisible(false);
 		add(wrongLabel);
 	}
