@@ -77,6 +77,7 @@ public class Game3 extends JPanel implements KeyListener
 	private int questionBase;
 	private int questionTypes; // TODO
 	private JButton menu;
+	private boolean needsInstructions;
 
 	public Game3(Controller base)
 	{
@@ -123,6 +124,7 @@ public class Game3 extends JPanel implements KeyListener
 		guessed2 = false;
 		guessed3 = false;
 		playing = true;
+		needsInstructions = true;
 
 		addKeyListener(this);
 		setFocusable(true);
@@ -209,6 +211,10 @@ public class Game3 extends JPanel implements KeyListener
 		{
 			public void actionPerformed(ActionEvent evt)
 			{
+				if(needsInstructions){
+					showInstructions();
+					needsInstructions = false;
+				}
 				if ((sec % 60) < 10)
 				{
 					timerLabel.setText("Time: " + (sec / 60) + ":0" + (sec % 60));
@@ -561,6 +567,15 @@ public class Game3 extends JPanel implements KeyListener
 	{
 		displayTime.stop();
 		timer.stop();
+	}
+	
+	public void showInstructions(){
+		JLabel g3instruct = new JLabel("<html>To play use the arrow keys to help the <br/> shark swim to the correct answer. <br/> "
+				+ "<br/>The game ends when time runs out.</html>");
+		g3instruct.setFont(new Font("Arial", Font.PLAIN, 30));
+		g3instruct.setForeground(new Color(70, 130, 180));
+		g3instruct.setBackground(new Color(208, 243, 255));
+		JOptionPane.showMessageDialog(base.messagePanel, g3instruct, "Instructions",JOptionPane.PLAIN_MESSAGE);
 	}
 
 }

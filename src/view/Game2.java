@@ -76,6 +76,7 @@ public class Game2 extends JPanel implements KeyListener
 	
 	private boolean playing;
 	private boolean reset;
+	private boolean needsInstructions;
 
 	// TODO Grid bag layout conversion?
 
@@ -117,6 +118,7 @@ public class Game2 extends JPanel implements KeyListener
 		speed = 40;
 		numQuestionsAsked = 0;
 		questionsAnsweredCorrectly = 0;
+		needsInstructions = true;
 
 		addKeyListener(this);
 		setFocusable(true);
@@ -260,7 +262,11 @@ public class Game2 extends JPanel implements KeyListener
 			public void actionPerformed(ActionEvent evt)
 			{
 				if (playing)
-				{
+				{	
+					if(needsInstructions){
+						showInstructions();
+						needsInstructions = false;
+					}
 					if ((currentTime % 60) < 10)
 					{
 						timerLabel.setText("Time: " + (int) (currentTime / 60) + ":0" + (int) (currentTime % 60));
@@ -300,7 +306,7 @@ public class Game2 extends JPanel implements KeyListener
 		{
 			public void actionPerformed(ActionEvent event)
 			{
-				if (playing)
+				if (playing && !needsInstructions)
 				{
 					jellyLocation.y += movement;
 					if (jellyLocation.y >= maxY)
@@ -487,4 +493,13 @@ public class Game2 extends JPanel implements KeyListener
 		jellyTimer.stop();
 	}
 
+	public void showInstructions(){
+		JLabel g2instruct = new JLabel("<html>To play use the side arrow keys to help the <br/> jellyfish float down to the correct answer. <br/> "
+				+ "<br/>The down arrow will help the jellyfish go faster <br/> and the up arrow will slow it back down. <br/>"
+				+ " <br/>The game ends when time runs out. </html>");
+		g2instruct.setFont(new Font("Arial", Font.PLAIN, 30));
+		g2instruct.setForeground(new Color(70, 130, 180));
+		g2instruct.setBackground(new Color(208, 243, 255));
+		JOptionPane.showMessageDialog(base.messagePanel, g2instruct, "Instructions",JOptionPane.PLAIN_MESSAGE);
+	}
 }
