@@ -40,7 +40,6 @@ public class Game3 extends JPanel implements KeyListener
 	private ImageIcon sharkIcon;
 	private Point defaultSharkLocation;
 	private Point sharkLocation;
-	private Timer timer;
 	private Timer displayTime;
 	private ActionListener gameRestarter;
 	private ActionListener timeDisplayer;
@@ -70,7 +69,7 @@ public class Game3 extends JPanel implements KeyListener
 	private int answer;
 	private int randomPlacement;
 	private int score;
-	private static final int GAME_PERIOD = 60;
+	private static final int GAME_PERIOD = 40;
 	private int sec;
 	private JLabel rightLabel;
 	private JLabel wrongLabel;
@@ -204,14 +203,16 @@ public class Game3 extends JPanel implements KeyListener
 			public void actionPerformed(ActionEvent onClick)
 			{
 				stopTimers();
-				playing = false;
-				// TODO are you sure?
-				// if yes
-				//base.addGameRecord(1, questionsAnswered, questionsCorrect, guesses, gamePeriod - currentTime);
-				JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "Game Over", JOptionPane.PLAIN_MESSAGE);
-				remove(shark);
-				base.returnToMenu();
-				// else
+				//playing = false;
+				int dialogResult = JOptionPane.showConfirmDialog (null, "Your score is " + score + ".  Would you like to exit the game?","Exit game?",JOptionPane.OK_CANCEL_OPTION);
+				if(dialogResult == JOptionPane.OK_OPTION){
+					//add game record
+					base.returnToMenu();
+				}
+				else{
+					startTimers();
+					playing = true;
+				}
 			}
 		});
 		help.addActionListener(new ActionListener()
@@ -242,27 +243,21 @@ public class Game3 extends JPanel implements KeyListener
 				{
 					timerLabel.setText("Time: " + (sec / 60) + ":" + (sec % 60));
 				}
+				if (sec == 0)
+				{
+					stopTimers();
+					playing = false;
+					System.out.println("Time's up!");
+					JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "Time's up!", JOptionPane.PLAIN_MESSAGE);
+					remove(shark);
+					base.returnToMenu();
+				}
 				sec--;
 			}
 		};
 		displayTime = new Timer(1000, timeDisplayer);
 		displayTime.start();
 		displayTime.setRepeats(true);
-
-		gameRestarter = new ActionListener()
-		{
-			public void actionPerformed(ActionEvent evt)
-			{
-				timer.stop();
-				System.out.println("Time's up!");
-				JPanel gameOverPanel = new JPanel();
-				JOptionPane.showMessageDialog(gameOverPanel, "Your score was " + score + ".", "Time's up!", JOptionPane.PLAIN_MESSAGE);
-				base.returnToMenu();
-			}
-		};
-		timer = new Timer(GAME_PERIOD * 1000, gameRestarter);
-		timer.setRepeats(false);
-		timer.start();
 
 		screenRefresh = new ActionListener()
 		{
@@ -585,7 +580,11 @@ public class Game3 extends JPanel implements KeyListener
 	private void stopTimers()
 	{
 		displayTime.stop();
-		timer.stop();
+	}
+	
+	private void startTimers()
+	{
+		displayTime.start();
 	}
 	
 	public void showInstructions(){

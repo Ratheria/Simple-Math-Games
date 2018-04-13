@@ -196,12 +196,15 @@ public class Game1 extends JPanel
 			{
 				stopTimers();
 				playing = false;
-				// TODO are you sure?
-				// if yes
-				base.addGameRecord(1, questionsAnswered, questionsCorrect, guesses, gamePeriod - currentTime);
-				JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "Game Over", JOptionPane.PLAIN_MESSAGE);
-				base.returnToMenu();
-				// else
+				int dialogResult = JOptionPane.showConfirmDialog (null, "Your score is " + score + ".  Would you like to exit the game?","Exit game?",JOptionPane.OK_CANCEL_OPTION);
+				if(dialogResult == JOptionPane.OK_OPTION){
+					base.addGameRecord(1, questionsAnswered, questionsCorrect, guesses, gamePeriod - currentTime);
+					base.returnToMenu();
+				}
+				else{
+					startTimers();
+					playing = true;
+				}
 			}
 		});
 		help.addActionListener(new ActionListener()
@@ -241,7 +244,11 @@ public class Game1 extends JPanel
 					clearCurrentFish();
 					playGame();
 				}
-				else if (currentTime == 0)
+				else if (!playing)
+				{
+					reset = true;
+				}
+				if (currentTime == 0)
 				{
 					playing = false;
 					timerLabel.setText("Time: 0:00");
@@ -251,10 +258,6 @@ public class Game1 extends JPanel
 					JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "Time's up!", JOptionPane.PLAIN_MESSAGE);
 					clearCurrentFish();
 					base.returnToMenu();
-				}
-				else if (!playing)
-				{
-					reset = true;
 				}
 			}
 		};
@@ -441,6 +444,7 @@ public class Game1 extends JPanel
 		if (fish.getAnswer() == answer)
 		{
 			System.out.println("Correct answer went off screen.");
+			stopTimers();
 			playing = false;
 			base.addGameRecord(1, questionsAnswered, questionsCorrect, guesses, gamePeriod - currentTime);
 			JOptionPane.showMessageDialog(base.messagePanel, "The correct answer went off screen.\nYour score was " + score + ".", "Game Over", JOptionPane.INFORMATION_MESSAGE);

@@ -221,11 +221,18 @@ public class Game2 extends JPanel implements KeyListener
 		{
 			public void actionPerformed(ActionEvent onClick)
 			{
-				playing = false;
 				stopTimers();
-				removeVar();
-				JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "", JOptionPane.PLAIN_MESSAGE);
-				base.returnToMenu();
+				playing = false;
+				int dialogResult = JOptionPane.showConfirmDialog (null, "Your score is " + score + ".  Would you like to exit the game?","Exit game?",JOptionPane.OK_CANCEL_OPTION);
+				if(dialogResult == JOptionPane.OK_OPTION){
+					//add game record
+					base.returnToMenu();
+					removeVar();
+				}
+				else{
+					startTimers();
+					playing = true;
+				}
 			}
 		});
 		help.addActionListener(new ActionListener()
@@ -306,9 +313,9 @@ public class Game2 extends JPanel implements KeyListener
 				}
 				if (currentTime == 0)
 				{
-					displayTime.stop();
+					stopTimers();
 					playing = false;
-					score -= 5;
+					score -= 5;  // Why is this here?
 					System.out.println("Time's up!");
 					JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "Time's up!", JOptionPane.PLAIN_MESSAGE);
 					remove(jelly);
@@ -510,6 +517,11 @@ public class Game2 extends JPanel implements KeyListener
 	{
 		displayTime.stop();
 		jellyTimer.stop();
+	}
+	private void startTimers()
+	{
+		displayTime.start();
+		jellyTimer.start();
 	}
 
 	public void showInstructions(){
