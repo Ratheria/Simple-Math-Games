@@ -41,7 +41,6 @@ public class Game3 extends JPanel implements KeyListener
 	private Point defaultSharkLocation;
 	private Point sharkLocation;
 	private Timer displayTime;
-	private ActionListener gameRestarter;
 	private ActionListener timeDisplayer;
 	private int screenWidth;
 	private int screenHeight;
@@ -203,10 +202,10 @@ public class Game3 extends JPanel implements KeyListener
 			public void actionPerformed(ActionEvent onClick)
 			{
 				stopTimers();
-				//playing = false;
 				int dialogResult = JOptionPane.showConfirmDialog (null, "Your score is " + score + ".  Would you like to exit the game?","Exit game?",JOptionPane.OK_CANCEL_OPTION);
 				if(dialogResult == JOptionPane.OK_OPTION){
 					//add game record
+					remove(shark);
 					base.returnToMenu();
 				}
 				else{
@@ -287,6 +286,9 @@ public class Game3 extends JPanel implements KeyListener
 		sharkLocation.x = defaultSharkLocation.x;
 		sharkLocation.y = defaultSharkLocation.y;
 		shark.setText(question);
+		shark.setFont(new Font("Arial", Font.PLAIN, 25));
+		shark.setVerticalTextPosition(SwingConstants.BOTTOM);
+		shark.setHorizontalTextPosition(SwingConstants.CENTER);
 		add(shark);
 		addFeedbackLabels();
 		repaint();
@@ -570,9 +572,9 @@ public class Game3 extends JPanel implements KeyListener
 	public void paint(Graphics g)
 	{
 		requestFocus();
-		answerLabel1.setLocation(screenWidth - 150, 110);
-		answerLabel2.setLocation(screenWidth - 150, 230);
-		answerLabel3.setLocation(screenWidth - 150, 350);
+		answerLabel1.setLocation(screenWidth - 150, 160);
+		answerLabel2.setLocation(screenWidth - 150, 280);
+		answerLabel3.setLocation(screenWidth - 150, 400);
 		shark.setLocation(sharkLocation);
 		super.paint(g);
 	}
@@ -580,11 +582,13 @@ public class Game3 extends JPanel implements KeyListener
 	private void stopTimers()
 	{
 		displayTime.stop();
+		refreshTimer.stop();
 	}
 	
 	private void startTimers()
 	{
 		displayTime.start();
+		refreshTimer.start();
 	}
 	
 	public void showInstructions(){

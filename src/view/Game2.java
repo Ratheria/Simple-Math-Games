@@ -315,7 +315,6 @@ public class Game2 extends JPanel implements KeyListener
 				{
 					stopTimers();
 					playing = false;
-					score -= 5;  // Why is this here?
 					System.out.println("Time's up!");
 					JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "Time's up!", JOptionPane.PLAIN_MESSAGE);
 					remove(jelly);
