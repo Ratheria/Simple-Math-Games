@@ -50,6 +50,7 @@ public class Game2 extends JPanel implements KeyListener
 	private JLabel label2;
 	private JLabel label3;
 	private JButton menu;
+	private JButton help;
 	private Point jellyLocation;
 	private List<String> questionList;
 	private double currentTime;
@@ -97,7 +98,8 @@ public class Game2 extends JPanel implements KeyListener
 		timerLabel = new JLabel("Time: " + (gamePeriod / 60) + ":" + (gamePeriod % 60));
 		scoreLabel = new JLabel("Score: 0");
 		feedbackLabel = new JLabel("");
-		menu = new JButton(" Exit Game ");
+		menu = new JButton(" Exit ");
+		help = new JButton(" Help ");
 		maxY = base.frame.getHeight();
 		xSpacing = (base.frame.getWidth()) / numberOfColumns;
 		jellyWidth = xSpacing / 3;
@@ -118,7 +120,7 @@ public class Game2 extends JPanel implements KeyListener
 		speed = 40;
 		numQuestionsAsked = 0;
 		questionsAnsweredCorrectly = 0;
-		needsInstructions = true;
+		needsInstructions = false;
 
 		addKeyListener(this);
 		setFocusable(true);
@@ -175,11 +177,11 @@ public class Game2 extends JPanel implements KeyListener
 		theLayout.putConstraint(SpringLayout.NORTH, timerLabel, 10, SpringLayout.NORTH, this);
 		theLayout.putConstraint(SpringLayout.WEST, timerLabel, 10, SpringLayout.WEST, this);
 
-		scoreLabel.setFont(new Font("Arial", Font.PLAIN, 25));
+		scoreLabel.setFont(new Font("Arial", Font.PLAIN, 30));
 		scoreLabel.setForeground(new Color(70, 130, 180));
 		scoreLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		theLayout.putConstraint(SpringLayout.NORTH, scoreLabel, 0, SpringLayout.NORTH, menu);
-		theLayout.putConstraint(SpringLayout.EAST, scoreLabel, -20, SpringLayout.WEST, menu);
+		theLayout.putConstraint(SpringLayout.EAST, scoreLabel, -20, SpringLayout.WEST, help);
 		
 		feedbackLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		feedbackLabel.setForeground(new Color(70, 130, 180));
@@ -196,11 +198,21 @@ public class Game2 extends JPanel implements KeyListener
 		menu.setBorder(new LineBorder(new Color(135, 206, 250), 2));
 		theLayout.putConstraint(SpringLayout.NORTH, menu, 10, SpringLayout.NORTH, this);
 		theLayout.putConstraint(SpringLayout.EAST, menu, -10, SpringLayout.EAST, this);
-
+		
+		help.setFont(new Font("Arial", Font.PLAIN, 25));
+		help.setForeground(new Color(70, 130, 180));
+		help.setBackground(new Color(70, 130, 180));
+		help.setFocusPainted(false);
+		help.setContentAreaFilled(false);
+		help.setBorder(new LineBorder(new Color(135, 206, 250), 2));
+		theLayout.putConstraint(SpringLayout.NORTH, help, 0, SpringLayout.NORTH, menu);
+		theLayout.putConstraint(SpringLayout.EAST, help, -20, SpringLayout.WEST, menu);
+		
 		add(timerLabel);
 		add(scoreLabel);
 		add(feedbackLabel);
 		add(menu);
+		add(help);
 	}
 
 	private void setUpListeners()
@@ -214,6 +226,13 @@ public class Game2 extends JPanel implements KeyListener
 				removeVar();
 				JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "", JOptionPane.PLAIN_MESSAGE);
 				base.returnToMenu();
+			}
+		});
+		help.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent onClick)
+			{
+				needsInstructions = true;
 			}
 		});
 	}

@@ -77,6 +77,7 @@ public class Game3 extends JPanel implements KeyListener
 	private int questionBase;
 	private int questionTypes; // TODO
 	private JButton menu;
+	private JButton help;
 	private boolean needsInstructions;
 
 	public Game3(Controller base)
@@ -102,7 +103,8 @@ public class Game3 extends JPanel implements KeyListener
 		sharkHeight = (base.frame.getHeight() / 5);
 		questionBase = 15;
 		questionTypes = 0; // both, addition, subtraction
-		menu = new JButton(" Exit Game ");
+		menu = new JButton(" Exit ");
+		help = new JButton(" Help ");
 
 		try
 		{
@@ -124,7 +126,7 @@ public class Game3 extends JPanel implements KeyListener
 		guessed2 = false;
 		guessed3 = false;
 		playing = true;
-		needsInstructions = true;
+		needsInstructions = false;
 
 		addKeyListener(this);
 		setFocusable(true);
@@ -145,15 +147,15 @@ public class Game3 extends JPanel implements KeyListener
 		timerLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		timerLabel.setForeground(new Color(70, 130, 180));
 		timerLabel.setFont(new Font("Arial", Font.PLAIN, 30));
-		theLayout.putConstraint(SpringLayout.NORTH, timerLabel, 25, SpringLayout.NORTH, this);
-		theLayout.putConstraint(SpringLayout.EAST, timerLabel, -50, SpringLayout.EAST, this);
+		theLayout.putConstraint(SpringLayout.NORTH, timerLabel, 10, SpringLayout.NORTH, this);
+		theLayout.putConstraint(SpringLayout.WEST, timerLabel, 10, SpringLayout.WEST, this);
 
 		scoreLabel.setFont(new Font("Arial", Font.PLAIN, 30));
 		scoreLabel.setForeground(new Color(70, 130, 180));
 		scoreLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		theLayout.putConstraint(SpringLayout.SOUTH, scoreLabel, -25, SpringLayout.SOUTH, this);
-		theLayout.putConstraint(SpringLayout.EAST, scoreLabel, -50, SpringLayout.EAST, this);
-
+		theLayout.putConstraint(SpringLayout.NORTH, scoreLabel, 0, SpringLayout.NORTH, menu);
+		theLayout.putConstraint(SpringLayout.EAST, scoreLabel, -20, SpringLayout.WEST, help);
+		
 		answerLabel1.setForeground(new Color(70, 130, 180));
 		answerLabel1.setFont(new Font("Arial", Font.BOLD, 30));
 		answerLabel2.setForeground(new Color(70, 130, 180));
@@ -161,9 +163,9 @@ public class Game3 extends JPanel implements KeyListener
 		answerLabel3.setForeground(new Color(70, 130, 180));
 		answerLabel3.setFont(new Font("Arial", Font.BOLD, 30));
 
-		answerLabel1.setLocation(screenWidth - 150, 110);
-		answerLabel2.setLocation(screenWidth - 150, 230);
-		answerLabel3.setLocation(screenWidth - 150, 350);
+		answerLabel1.setLocation(screenWidth - 150, 160);
+		answerLabel2.setLocation(screenWidth - 150, 280);
+		answerLabel3.setLocation(screenWidth - 150, 400);
 		answerLabel1.setBounds(answerLabel1.getX(), answerLabel1.getY(), 50, 25);
 		answerLabel2.setBounds(answerLabel2.getX(), answerLabel2.getY(), 50, 25);
 		answerLabel3.setBounds(answerLabel3.getX(), answerLabel3.getY(), 50, 25);
@@ -174,15 +176,25 @@ public class Game3 extends JPanel implements KeyListener
 		menu.setFocusPainted(false);
 		menu.setContentAreaFilled(false);
 		menu.setBorder(new LineBorder(new Color(135, 206, 250), 2));
-		theLayout.putConstraint(SpringLayout.SOUTH, menu, -25, SpringLayout.SOUTH, this);
-		theLayout.putConstraint(SpringLayout.WEST, menu, 50, SpringLayout.WEST, this);
-
+		theLayout.putConstraint(SpringLayout.NORTH, menu, 10, SpringLayout.NORTH, this);
+		theLayout.putConstraint(SpringLayout.EAST, menu, -10, SpringLayout.EAST, this);
+		
+		help.setFont(new Font("Arial", Font.PLAIN, 30));
+		help.setForeground(new Color(70, 130, 180));
+		help.setBackground(new Color(70, 130, 180));
+		help.setFocusPainted(false);
+		help.setContentAreaFilled(false);
+		help.setBorder(new LineBorder(new Color(135, 206, 250), 2));
+		theLayout.putConstraint(SpringLayout.NORTH, help, 0, SpringLayout.NORTH, menu);
+		theLayout.putConstraint(SpringLayout.EAST, help, -20, SpringLayout.WEST, menu);
+		
 		add(answerLabel1);
 		add(answerLabel2);
 		add(answerLabel3);
 		add(timerLabel);
 		add(scoreLabel);
 		add(menu);
+		add(help);
 	}
 	
 	private void setUpListeners()
@@ -196,10 +208,17 @@ public class Game3 extends JPanel implements KeyListener
 				// TODO are you sure?
 				// if yes
 				//base.addGameRecord(1, questionsAnswered, questionsCorrect, guesses, gamePeriod - currentTime);
-				JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "", JOptionPane.PLAIN_MESSAGE);
+				JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "Game Over", JOptionPane.PLAIN_MESSAGE);
 				remove(shark);
 				base.returnToMenu();
 				// else
+			}
+		});
+		help.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent onClick)
+			{
+				needsInstructions = true;
 			}
 		});
 	}

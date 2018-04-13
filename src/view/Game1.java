@@ -48,13 +48,13 @@ public class Game1 extends JPanel
 	private JLabel questionLabel;
 	private JLabel scoreLabel;
 	private JButton menu;
+	private JButton help;
 	private Timer fishTimer;
 	private Timer displayTime;
 	private ActionListener fishMover;
 	private ActionListener timeDisplayer;
 	private Image fishImg;
 	private ImageIcon fishIcon;
-	private boolean needsInstructions;
 
 	private int questionBase;
 	private int questionTypes; // TODO
@@ -68,6 +68,7 @@ public class Game1 extends JPanel
 
 	private boolean playing;
 	private boolean reset;
+	private boolean needsInstructions;
 
 	public Game1(Controller base)
 	{
@@ -87,7 +88,8 @@ public class Game1 extends JPanel
 		questionLabel = new JLabel(question);
 		questionLabel.setBackground(new Color(245, 245, 245));
 		scoreLabel = new JLabel("Score: 0");
-		menu = new JButton(" Exit Game ");
+		menu = new JButton(" Exit ");
+		help = new JButton( "Help" );
 		fishImageWidth = (width - 250) / 8;
 		fishImageHeight = (height - 250) / 5;
 		try
@@ -106,7 +108,7 @@ public class Game1 extends JPanel
 		questionsAnswered = 0;
 		questionsCorrect = 0;
 		guesses = 0;
-		needsInstructions = true;
+		needsInstructions = false;
 		
 		playGame();
 		setUpLayout();
@@ -145,21 +147,21 @@ public class Game1 extends JPanel
 
 		timerLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		timerLabel.setForeground(new Color(70, 130, 180));
-		timerLabel.setFont(new Font("Arial", Font.PLAIN, 35));
-		theLayout.putConstraint(SpringLayout.NORTH, timerLabel, 25, SpringLayout.NORTH, this);
-		theLayout.putConstraint(SpringLayout.EAST, timerLabel, -50, SpringLayout.EAST, this);
+		timerLabel.setFont(new Font("Arial", Font.PLAIN, 30));
+		theLayout.putConstraint(SpringLayout.NORTH, timerLabel, 10, SpringLayout.NORTH, this);
+		theLayout.putConstraint(SpringLayout.WEST, timerLabel, 10, SpringLayout.WEST, this);
 
-		scoreLabel.setFont(new Font("Arial", Font.PLAIN, 30));
+		scoreLabel.setFont(new Font("Arial", Font.PLAIN, 35));
 		scoreLabel.setForeground(new Color(70, 130, 180));
 		scoreLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		theLayout.putConstraint(SpringLayout.SOUTH, scoreLabel, -25, SpringLayout.SOUTH, this);
-		theLayout.putConstraint(SpringLayout.EAST, scoreLabel, -50, SpringLayout.EAST, this);
+		theLayout.putConstraint(SpringLayout.NORTH, scoreLabel, 0, SpringLayout.NORTH, menu);
+		theLayout.putConstraint(SpringLayout.EAST, scoreLabel, -20, SpringLayout.WEST, help);
 
 		questionLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		questionLabel.setForeground(new Color(70, 130, 180));
-		questionLabel.setFont(new Font("Arial", Font.BOLD, 35));
-		theLayout.putConstraint(SpringLayout.WEST, questionLabel, 50, SpringLayout.WEST, this);
-		theLayout.putConstraint(SpringLayout.NORTH, questionLabel, 25, SpringLayout.NORTH, this);
+		questionLabel.setFont(new Font("Arial", Font.BOLD, 45));
+		theLayout.putConstraint(SpringLayout.WEST, questionLabel, 350, SpringLayout.WEST, this);
+		theLayout.putConstraint(SpringLayout.SOUTH, questionLabel, -25, SpringLayout.SOUTH, this);
 
 		menu.setFont(new Font("Arial", Font.PLAIN, 30));
 		menu.setForeground(new Color(70, 130, 180));
@@ -167,13 +169,23 @@ public class Game1 extends JPanel
 		menu.setFocusPainted(false);
 		menu.setContentAreaFilled(false);
 		menu.setBorder(new LineBorder(new Color(135, 206, 250), 2));
-		theLayout.putConstraint(SpringLayout.SOUTH, menu, -25, SpringLayout.SOUTH, this);
-		theLayout.putConstraint(SpringLayout.WEST, menu, 50, SpringLayout.WEST, this);
-
+		theLayout.putConstraint(SpringLayout.NORTH, menu, 10, SpringLayout.NORTH, this);
+		theLayout.putConstraint(SpringLayout.EAST, menu, -10, SpringLayout.EAST, this);
+		
+		help.setFont(new Font("Arial", Font.PLAIN, 30));
+		help.setForeground(new Color(70, 130, 180));
+		help.setBackground(new Color(70, 130, 180));
+		help.setFocusPainted(false);
+		help.setContentAreaFilled(false);
+		help.setBorder(new LineBorder(new Color(135, 206, 250), 2));
+		theLayout.putConstraint(SpringLayout.NORTH, help, 0, SpringLayout.NORTH, menu);
+		theLayout.putConstraint(SpringLayout.EAST, help, -20, SpringLayout.WEST, menu);
+		
 		add(timerLabel);
 		add(scoreLabel);
 		add(questionLabel);
 		add(menu);
+		add(help);
 	}
 
 	private void setUpListeners()
@@ -187,9 +199,16 @@ public class Game1 extends JPanel
 				// TODO are you sure?
 				// if yes
 				base.addGameRecord(1, questionsAnswered, questionsCorrect, guesses, gamePeriod - currentTime);
-				JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "", JOptionPane.PLAIN_MESSAGE);
+				JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "Game Over", JOptionPane.PLAIN_MESSAGE);
 				base.returnToMenu();
 				// else
+			}
+		});
+		help.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent onClick)
+			{
+				needsInstructions = true;
 			}
 		});
 	}
