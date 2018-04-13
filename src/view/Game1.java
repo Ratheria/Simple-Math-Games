@@ -54,6 +54,7 @@ public class Game1 extends JPanel
 	private ActionListener timeDisplayer;
 	private Image fishImg;
 	private ImageIcon fishIcon;
+	private boolean needsInstructions;
 
 	private int questionBase;
 	private int questionTypes; // TODO
@@ -105,7 +106,8 @@ public class Game1 extends JPanel
 		questionsAnswered = 0;
 		questionsCorrect = 0;
 		guesses = 0;
-
+		needsInstructions = true;
+		
 		playGame();
 		setUpLayout();
 		setUpListeners();
@@ -200,7 +202,11 @@ public class Game1 extends JPanel
 			public void actionPerformed(ActionEvent evt)
 			{
 				if (playing)
-				{
+				{	
+					if(needsInstructions){
+						showInstructions();
+						needsInstructions = false;
+					}
 					if ((currentTime % 60) < 10)
 					{
 						timerLabel.setText("Time: " + (int) (currentTime / 60) + ":0" + (int) (currentTime % 60));
@@ -240,7 +246,7 @@ public class Game1 extends JPanel
 		{
 			public void actionPerformed(ActionEvent event)
 			{
-				if (playing)
+				if (playing && !needsInstructions)
 				{
 					moveFish();
 				}
@@ -444,6 +450,15 @@ public class Game1 extends JPanel
 	{
 		refreshFishLocation();
 		super.paint(g);
+	}
+	
+	public void showInstructions(){
+		JLabel g1instruct = new JLabel("<html>To play click on the fish that has the <br/> answer to the math question. <br/> "
+				+ "<br/>The game ends when time runs out or the <br/> correct fish swims off screen.</html>");
+		g1instruct.setFont(new Font("Arial", Font.PLAIN, 30));
+		g1instruct.setForeground(new Color(70, 130, 180));
+		g1instruct.setBackground(new Color(208, 243, 255));
+		JOptionPane.showMessageDialog(base.messagePanel, g1instruct, "Instructions",JOptionPane.PLAIN_MESSAGE);
 	}
 
 }

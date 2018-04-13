@@ -198,7 +198,7 @@ public class Settings extends JPanel
 		{
 			public void actionPerformed(ActionEvent onClick)
 			{
-				JOptionPane.showMessageDialog(base.messagePanel, g1instruct, "Game 1 Instructions",JOptionPane.PLAIN_MESSAGE);
+				JOptionPane.showMessageDialog(base.messagePanel, g1instruct, "Fish Game Instructions",JOptionPane.PLAIN_MESSAGE);
 			}
 		});
 		
@@ -206,7 +206,7 @@ public class Settings extends JPanel
 		{
 			public void actionPerformed(ActionEvent onClick)
 			{
-				JOptionPane.showMessageDialog(base.messagePanel, g2instruct, "Game 2 Instructions",JOptionPane.PLAIN_MESSAGE);
+				JOptionPane.showMessageDialog(base.messagePanel, g2instruct, "Jellyfish Game Instructions",JOptionPane.PLAIN_MESSAGE);
 			}
 		});
 		
@@ -214,7 +214,7 @@ public class Settings extends JPanel
 		{
 			public void actionPerformed(ActionEvent onClick)
 			{
-				JOptionPane.showMessageDialog(base.messagePanel, g3instruct, "Game 3 Instructions",JOptionPane.PLAIN_MESSAGE);
+				JOptionPane.showMessageDialog(base.messagePanel, g3instruct, "Shark Game Instructions",JOptionPane.PLAIN_MESSAGE);
 			}
 		});
 		
