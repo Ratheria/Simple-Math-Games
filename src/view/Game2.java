@@ -50,6 +50,7 @@ public class Game2 extends JPanel implements KeyListener
 	private JLabel label2;
 	private JLabel label3;
 	private JButton menu;
+	private JButton help;
 	private Point jellyLocation;
 	private List<String> questionList;
 	private double currentTime;
@@ -76,6 +77,7 @@ public class Game2 extends JPanel implements KeyListener
 	
 	private boolean playing;
 	private boolean reset;
+	private boolean needsInstructions;
 
 	// TODO Grid bag layout conversion?
 
@@ -96,7 +98,8 @@ public class Game2 extends JPanel implements KeyListener
 		timerLabel = new JLabel("Time: " + (gamePeriod / 60) + ":" + (gamePeriod % 60));
 		scoreLabel = new JLabel("Score: 0");
 		feedbackLabel = new JLabel("");
-		menu = new JButton(" Exit Game ");
+		menu = new JButton(" Exit ");
+		help = new JButton(" Help ");
 		maxY = base.frame.getHeight();
 		xSpacing = (base.frame.getWidth()) / numberOfColumns;
 		jellyWidth = xSpacing / 3;
@@ -117,6 +120,7 @@ public class Game2 extends JPanel implements KeyListener
 		speed = 40;
 		numQuestionsAsked = 0;
 		questionsAnsweredCorrectly = 0;
+		needsInstructions = false;
 
 		addKeyListener(this);
 		setFocusable(true);
@@ -173,11 +177,11 @@ public class Game2 extends JPanel implements KeyListener
 		theLayout.putConstraint(SpringLayout.NORTH, timerLabel, 10, SpringLayout.NORTH, this);
 		theLayout.putConstraint(SpringLayout.WEST, timerLabel, 10, SpringLayout.WEST, this);
 
-		scoreLabel.setFont(new Font("Arial", Font.PLAIN, 25));
+		scoreLabel.setFont(new Font("Arial", Font.PLAIN, 30));
 		scoreLabel.setForeground(new Color(70, 130, 180));
 		scoreLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		theLayout.putConstraint(SpringLayout.NORTH, scoreLabel, 0, SpringLayout.NORTH, menu);
-		theLayout.putConstraint(SpringLayout.EAST, scoreLabel, -20, SpringLayout.WEST, menu);
+		theLayout.putConstraint(SpringLayout.EAST, scoreLabel, -20, SpringLayout.WEST, help);
 		
 		feedbackLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		feedbackLabel.setForeground(new Color(70, 130, 180));
@@ -194,11 +198,21 @@ public class Game2 extends JPanel implements KeyListener
 		menu.setBorder(new LineBorder(new Color(135, 206, 250), 2));
 		theLayout.putConstraint(SpringLayout.NORTH, menu, 10, SpringLayout.NORTH, this);
 		theLayout.putConstraint(SpringLayout.EAST, menu, -10, SpringLayout.EAST, this);
-
+		
+		help.setFont(new Font("Arial", Font.PLAIN, 25));
+		help.setForeground(new Color(70, 130, 180));
+		help.setBackground(new Color(70, 130, 180));
+		help.setFocusPainted(false);
+		help.setContentAreaFilled(false);
+		help.setBorder(new LineBorder(new Color(135, 206, 250), 2));
+		theLayout.putConstraint(SpringLayout.NORTH, help, 0, SpringLayout.NORTH, menu);
+		theLayout.putConstraint(SpringLayout.EAST, help, -20, SpringLayout.WEST, menu);
+		
 		add(timerLabel);
 		add(scoreLabel);
 		add(feedbackLabel);
 		add(menu);
+		add(help);
 	}
 
 	private void setUpListeners()
@@ -207,11 +221,25 @@ public class Game2 extends JPanel implements KeyListener
 		{
 			public void actionPerformed(ActionEvent onClick)
 			{
-				playing = false;
 				stopTimers();
-				removeVar();
-				JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "", JOptionPane.PLAIN_MESSAGE);
-				base.returnToMenu();
+				playing = false;
+				int dialogResult = JOptionPane.showConfirmDialog (null, "Your score is " + score + ".  Would you like to exit the game?","Exit game?",JOptionPane.OK_CANCEL_OPTION);
+				if(dialogResult == JOptionPane.OK_OPTION){
+					//add game record
+					base.returnToMenu();
+					removeVar();
+				}
+				else{
+					startTimers();
+					playing = true;
+				}
+			}
+		});
+		help.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent onClick)
+			{
+				needsInstructions = true;
 			}
 		});
 	}
@@ -260,7 +288,11 @@ public class Game2 extends JPanel implements KeyListener
 			public void actionPerformed(ActionEvent evt)
 			{
 				if (playing)
-				{
+				{	
+					if(needsInstructions){
+						showInstructions();
+						needsInstructions = false;
+					}
 					if ((currentTime % 60) < 10)
 					{
 						timerLabel.setText("Time: " + (int) (currentTime / 60) + ":0" + (int) (currentTime % 60));
@@ -281,9 +313,8 @@ public class Game2 extends JPanel implements KeyListener
 				}
 				if (currentTime == 0)
 				{
-					displayTime.stop();
+					stopTimers();
 					playing = false;
-					score -= 5;
 					System.out.println("Time's up!");
 					JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "Time's up!", JOptionPane.PLAIN_MESSAGE);
 					remove(jelly);
@@ -300,7 +331,7 @@ public class Game2 extends JPanel implements KeyListener
 		{
 			public void actionPerformed(ActionEvent event)
 			{
-				if (playing)
+				if (playing && !needsInstructions)
 				{
 					jellyLocation.y += movement;
 					if (jellyLocation.y >= maxY)
@@ -486,5 +517,19 @@ public class Game2 extends JPanel implements KeyListener
 		displayTime.stop();
 		jellyTimer.stop();
 	}
+	private void startTimers()
+	{
+		displayTime.start();
+		jellyTimer.start();
+	}
 
+	public void showInstructions(){
+		JLabel g2instruct = new JLabel("<html>To play use the side arrow keys to help the <br/> jellyfish float down to the correct answer. <br/> "
+				+ "<br/>The down arrow will help the jellyfish go faster <br/> and the up arrow will slow it back down. <br/>"
+				+ " <br/>The game ends when time runs out. </html>");
+		g2instruct.setFont(new Font("Arial", Font.PLAIN, 30));
+		g2instruct.setForeground(new Color(70, 130, 180));
+		g2instruct.setBackground(new Color(208, 243, 255));
+		JOptionPane.showMessageDialog(base.messagePanel, g2instruct, "Instructions",JOptionPane.PLAIN_MESSAGE);
+	}
 }

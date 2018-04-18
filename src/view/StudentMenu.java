@@ -38,9 +38,9 @@ public class StudentMenu extends JPanel
 		displayName = new JLabel(" ");
 		settingsButton = new JButton("    ");
 
-		btnGame = new JButton(" Play Game One ");
-		btnGame2 = new JButton(" Play Game Two ");
-		btnGame3 = new JButton(" Play Game Three ");
+		btnGame = new JButton(" Play Fish Game ");
+		btnGame2 = new JButton(" Play Jellyfish Game ");
+		btnGame3 = new JButton(" Play Shark Game ");
 		viewStats = new JButton(" View Stats ");
 
 		setUpLayout();

@@ -40,9 +40,7 @@ public class Game3 extends JPanel implements KeyListener
 	private ImageIcon sharkIcon;
 	private Point defaultSharkLocation;
 	private Point sharkLocation;
-	private Timer timer;
 	private Timer displayTime;
-	private ActionListener gameRestarter;
 	private ActionListener timeDisplayer;
 	private int screenWidth;
 	private int screenHeight;
@@ -70,13 +68,15 @@ public class Game3 extends JPanel implements KeyListener
 	private int answer;
 	private int randomPlacement;
 	private int score;
-	private static final int GAME_PERIOD = 60;
+	private static final int GAME_PERIOD = 40;
 	private int sec;
 	private JLabel rightLabel;
 	private JLabel wrongLabel;
 	private int questionBase;
 	private int questionTypes; // TODO
 	private JButton menu;
+	private JButton help;
+	private boolean needsInstructions;
 
 	public Game3(Controller base)
 	{
@@ -101,7 +101,8 @@ public class Game3 extends JPanel implements KeyListener
 		sharkHeight = (base.frame.getHeight() / 5);
 		questionBase = 15;
 		questionTypes = 0; // both, addition, subtraction
-		menu = new JButton(" Exit Game ");
+		menu = new JButton(" Exit ");
+		help = new JButton(" Help ");
 
 		try
 		{
@@ -123,6 +124,7 @@ public class Game3 extends JPanel implements KeyListener
 		guessed2 = false;
 		guessed3 = false;
 		playing = true;
+		needsInstructions = false;
 
 		addKeyListener(this);
 		setFocusable(true);
@@ -143,15 +145,15 @@ public class Game3 extends JPanel implements KeyListener
 		timerLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		timerLabel.setForeground(new Color(70, 130, 180));
 		timerLabel.setFont(new Font("Arial", Font.PLAIN, 30));
-		theLayout.putConstraint(SpringLayout.NORTH, timerLabel, 25, SpringLayout.NORTH, this);
-		theLayout.putConstraint(SpringLayout.EAST, timerLabel, -50, SpringLayout.EAST, this);
+		theLayout.putConstraint(SpringLayout.NORTH, timerLabel, 10, SpringLayout.NORTH, this);
+		theLayout.putConstraint(SpringLayout.WEST, timerLabel, 10, SpringLayout.WEST, this);
 
 		scoreLabel.setFont(new Font("Arial", Font.PLAIN, 30));
 		scoreLabel.setForeground(new Color(70, 130, 180));
 		scoreLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		theLayout.putConstraint(SpringLayout.SOUTH, scoreLabel, -25, SpringLayout.SOUTH, this);
-		theLayout.putConstraint(SpringLayout.EAST, scoreLabel, -50, SpringLayout.EAST, this);
-
+		theLayout.putConstraint(SpringLayout.NORTH, scoreLabel, 0, SpringLayout.NORTH, menu);
+		theLayout.putConstraint(SpringLayout.EAST, scoreLabel, -20, SpringLayout.WEST, help);
+		
 		answerLabel1.setForeground(new Color(70, 130, 180));
 		answerLabel1.setFont(new Font("Arial", Font.BOLD, 30));
 		answerLabel2.setForeground(new Color(70, 130, 180));
@@ -159,9 +161,9 @@ public class Game3 extends JPanel implements KeyListener
 		answerLabel3.setForeground(new Color(70, 130, 180));
 		answerLabel3.setFont(new Font("Arial", Font.BOLD, 30));
 
-		answerLabel1.setLocation(screenWidth - 150, 110);
-		answerLabel2.setLocation(screenWidth - 150, 230);
-		answerLabel3.setLocation(screenWidth - 150, 350);
+		answerLabel1.setLocation(screenWidth - 150, 160);
+		answerLabel2.setLocation(screenWidth - 150, 280);
+		answerLabel3.setLocation(screenWidth - 150, 400);
 		answerLabel1.setBounds(answerLabel1.getX(), answerLabel1.getY(), 50, 25);
 		answerLabel2.setBounds(answerLabel2.getX(), answerLabel2.getY(), 50, 25);
 		answerLabel3.setBounds(answerLabel3.getX(), answerLabel3.getY(), 50, 25);
@@ -172,15 +174,25 @@ public class Game3 extends JPanel implements KeyListener
 		menu.setFocusPainted(false);
 		menu.setContentAreaFilled(false);
 		menu.setBorder(new LineBorder(new Color(135, 206, 250), 2));
-		theLayout.putConstraint(SpringLayout.SOUTH, menu, -25, SpringLayout.SOUTH, this);
-		theLayout.putConstraint(SpringLayout.WEST, menu, 50, SpringLayout.WEST, this);
-
+		theLayout.putConstraint(SpringLayout.NORTH, menu, 10, SpringLayout.NORTH, this);
+		theLayout.putConstraint(SpringLayout.EAST, menu, -10, SpringLayout.EAST, this);
+		
+		help.setFont(new Font("Arial", Font.PLAIN, 30));
+		help.setForeground(new Color(70, 130, 180));
+		help.setBackground(new Color(70, 130, 180));
+		help.setFocusPainted(false);
+		help.setContentAreaFilled(false);
+		help.setBorder(new LineBorder(new Color(135, 206, 250), 2));
+		theLayout.putConstraint(SpringLayout.NORTH, help, 0, SpringLayout.NORTH, menu);
+		theLayout.putConstraint(SpringLayout.EAST, help, -20, SpringLayout.WEST, menu);
+		
 		add(answerLabel1);
 		add(answerLabel2);
 		add(answerLabel3);
 		add(timerLabel);
 		add(scoreLabel);
 		add(menu);
+		add(help);
 	}
 	
 	private void setUpListeners()
@@ -190,14 +202,23 @@ public class Game3 extends JPanel implements KeyListener
 			public void actionPerformed(ActionEvent onClick)
 			{
 				stopTimers();
-				playing = false;
-				// TODO are you sure?
-				// if yes
-				//base.addGameRecord(1, questionsAnswered, questionsCorrect, guesses, gamePeriod - currentTime);
-				JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "", JOptionPane.PLAIN_MESSAGE);
-				remove(shark);
-				base.returnToMenu();
-				// else
+				int dialogResult = JOptionPane.showConfirmDialog (null, "Your score is " + score + ".  Would you like to exit the game?","Exit game?",JOptionPane.OK_CANCEL_OPTION);
+				if(dialogResult == JOptionPane.OK_OPTION){
+					//add game record
+					remove(shark);
+					base.returnToMenu();
+				}
+				else{
+					startTimers();
+					playing = true;
+				}
+			}
+		});
+		help.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent onClick)
+			{
+				needsInstructions = true;
 			}
 		});
 	}
@@ -209,6 +230,10 @@ public class Game3 extends JPanel implements KeyListener
 		{
 			public void actionPerformed(ActionEvent evt)
 			{
+				if(needsInstructions){
+					showInstructions();
+					needsInstructions = false;
+				}
 				if ((sec % 60) < 10)
 				{
 					timerLabel.setText("Time: " + (sec / 60) + ":0" + (sec % 60));
@@ -217,27 +242,21 @@ public class Game3 extends JPanel implements KeyListener
 				{
 					timerLabel.setText("Time: " + (sec / 60) + ":" + (sec % 60));
 				}
+				if (sec == 0)
+				{
+					stopTimers();
+					playing = false;
+					System.out.println("Time's up!");
+					JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "Time's up!", JOptionPane.PLAIN_MESSAGE);
+					remove(shark);
+					base.returnToMenu();
+				}
 				sec--;
 			}
 		};
 		displayTime = new Timer(1000, timeDisplayer);
 		displayTime.start();
 		displayTime.setRepeats(true);
-
-		gameRestarter = new ActionListener()
-		{
-			public void actionPerformed(ActionEvent evt)
-			{
-				timer.stop();
-				System.out.println("Time's up!");
-				JPanel gameOverPanel = new JPanel();
-				JOptionPane.showMessageDialog(gameOverPanel, "Your score was " + score + ".", "Time's up!", JOptionPane.PLAIN_MESSAGE);
-				base.returnToMenu();
-			}
-		};
-		timer = new Timer(GAME_PERIOD * 1000, gameRestarter);
-		timer.setRepeats(false);
-		timer.start();
 
 		screenRefresh = new ActionListener()
 		{
@@ -267,6 +286,9 @@ public class Game3 extends JPanel implements KeyListener
 		sharkLocation.x = defaultSharkLocation.x;
 		sharkLocation.y = defaultSharkLocation.y;
 		shark.setText(question);
+		shark.setFont(new Font("Arial", Font.PLAIN, 25));
+		shark.setVerticalTextPosition(SwingConstants.BOTTOM);
+		shark.setHorizontalTextPosition(SwingConstants.CENTER);
 		add(shark);
 		addFeedbackLabels();
 		repaint();
@@ -550,9 +572,9 @@ public class Game3 extends JPanel implements KeyListener
 	public void paint(Graphics g)
 	{
 		requestFocus();
-		answerLabel1.setLocation(screenWidth - 150, 110);
-		answerLabel2.setLocation(screenWidth - 150, 230);
-		answerLabel3.setLocation(screenWidth - 150, 350);
+		answerLabel1.setLocation(screenWidth - 150, 160);
+		answerLabel2.setLocation(screenWidth - 150, 280);
+		answerLabel3.setLocation(screenWidth - 150, 400);
 		shark.setLocation(sharkLocation);
 		super.paint(g);
 	}
@@ -560,7 +582,22 @@ public class Game3 extends JPanel implements KeyListener
 	private void stopTimers()
 	{
 		displayTime.stop();
-		timer.stop();
+		refreshTimer.stop();
+	}
+	
+	private void startTimers()
+	{
+		displayTime.start();
+		refreshTimer.start();
+	}
+	
+	public void showInstructions(){
+		JLabel g3instruct = new JLabel("<html>To play use the arrow keys to help the <br/> shark swim to the correct answer. <br/> "
+				+ "<br/>The game ends when time runs out.</html>");
+		g3instruct.setFont(new Font("Arial", Font.PLAIN, 30));
+		g3instruct.setForeground(new Color(70, 130, 180));
+		g3instruct.setBackground(new Color(208, 243, 255));
+		JOptionPane.showMessageDialog(base.messagePanel, g3instruct, "Instructions",JOptionPane.PLAIN_MESSAGE);
 	}
 
 }
