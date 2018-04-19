@@ -15,6 +15,7 @@ import java.io.IOException;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 import adapter.Controller;
 import javax.imageio.ImageIO;
@@ -43,6 +44,7 @@ public class Game1 extends JPanel
 	private int fishImageHeight;
 	private int poleWidth;
 	private int poleHeight;
+	private int pause;
 	private SpringLayout theLayout;
 	private String question;
 	private List<String> questionList;
@@ -57,8 +59,10 @@ public class Game1 extends JPanel
 	private ActionListener timeDisplayer;
 	private Image fishImg;
 	private ImageIcon fishIcon;
-	private Image poleImg;
-	private ImageIcon poleIcon;
+	private Image catchImg;
+	private ImageIcon catchIcon;
+	private Image missImg;
+	private ImageIcon missIcon;
 	private JLabel feedbackLabel;
 
 	private int questionBase;
@@ -74,6 +78,7 @@ public class Game1 extends JPanel
 	private boolean playing;
 	private boolean reset;
 	private boolean needsInstructions;
+	private boolean miss;
 
 	public Game1(Controller base)
 	{
@@ -101,6 +106,7 @@ public class Game1 extends JPanel
 		questionsAnswered = 0;
 		questionsCorrect = 0;
 		guesses = 0;
+		pause = 0;
 		needsInstructions = false;
 		feedbackLabel = new JLabel("");
 		
@@ -208,14 +214,24 @@ public class Game1 extends JPanel
 
 		try
 		{
-			poleImg = ImageIO.read(this.getClass().getResourceAsStream("fishingpoleHooked.png"));
+			catchImg = ImageIO.read(this.getClass().getResourceAsStream("fishingpoleHooked.png"));
 		}
 		catch (IOException ex)
 		{
 			System.out.println("File \"fishingpoleHooked.png\" is missing.");
 		}
-		poleImg = poleImg.getScaledInstance(poleWidth, poleHeight, java.awt.Image.SCALE_SMOOTH);
-		poleIcon = new ImageIcon(poleImg);
+		catchImg = catchImg.getScaledInstance(poleWidth, poleHeight, java.awt.Image.SCALE_SMOOTH);
+		catchIcon = new ImageIcon(catchImg);
+		try
+		{
+			missImg = ImageIO.read(this.getClass().getResourceAsStream("fishingpole.png"));
+		}
+		catch (IOException ex)
+		{
+			System.out.println("File \"fishingpole.png\" is missing.");
+		}
+		missImg = missImg.getScaledInstance(poleWidth, poleHeight, java.awt.Image.SCALE_SMOOTH);
+		missIcon = new ImageIcon(missImg);
 	}
 
 	private void setUpListeners()
@@ -298,9 +314,21 @@ public class Game1 extends JPanel
 		{
 			public void actionPerformed(ActionEvent event)
 			{
-				if (playing && !needsInstructions)
+				if (playing && !needsInstructions & !miss)
 				{
+					pause = 0;
 					moveFish();
+					feedbackLabel.setIcon(null);
+				}
+				else if(playing && !needsInstructions & miss)
+				{
+					feedbackLabel.setIcon(missIcon);
+					if (pause >= 25){
+						miss = false;
+						addFish();
+						questionLabel.setText(question);
+					}
+					pause ++;
 				}
 			}
 		};
@@ -410,7 +438,7 @@ public class Game1 extends JPanel
 			score += 50;
 			scoreLabel.setText("Score: " + Integer.toString(score));
 			questionLabel.setText(question.substring(0, question.indexOf("?")) + " " + answer + "  Correct!");
-			feedbackLabel.setIcon(poleIcon);
+			feedbackLabel.setIcon(catchIcon);
 			repaint();
 			playing = false;
 		}
@@ -422,6 +450,8 @@ public class Game1 extends JPanel
 				score -= 5;
 				scoreLabel.setText("Score: " + Integer.toString(score));
 			}
+			hideFish();
+			miss = true;
 		}
 	}
 
@@ -496,6 +526,7 @@ public class Game1 extends JPanel
 		{
 			System.out.println("Incorrect answer given.");
 			removeFish(fish);
+			questionLabel.setText(question.substring(0, question.indexOf("?")) + fish.getAnswer() + " Incorrect!");
 			updateScore(false);
 		}
 	}
@@ -514,6 +545,14 @@ public class Game1 extends JPanel
 		g1instruct.setForeground(new Color(70, 130, 180));
 		g1instruct.setBackground(new Color(208, 243, 255));
 		JOptionPane.showMessageDialog(base.messagePanel, g1instruct, "Instructions",JOptionPane.PLAIN_MESSAGE);
+	}
+	
+	public void hideFish(){
+		for (FishObject fish : currentFish)
+		{
+			this.remove(fish);
+		}
+		repaint();
 	}
 
 }
