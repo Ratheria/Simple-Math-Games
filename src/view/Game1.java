@@ -32,6 +32,7 @@ public class Game1 extends JPanel
 	private static final long serialVersionUID = -5262708339581599541L;
 	private Controller base;
 	private ArrayList<FishObject> currentFish;
+	private ArrayList<Integer> answerOptions;
 	private int width;
 	private int height;
 	private int maxFishVertical;
@@ -122,16 +123,18 @@ public class Game1 extends JPanel
 		feedbackLabel.setIcon(null);
 		getQuestion();
 		int randomPlacement = Controller.rng.nextInt(maxFishVertical);
+		answerOptions = new ArrayList();
 		for (int i = 0; i < maxFishVertical; i++)
 		{
 			int fishAnswer = Controller.rng.nextInt(25);
-			while (fishAnswer == answer)
+			while (fishAnswer == answer || answerOptions.contains(fishAnswer))
 			{
 				fishAnswer = Controller.rng.nextInt(25);
 			}
 			if (i == randomPlacement)
 			{
 				fishAnswer = answer;
+				answerOptions.add(fishAnswer);
 			}
 			currentFish.add(new FishObject(fishAnswer, i, this, fishIcon));
 		}
