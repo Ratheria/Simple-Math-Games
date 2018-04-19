@@ -110,12 +110,7 @@ public class Game2 extends JPanel implements KeyListener
 		help = new JButton(" Help ");
 		maxY = base.frame.getHeight();
 		xSpacing = (base.frame.getWidth()) / numberOfColumns;
-		jellyWidth = xSpacing / 3;
-		jellyHeight = xSpacing / 2;
-		jellyLocation = new Point();
-		chestWidth = jellyWidth*2;
-		chestHeight = (int) (jellyWidth * 1.5);
-		
+		jellyLocation = new Point();		
 		questionBase = 15;
 		questionTypes = 0; // both, addition, subtraction
 		speed = 40;
@@ -221,6 +216,9 @@ public class Game2 extends JPanel implements KeyListener
 	
 	private void setUpImages()
 	{
+		jellyWidth = xSpacing / 3;
+		jellyHeight = xSpacing / 2;
+
 		try
 		{
 			jellyImg = ImageIO.read(this.getClass().getResourceAsStream("Jellyfish.png"));
@@ -231,6 +229,10 @@ public class Game2 extends JPanel implements KeyListener
 		}
 		jellyImg = jellyImg.getScaledInstance(jellyWidth, jellyHeight, java.awt.Image.SCALE_SMOOTH);
 		jellyIcon = new ImageIcon(jellyImg);
+		
+		chestWidth = jellyWidth*2;
+		chestHeight = (int) (jellyWidth * 1.5);
+		
 		try
 		{
 			chestImg = ImageIO.read(this.getClass().getResourceAsStream("chest_closed.png"));

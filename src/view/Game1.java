@@ -41,6 +41,8 @@ public class Game1 extends JPanel
 	private int currentTime;
 	private int fishImageWidth;
 	private int fishImageHeight;
+	private int poleWidth;
+	private int poleHeight;
 	private SpringLayout theLayout;
 	private String question;
 	private List<String> questionList;
@@ -55,6 +57,9 @@ public class Game1 extends JPanel
 	private ActionListener timeDisplayer;
 	private Image fishImg;
 	private ImageIcon fishIcon;
+	private Image poleImg;
+	private ImageIcon poleIcon;
+	private JLabel feedbackLabel;
 
 	private int questionBase;
 	private int questionTypes; // TODO
@@ -90,18 +95,6 @@ public class Game1 extends JPanel
 		scoreLabel = new JLabel("Score: 0");
 		menu = new JButton(" Exit ");
 		help = new JButton( "Help" );
-		fishImageWidth = (width - 250) / 8;
-		fishImageHeight = (height - 250) / 5;
-		try
-		{
-			fishImg = ImageIO.read(this.getClass().getResourceAsStream("fish.png"));
-		}
-		catch (IOException ex)
-		{
-			System.out.println("File fish.png is missing.");
-		}
-		fishImg = fishImg.getScaledInstance(fishImageWidth, fishImageHeight, java.awt.Image.SCALE_SMOOTH);
-		fishIcon = new ImageIcon(fishImg);
 		questionBase = 15;
 		questionTypes = 0; // both, addition, subtraction
 		fishSpeed = 40;
@@ -109,7 +102,9 @@ public class Game1 extends JPanel
 		questionsCorrect = 0;
 		guesses = 0;
 		needsInstructions = false;
+		feedbackLabel = new JLabel("");
 		
+		setUpImages();
 		playGame();
 		setUpLayout();
 		setUpListeners();
@@ -118,6 +113,7 @@ public class Game1 extends JPanel
 
 	private void playGame()
 	{
+		feedbackLabel.setIcon(null);
 		getQuestion();
 		int randomPlacement = Controller.rng.nextInt(maxFishVertical);
 		for (int i = 0; i < maxFishVertical; i++)
@@ -162,6 +158,9 @@ public class Game1 extends JPanel
 		questionLabel.setFont(new Font("Arial", Font.BOLD, 45));
 		theLayout.putConstraint(SpringLayout.WEST, questionLabel, 350, SpringLayout.WEST, this);
 		theLayout.putConstraint(SpringLayout.SOUTH, questionLabel, -25, SpringLayout.SOUTH, this);
+		
+		theLayout.putConstraint(SpringLayout.WEST, feedbackLabel, (base.frame.getWidth()/3), SpringLayout.WEST, this);
+		theLayout.putConstraint(SpringLayout.NORTH, feedbackLabel, (base.frame.getHeight()/4), SpringLayout.NORTH, this);
 
 		menu.setFont(new Font("Arial", Font.PLAIN, 30));
 		menu.setForeground(new Color(70, 130, 180));
@@ -186,6 +185,37 @@ public class Game1 extends JPanel
 		add(questionLabel);
 		add(menu);
 		add(help);
+		add(feedbackLabel);
+	}
+	
+	private void setUpImages(){
+		fishImageWidth = (width - 250) / 8;
+		fishImageHeight = (height - 250) / 5;
+		
+		try
+		{
+			fishImg = ImageIO.read(this.getClass().getResourceAsStream("fish.png"));
+		}
+		catch (IOException ex)
+		{
+			System.out.println("File fish.png is missing.");
+		}
+		fishImg = fishImg.getScaledInstance(fishImageWidth, fishImageHeight, java.awt.Image.SCALE_SMOOTH);
+		fishIcon = new ImageIcon(fishImg);
+		
+		poleWidth = (base.frame.getWidth() / 3);
+		poleHeight = (base.frame.getHeight() / 2);
+
+		try
+		{
+			poleImg = ImageIO.read(this.getClass().getResourceAsStream("fishingpoleHooked.png"));
+		}
+		catch (IOException ex)
+		{
+			System.out.println("File \"fishingpoleHooked.png\" is missing.");
+		}
+		poleImg = poleImg.getScaledInstance(poleWidth, poleHeight, java.awt.Image.SCALE_SMOOTH);
+		poleIcon = new ImageIcon(poleImg);
 	}
 
 	private void setUpListeners()
@@ -380,6 +410,7 @@ public class Game1 extends JPanel
 			score += 50;
 			scoreLabel.setText("Score: " + Integer.toString(score));
 			questionLabel.setText(question.substring(0, question.indexOf("?")) + " " + answer + "  Correct!");
+			feedbackLabel.setIcon(poleIcon);
 			repaint();
 			playing = false;
 		}
@@ -459,6 +490,7 @@ public class Game1 extends JPanel
 		{
 			System.out.println("Correct answer given.");
 			updateScore(true);
+			clearCurrentFish();
 		}
 		else
 		{

@@ -38,6 +38,8 @@ public class Game3 extends JPanel implements KeyListener
 	private JLabel shark;
 	private Image sharkImg;
 	private ImageIcon sharkIcon;
+	private Image fishImg;
+	private ImageIcon fishIcon;
 	private Point defaultSharkLocation;
 	private Point sharkLocation;
 	private Timer displayTime;
@@ -47,6 +49,8 @@ public class Game3 extends JPanel implements KeyListener
 	private int movementSpeed;
 	private int sharkHeight;
 	private int sharkWidth;
+	private int fishWidth;
+	private int fishHeight;
 	private boolean up;
 	private boolean down;
 	private boolean right;
@@ -97,24 +101,12 @@ public class Game3 extends JPanel implements KeyListener
 		answerLabel2 = new JLabel();
 		answerLabel3 = new JLabel();
 		movementSpeed = 3;
-		sharkWidth = (base.frame.getWidth() / 5);
-		sharkHeight = (base.frame.getHeight() / 5);
 		questionBase = 15;
 		questionTypes = 0; // both, addition, subtraction
 		menu = new JButton(" Exit ");
 		help = new JButton(" Help ");
 
-		try
-		{
-			sharkImg = ImageIO.read(this.getClass().getResourceAsStream("shark.png"));
-		}
-		catch (IOException ex)
-		{
-			System.out.println("File \"shark.png\" is missing.");
-		}
-
-		sharkImg = sharkImg.getScaledInstance(sharkWidth, sharkHeight, java.awt.Image.SCALE_SMOOTH);
-		sharkIcon = new ImageIcon(sharkImg);
+		setUpImages();
 		shark = new JLabel(sharkIcon);
 		up = false;
 		down = false;
@@ -154,6 +146,10 @@ public class Game3 extends JPanel implements KeyListener
 		theLayout.putConstraint(SpringLayout.NORTH, scoreLabel, 0, SpringLayout.NORTH, menu);
 		theLayout.putConstraint(SpringLayout.EAST, scoreLabel, -20, SpringLayout.WEST, help);
 		
+		//answerLabel1.setFont(new Font("Ariel", Font.PLAIN, 20));
+		//answerLabel1.setForeground(Color.WHITE);
+		//answerLabel1.setHorizontalTextPosition(SwingConstants.CENTER);
+		//answerLabel1.setVerticalTextPosition(SwingConstants.CENTER);
 		answerLabel1.setForeground(new Color(70, 130, 180));
 		answerLabel1.setFont(new Font("Arial", Font.BOLD, 30));
 		answerLabel2.setForeground(new Color(70, 130, 180));
@@ -193,6 +189,35 @@ public class Game3 extends JPanel implements KeyListener
 		add(scoreLabel);
 		add(menu);
 		add(help);
+	}
+	
+	private void setUpImages()
+	{
+		sharkWidth = (base.frame.getWidth() / 5);
+		sharkHeight = (base.frame.getHeight() / 5);
+		try
+		{
+			sharkImg = ImageIO.read(this.getClass().getResourceAsStream("shark.png"));
+		}
+		catch (IOException ex)
+		{
+			System.out.println("File \"shark.png\" is missing.");
+		}
+
+		sharkImg = sharkImg.getScaledInstance(sharkWidth, sharkHeight, java.awt.Image.SCALE_SMOOTH);
+		sharkIcon = new ImageIcon(sharkImg);
+		fishWidth = (base.frame.getWidth() / 10);
+		fishHeight = (base.frame.getHeight() / 8);
+		try
+		{
+			fishImg = ImageIO.read(this.getClass().getResourceAsStream("fish.png"));
+		}
+		catch (IOException ex)
+		{
+			System.out.println("File fish.png is missing.");
+		}
+		fishImg = fishImg.getScaledInstance(fishWidth, fishHeight, java.awt.Image.SCALE_SMOOTH);
+		fishIcon = new ImageIcon(fishImg);
 	}
 	
 	private void setUpListeners()
@@ -286,9 +311,10 @@ public class Game3 extends JPanel implements KeyListener
 		sharkLocation.x = defaultSharkLocation.x;
 		sharkLocation.y = defaultSharkLocation.y;
 		shark.setText(question);
-		shark.setFont(new Font("Arial", Font.PLAIN, 25));
+		shark.setForeground(new Color(70, 130, 180));
+		shark.setFont(new Font("Arial", Font.BOLD, 30));
 		shark.setVerticalTextPosition(SwingConstants.BOTTOM);
-		shark.setHorizontalTextPosition(SwingConstants.CENTER);
+		shark.setHorizontalTextPosition(SwingConstants.LEFT);
 		add(shark);
 		addFeedbackLabels();
 		repaint();
@@ -310,7 +336,7 @@ public class Game3 extends JPanel implements KeyListener
 			switch (i)
 			{
 				case 0:
-					answerLabel1.setText("= " + randomAnswer);
+					answerLabel1.setText("= "+randomAnswer);
 					break;
 				case 1:
 					answerLabel2.setText("= " + randomAnswer);
