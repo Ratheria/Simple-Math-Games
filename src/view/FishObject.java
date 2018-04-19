@@ -13,6 +13,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
 
+import adapter.Controller;
+
 public class FishObject extends JButton implements ActionListener
 {
 	private static final long serialVersionUID = -5425295018457401763L;
@@ -29,8 +31,7 @@ public class FishObject extends JButton implements ActionListener
 		this.panel = panel;
 		this.answer = answer;
 		movement = 2; // TODO
-		xValue = 50;
-		// - (Controller.rng.nextInt(6) * 10);
+		xValue = (50 - 25*Controller.rng.nextInt(10));
 		yValue = 100 + (numberFromTop * 70);
 		maxX = Frame.DIMENSIONS.width - 25;
 
