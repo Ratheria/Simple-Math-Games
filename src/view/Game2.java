@@ -43,6 +43,12 @@ public class Game2 extends JPanel implements KeyListener
 	private ArrayList<JLabel> columnLabels;
 	private Image jellyImg;
 	private ImageIcon jellyIcon;
+	private Image chestImg;
+	private ImageIcon chestIcon;
+	private Image fullChestImg;
+	private ImageIcon fullChestIcon;
+	private Image emptyChestImg;
+	private ImageIcon emptyChestIcon;
 	private JLabel timerLabel;
 	private JLabel scoreLabel;
 	private JLabel feedbackLabel;
@@ -63,6 +69,8 @@ public class Game2 extends JPanel implements KeyListener
 	private int maxY;
 	private int jellyWidth;
 	private int jellyHeight;
+	private int chestWidth;
+	private int chestHeight;
 	private int xSpacing;
 	private int movement;
 	private String question;
@@ -105,16 +113,9 @@ public class Game2 extends JPanel implements KeyListener
 		jellyWidth = xSpacing / 3;
 		jellyHeight = xSpacing / 2;
 		jellyLocation = new Point();
-		try
-		{
-			jellyImg = ImageIO.read(this.getClass().getResourceAsStream("Jellyfish.png"));
-		}
-		catch (IOException ex)
-		{
-			System.out.println("File \"Jellyfish.png\" is missing.");
-		}
-		jellyImg = jellyImg.getScaledInstance(jellyWidth, jellyHeight, java.awt.Image.SCALE_SMOOTH);
-		jellyIcon = new ImageIcon(jellyImg);
+		chestWidth = jellyWidth*2;
+		chestHeight = (int) (jellyWidth * 1.5);
+		
 		questionBase = 15;
 		questionTypes = 0; // both, addition, subtraction
 		speed = 40;
@@ -122,6 +123,7 @@ public class Game2 extends JPanel implements KeyListener
 		questionsAnsweredCorrectly = 0;
 		needsInstructions = false;
 
+		setUpImages();
 		addKeyListener(this);
 		setFocusable(true);
 		requestFocus();
@@ -140,7 +142,7 @@ public class Game2 extends JPanel implements KeyListener
 		numQuestionsAsked++;
 		jelly = new JButton(question, jellyIcon);
 		jelly.setVerticalTextPosition(SwingConstants.TOP);
-		jelly.setFont(new Font("Tahoma", Font.BOLD, 18));
+		jelly.setFont(new Font("Tahoma", Font.BOLD, 25));
 		jelly.setForeground(new Color(25, 25, 112));
 		int randomPlacement = Controller.rng.nextInt(numberOfColumns);
 		columnLabels = null;
@@ -157,7 +159,7 @@ public class Game2 extends JPanel implements KeyListener
 				columnAnswer = answer;
 				answerIndex = i;
 			}
-			columnLabels.add(new JLabel(columnAnswer + ""));
+			columnLabels.add(new JLabel(" "+columnAnswer,chestIcon,JLabel.CENTER));
 		}
 		setUpVar();
 		playing = true;
@@ -187,6 +189,8 @@ public class Game2 extends JPanel implements KeyListener
 		feedbackLabel.setForeground(new Color(70, 130, 180));
 		feedbackLabel.setBackground(new Color(245, 245, 245));
 		feedbackLabel.setFont(new Font("Arial", Font.BOLD, 35));
+		feedbackLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+		feedbackLabel.setVerticalTextPosition(SwingConstants.TOP);
 		theLayout.putConstraint(SpringLayout.WEST, feedbackLabel, (base.frame.getWidth()/3), SpringLayout.WEST, this);
 		theLayout.putConstraint(SpringLayout.NORTH, feedbackLabel, (base.frame.getHeight()/3), SpringLayout.NORTH, this);
 
@@ -213,6 +217,50 @@ public class Game2 extends JPanel implements KeyListener
 		add(feedbackLabel);
 		add(menu);
 		add(help);
+	}
+	
+	private void setUpImages()
+	{
+		try
+		{
+			jellyImg = ImageIO.read(this.getClass().getResourceAsStream("Jellyfish.png"));
+		}
+		catch (IOException ex)
+		{
+			System.out.println("File \"Jellyfish.png\" is missing.");
+		}
+		jellyImg = jellyImg.getScaledInstance(jellyWidth, jellyHeight, java.awt.Image.SCALE_SMOOTH);
+		jellyIcon = new ImageIcon(jellyImg);
+		try
+		{
+			chestImg = ImageIO.read(this.getClass().getResourceAsStream("chest_closed.png"));
+		}
+		catch (IOException ex)
+		{
+			System.out.println("File \"chest_closed.png\" is missing.");
+		}
+		chestImg = chestImg.getScaledInstance(chestWidth, chestHeight, java.awt.Image.SCALE_SMOOTH);
+		chestIcon = new ImageIcon(chestImg);
+		try
+		{
+			fullChestImg = ImageIO.read(this.getClass().getResourceAsStream("chest_full.png"));
+		}
+		catch (IOException ex)
+		{
+			System.out.println("File \"chest_full.png\" is missing.");
+		}
+		fullChestImg = fullChestImg.getScaledInstance(chestWidth, chestHeight, java.awt.Image.SCALE_SMOOTH);
+		fullChestIcon = new ImageIcon(fullChestImg);
+		try
+		{
+			emptyChestImg = ImageIO.read(this.getClass().getResourceAsStream("chest_empty.png"));
+		}
+		catch (IOException ex)
+		{
+			System.out.println("File \"chest_empty.png\" is missing.");
+		}
+		emptyChestImg = emptyChestImg.getScaledInstance(chestWidth, chestHeight, java.awt.Image.SCALE_SMOOTH);
+		emptyChestIcon = new ImageIcon(emptyChestImg);
 	}
 
 	private void setUpListeners()
@@ -246,25 +294,31 @@ public class Game2 extends JPanel implements KeyListener
 
 	private void setUpVar()
 	{
-		int currentX = (xSpacing / 3) + 30;
+		int currentX = (xSpacing / 3) - 50; //was  +30
 		label1 = columnLabels.get(0);
-		label1.setForeground(new Color(70, 130, 180));
-		label1.setFont(new Font("Arial", Font.PLAIN, 30));
-		theLayout.putConstraint(SpringLayout.SOUTH, label1, -25, SpringLayout.SOUTH, this);
+		label1.setForeground(new Color(255, 255, 255));
+		label1.setFont(new Font("Arial", Font.PLAIN, 35));
+		label1.setVerticalTextPosition(JLabel.CENTER);
+		label1.setHorizontalTextPosition(JLabel.CENTER);
+		theLayout.putConstraint(SpringLayout.SOUTH, label1, 0, SpringLayout.SOUTH, this);
 		theLayout.putConstraint(SpringLayout.WEST, label1, currentX, SpringLayout.WEST, this);
 		add(label1);
 		currentX += xSpacing;
 		label2 = columnLabels.get(1);
-		label2.setForeground(new Color(70, 130, 180));
-		label2.setFont(new Font("Arial", Font.PLAIN, 30));
-		theLayout.putConstraint(SpringLayout.SOUTH, label2, -25, SpringLayout.SOUTH, this);
+		label2.setForeground(new Color(255, 255, 255));
+		label2.setFont(new Font("Arial", Font.PLAIN, 35));
+		label2.setVerticalTextPosition(JLabel.CENTER);
+		label2.setHorizontalTextPosition(JLabel.CENTER);
+		theLayout.putConstraint(SpringLayout.SOUTH, label2, 0, SpringLayout.SOUTH, this);
 		theLayout.putConstraint(SpringLayout.WEST, label2, currentX, SpringLayout.WEST, this);
 		add(label2);
 		currentX += xSpacing;
 		label3 = columnLabels.get(2);
-		label3.setForeground(new Color(70, 130, 180));
-		label3.setFont(new Font("Arial", Font.PLAIN, 30));
-		theLayout.putConstraint(SpringLayout.SOUTH, label3, -25, SpringLayout.SOUTH, this);
+		label3.setForeground(new Color(255, 255, 255));
+		label3.setFont(new Font("Arial", Font.PLAIN, 35));
+		label3.setVerticalTextPosition(JLabel.CENTER);
+		label3.setHorizontalTextPosition(JLabel.CENTER);
+		theLayout.putConstraint(SpringLayout.SOUTH, label3, 0, SpringLayout.SOUTH, this);
 		theLayout.putConstraint(SpringLayout.WEST, label3, currentX, SpringLayout.WEST, this);
 		add(label3);
 
@@ -334,7 +388,7 @@ public class Game2 extends JPanel implements KeyListener
 				if (playing && !needsInstructions)
 				{
 					jellyLocation.y += movement;
-					if (jellyLocation.y >= maxY)
+					if (jellyLocation.y >= maxY - chestWidth)
 					{
 						wentOffScreen();
 					}
@@ -370,6 +424,7 @@ public class Game2 extends JPanel implements KeyListener
 			generateQuestion();
 		}
 		feedbackLabel.setText("");
+		feedbackLabel.setIcon(null);
 	}
 
 	private void questionFromList()
@@ -442,6 +497,8 @@ public class Game2 extends JPanel implements KeyListener
 			System.out.println("Correct answer given.");
 			questionsAnsweredCorrectly++;
 			feedbackLabel.setText("Correct!  " + question.substring(0, question.indexOf("?")) + answer);
+			feedbackLabel.setIcon(fullChestIcon);
+			removeVar();
 			repaint();
 			score += 50;
 		}
@@ -449,6 +506,7 @@ public class Game2 extends JPanel implements KeyListener
 		{
 			System.out.println("Incorrect answer given.");
 			feedbackLabel.setText("Nice try!  " + question.substring(0, question.indexOf("?")) + answer);
+			feedbackLabel.setIcon(emptyChestIcon);
 			removeVar();
 			repaint();
 			if (score > 0)
