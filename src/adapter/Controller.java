@@ -27,6 +27,7 @@ public class Controller
 	public Frame frame;
 	public JPanel messagePanel;
 	private SQLiteData database;
+	private Connection databaseCon;
 	private ViewStates state;
 	private ViewStates lastState;
 	private int ID;
@@ -43,7 +44,20 @@ public class Controller
 	{
 		rng = new Random();
 		messagePanel = new JPanel();
-		database = new SQLiteData(this);
+		database = new SQLiteData(this); 
+		
+		try {
+//			Class.forName("org.mysql.Driver");
+		    String dbName = "smg";
+			String host = "smg-database.cxdny0vkhuno.us-west-2.rds.amazonaws.com";
+			String userName = "smg_database";
+			String password = "5mg.Pa55w0rd";
+	        String jdbcUrl = "jdbc:mysql://" + host + ":" + "3306" + "/" + dbName + "?user=" + userName + "&password=" + password;
+		    databaseCon = DriverManager.getConnection(jdbcUrl);
+		}
+//		catch (ClassNotFoundException e) { e.printStackTrace(); }
+		catch (SQLException e) { e.printStackTrace(); }
+		    
 		frame = new Frame(this);
 		logout();
 	}
@@ -64,9 +78,11 @@ public class Controller
 		frame.updateState();
 	}
 	
+	// TODO need to update this
 	public void checkLogin(String userName, String pass)
 	{
-		JPanel errorPanel = new JPanel();
+		JPanel errorPanel = new JPanel();	
+		
 		ResultSet res = database.compareLogin(userName, pass);
 		try
 		{
