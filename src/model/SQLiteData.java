@@ -487,7 +487,7 @@ public class SQLiteData
 				state = con.createStatement();
 				
 				// drop table if exists
-				//state.execute("DROP TABLE IF EXISTS USER;");
+				state.execute("DROP TABLE IF EXISTS USER;");
 				
 				ResultSet res = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='USER'");
 				if (!res.next())
@@ -505,7 +505,7 @@ public class SQLiteData
 				}
 				
 				//Drop table			
-				//state.execute("DROP TABLE IF EXISTS CUSTOM_EQUATIONS;");
+				state.execute("DROP TABLE IF EXISTS CUSTOM_EQUATIONS;");
 				
 				ResultSet customEq = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' " +
 						"AND name='CUSTOM_EQUATIONS'");
