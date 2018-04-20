@@ -64,7 +64,10 @@ public class Game1 extends JPanel
 	private ImageIcon catchIcon;
 	private Image missImg;
 	private ImageIcon missIcon;
+	private Image backgroundImg;
+	private ImageIcon backgroundIcon;
 	private JLabel feedbackLabel;
+	private JLabel background;
 
 	private int questionBase;
 	private int questionTypes; // TODO
@@ -111,9 +114,11 @@ public class Game1 extends JPanel
 		needsInstructions = false;
 		feedbackLabel = new JLabel("");
 		
+		setBorder(new LineBorder(new Color(70, 130, 180), 10));
+		setBackground();
 		setUpImages();
-		playGame();
 		setUpLayout();
+		playGame();
 		setUpListeners();
 		setUpTimers();
 	}
@@ -139,6 +144,7 @@ public class Game1 extends JPanel
 			currentFish.add(new FishObject(fishAnswer, i, this, fishIcon));
 		}
 		addFish();
+		add(background);
 		playing = true;
 		reset = false;
 	}
@@ -146,9 +152,6 @@ public class Game1 extends JPanel
 	private void setUpLayout()
 	{
 		setLayout(theLayout);
-		setBorder(new LineBorder(new Color(70, 130, 180), 10));
-		setBackground(new Color(213, 248, 255));
-		setBackground(new Color(208, 243, 255));
 
 		timerLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		timerLabel.setForeground(new Color(70, 130, 180));
@@ -195,6 +198,19 @@ public class Game1 extends JPanel
 		add(menu);
 		add(help);
 		add(feedbackLabel);
+	}
+	private void setBackground(){
+		try
+		{
+			backgroundImg = ImageIO.read(this.getClass().getResourceAsStream("background.jpg"));
+		}
+		catch (IOException ex)
+		{
+			System.out.println("File \"background.jpg\" is missing.");
+		}
+		backgroundImg = backgroundImg.getScaledInstance(base.frame.getWidth(), base.frame.getHeight(), java.awt.Image.SCALE_SMOOTH);
+		backgroundIcon = new ImageIcon(backgroundImg);
+		background = new JLabel(backgroundIcon);
 	}
 	
 	private void setUpImages(){
@@ -291,6 +307,7 @@ public class Game1 extends JPanel
 				else if (reset)
 				{
 					clearCurrentFish();
+					remove(background);
 					playGame();
 				}
 				else if (!playing)
@@ -325,12 +342,15 @@ public class Game1 extends JPanel
 				}
 				else if(playing && !needsInstructions & miss)
 				{
-					feedbackLabel.setIcon(missIcon);
-					if (pause >= 25){
+					//feedbackLabel.setIcon(missIcon);
+					if (pause >= 20){
 						miss = false;
-						addFish();
+						moveFish();
+						//addFish();
+						//add(background);
 						questionLabel.setText(question);
 					}
+					moveFish();
 					pause ++;
 				}
 			}
@@ -453,7 +473,7 @@ public class Game1 extends JPanel
 				score -= 5;
 				scoreLabel.setText("Score: " + Integer.toString(score));
 			}
-			hideFish();
+			//hideFish();
 			miss = true;
 		}
 	}
@@ -537,6 +557,7 @@ public class Game1 extends JPanel
 	@Override
 	public void paint(Graphics g)
 	{
+		g.drawImage(backgroundImg,0,0,this);
 		refreshFishLocation();
 		super.paint(g);
 	}

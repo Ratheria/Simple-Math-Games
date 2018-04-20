@@ -86,6 +86,9 @@ public class Game3 extends JPanel implements KeyListener
 	private boolean miss;
 	private int count;
 	private boolean reset;
+	private Image backgroundImg;
+	private ImageIcon backgroundIcon;
+	private JLabel background;
 	
 	public Game3(Controller base)
 	{
@@ -125,6 +128,7 @@ public class Game3 extends JPanel implements KeyListener
 		playing = true;
 		needsInstructions = false;
 
+		setBackground();
 		addKeyListener(this);
 		setFocusable(true);
 		requestFocus();
@@ -215,6 +219,20 @@ public class Game3 extends JPanel implements KeyListener
 		add(help);
 		add(questionLabel);
 		add(feedbackLabel);
+	}
+	
+	private void setBackground(){
+		try
+		{
+			backgroundImg = ImageIO.read(this.getClass().getResourceAsStream("background.jpg"));
+		}
+		catch (IOException ex)
+		{
+			System.out.println("File \"background.jpg\" is missing.");
+		}
+		backgroundImg = backgroundImg.getScaledInstance(base.frame.getWidth(), base.frame.getHeight(), java.awt.Image.SCALE_SMOOTH);
+		backgroundIcon = new ImageIcon(backgroundImg);
+		background = new JLabel(backgroundIcon);
 	}
 	
 	private void setUpImages()
@@ -379,6 +397,7 @@ public class Game3 extends JPanel implements KeyListener
 					break;
 			}
 		}
+		add(background);
 		playing = true;
 		reset = false;
 	}

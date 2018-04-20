@@ -78,6 +78,9 @@ public class Game2 extends JPanel implements KeyListener
 	private int questionBase;
 	private int questionTypes; // TODO
 	private int speed;
+	private Image backgroundImg;
+	private ImageIcon backgroundIcon;
+	private JLabel background;
 	
 	private int numQuestionsAsked;
 	private int questionsAnsweredCorrectly; // TODO
@@ -118,6 +121,7 @@ public class Game2 extends JPanel implements KeyListener
 		questionsAnsweredCorrectly = 0;
 		needsInstructions = false;
 
+		setBackground();
 		setUpImages();
 		addKeyListener(this);
 		setFocusable(true);
@@ -138,7 +142,7 @@ public class Game2 extends JPanel implements KeyListener
 		jelly = new JButton(question, jellyIcon);
 		jelly.setVerticalTextPosition(SwingConstants.TOP);
 		jelly.setFont(new Font("Tahoma", Font.BOLD, 25));
-		jelly.setForeground(new Color(25, 25, 112));
+		jelly.setForeground(new Color(20, 20, 217));
 		int randomPlacement = Controller.rng.nextInt(numberOfColumns);
 		columnLabels = null;
 		columnLabels = new ArrayList<JLabel>();
@@ -157,6 +161,7 @@ public class Game2 extends JPanel implements KeyListener
 			columnLabels.add(new JLabel(" "+columnAnswer,chestIcon,JLabel.CENTER));
 		}
 		setUpVar();
+		add(background);
 		playing = true;
 		reset = false;
 	}
@@ -181,8 +186,7 @@ public class Game2 extends JPanel implements KeyListener
 		theLayout.putConstraint(SpringLayout.EAST, scoreLabel, -20, SpringLayout.WEST, help);
 		
 		feedbackLabel.setHorizontalAlignment(SwingConstants.LEFT);
-		feedbackLabel.setForeground(new Color(70, 130, 180));
-		feedbackLabel.setBackground(new Color(245, 245, 245));
+		feedbackLabel.setForeground(new Color(20, 20, 217));
 		feedbackLabel.setFont(new Font("Arial", Font.BOLD, 35));
 		feedbackLabel.setHorizontalTextPosition(SwingConstants.CENTER);
 		feedbackLabel.setVerticalTextPosition(SwingConstants.TOP);
@@ -216,8 +220,8 @@ public class Game2 extends JPanel implements KeyListener
 	
 	private void setUpImages()
 	{
-		jellyWidth = xSpacing / 3;
-		jellyHeight = xSpacing / 2;
+		jellyWidth = (int)(xSpacing / 2.5);
+		jellyHeight = (int) (xSpacing / 1.75);
 
 		try
 		{
@@ -293,9 +297,23 @@ public class Game2 extends JPanel implements KeyListener
 			}
 		});
 	}
+	
+	private void setBackground(){
+		try
+		{
+			backgroundImg = ImageIO.read(this.getClass().getResourceAsStream("background.jpg"));
+		}
+		catch (IOException ex)
+		{
+			System.out.println("File \"background.jpg\" is missing.");
+		}
+		backgroundImg = backgroundImg.getScaledInstance(base.frame.getWidth(), base.frame.getHeight(), java.awt.Image.SCALE_SMOOTH);
+		backgroundIcon = new ImageIcon(backgroundImg);
+		background = new JLabel(backgroundIcon);
+	}
 
 	private void setUpVar()
-	{
+	{		
 		int currentX = (xSpacing / 3) - 50; //was  +30
 		label1 = columnLabels.get(0);
 		label1.setForeground(new Color(255, 255, 255));
@@ -323,7 +341,6 @@ public class Game2 extends JPanel implements KeyListener
 		theLayout.putConstraint(SpringLayout.SOUTH, label3, 0, SpringLayout.SOUTH, this);
 		theLayout.putConstraint(SpringLayout.WEST, label3, currentX, SpringLayout.WEST, this);
 		add(label3);
-
 		jelly.setLocation(jellyLocation);
 		jelly.setFocusable(false);
 		jelly.setFocusPainted(false);
@@ -332,7 +349,6 @@ public class Game2 extends JPanel implements KeyListener
 		jelly.setBorderPainted(false);
 		jelly.setMargin(new Insets(0, 0, 0, 0));
 		jelly.setHorizontalTextPosition(JButton.CENTER);
-
 		add(jelly);
 	}
 
