@@ -601,8 +601,6 @@ public class Game3 extends JPanel implements KeyListener
 		}
 	}
 
-
-	@Override
 	public void paint(Graphics g)
 	{
 		requestFocus();
