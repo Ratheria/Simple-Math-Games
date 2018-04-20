@@ -15,6 +15,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JPanel;
@@ -89,6 +90,9 @@ public class Game3 extends JPanel implements KeyListener
 	private Image backgroundImg;
 	private ImageIcon backgroundIcon;
 	private JLabel background;
+	private JLabel g3instruct;
+	private ArrayList<Integer> answerOptions;
+	private Boolean needsHelp;
 	
 	public Game3(Controller base)
 	{
@@ -126,7 +130,9 @@ public class Game3 extends JPanel implements KeyListener
 		guessed2 = false;
 		guessed3 = false;
 		playing = true;
-		needsInstructions = false;
+		needsHelp = false;
+		
+		needsInstructions = true; //TODO get from database
 
 		setBackground();
 		addKeyListener(this);
@@ -210,6 +216,12 @@ public class Game3 extends JPanel implements KeyListener
 		theLayout.putConstraint(SpringLayout.NORTH, help, 0, SpringLayout.NORTH, menu);
 		theLayout.putConstraint(SpringLayout.EAST, help, -20, SpringLayout.WEST, menu);
 		
+		g3instruct = new JLabel("<html>To play use the arrow keys to help the <br/> shark swim to the correct fish. <br/> "
+				+ "<br/>The game ends when time runs out.</html>");
+		g3instruct.setFont(new Font("Arial", Font.PLAIN, 30));
+		g3instruct.setForeground(new Color(70, 130, 180));
+		g3instruct.setBackground(new Color(208, 243, 255));
+		
 		add(answerLabel1);
 		add(answerLabel2);
 		add(answerLabel3);
@@ -287,7 +299,7 @@ public class Game3 extends JPanel implements KeyListener
 		{
 			public void actionPerformed(ActionEvent onClick)
 			{
-				needsInstructions = true;
+				needsHelp = true;
 			}
 		});
 	}
@@ -302,6 +314,10 @@ public class Game3 extends JPanel implements KeyListener
 				if(needsInstructions){
 					showInstructions();
 					needsInstructions = false;
+				}
+				if(needsHelp){
+					JOptionPane.showMessageDialog(base.messagePanel, g3instruct, "Instructions",JOptionPane.INFORMATION_MESSAGE);
+					needsHelp = false;
 				}
 				if ((sec % 60) < 10)
 				{
@@ -338,19 +354,21 @@ public class Game3 extends JPanel implements KeyListener
 		{
 			public void actionPerformed(ActionEvent event)
 			{
-				if (playing && !miss)
+				if (playing && !needsInstructions && !needsHelp)
 				{
-					moveShark();
-					repaint();
-				}
-				else if(miss){
-					if(count >= 25){
-						feedbackLabel.setText("");	
-						repaint();
-						count = 0;
-						miss = false;
+					if(miss){
+						if(count >= 25){
+							feedbackLabel.setText("");	
+							repaint();
+							count = 0;
+							miss = false;
+						}
+						count ++;
 					}
-					count ++;
+					else{
+						moveShark();
+						repaint();
+					}
 				}
 			}
 		};
@@ -369,11 +387,12 @@ public class Game3 extends JPanel implements KeyListener
 		guessed1 = false;
 		guessed2 = false;
 		guessed3 = false;
+		answerOptions = new ArrayList<Integer>();
 		randomPlacement = Controller.rng.nextInt(3);
 		for (int i = 0; i < 3; i++)
 		{
 			int randomAnswer = Controller.rng.nextInt(25);
-			while (randomAnswer == answer)
+			while (randomAnswer == answer || answerOptions.contains(randomAnswer))
 			{
 				randomAnswer = Controller.rng.nextInt(25);
 			}
@@ -381,6 +400,7 @@ public class Game3 extends JPanel implements KeyListener
 			{
 				randomAnswer = answer;
 			}
+			answerOptions.add(randomAnswer);
 			switch (i)
 			{
 				case 0:
@@ -643,12 +663,14 @@ public class Game3 extends JPanel implements KeyListener
 	}
 	
 	public void showInstructions(){
-		JLabel g3instruct = new JLabel("<html>To play use the arrow keys to help the <br/> shark swim to the correct answer. <br/> "
-				+ "<br/>The game ends when time runs out.</html>");
-		g3instruct.setFont(new Font("Arial", Font.PLAIN, 30));
-		g3instruct.setForeground(new Color(70, 130, 180));
-		g3instruct.setBackground(new Color(208, 243, 255));
-		JOptionPane.showMessageDialog(base.messagePanel, g3instruct, "Instructions",JOptionPane.PLAIN_MESSAGE);
+		Object[] options = {"Okay", "Don't show again"};
+		int instructResult = JOptionPane.showOptionDialog(base.messagePanel, g3instruct, "Instructions",JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null, options, options[0]);
+		if(instructResult == 1){
+			// TODO save this user preference - no initial instructions
+		}
+		else{
+			// TODO save this user preference- initial instructions
+		}
 	}
 
 }

@@ -68,6 +68,7 @@ public class Game1 extends JPanel
 	private ImageIcon backgroundIcon;
 	private JLabel feedbackLabel;
 	private JLabel background;
+	private JLabel g1instruct;
 
 	private int questionBase;
 	private int questionTypes; // TODO
@@ -82,6 +83,7 @@ public class Game1 extends JPanel
 	private boolean playing;
 	private boolean reset;
 	private boolean needsInstructions;
+	private boolean needsHelp;
 	private boolean miss;
 
 	public Game1(Controller base)
@@ -111,8 +113,10 @@ public class Game1 extends JPanel
 		questionsCorrect = 0;
 		guesses = 0;
 		pause = 0;
-		needsInstructions = false;
 		feedbackLabel = new JLabel("");
+		needsHelp = false;
+		
+		needsInstructions = true; // TODO get from database
 		
 		setBorder(new LineBorder(new Color(70, 130, 180), 10));
 		setBackground();
@@ -191,6 +195,12 @@ public class Game1 extends JPanel
 		help.setBorder(new LineBorder(new Color(135, 206, 250), 2));
 		theLayout.putConstraint(SpringLayout.NORTH, help, 0, SpringLayout.NORTH, menu);
 		theLayout.putConstraint(SpringLayout.EAST, help, -20, SpringLayout.WEST, menu);
+		
+		g1instruct = new JLabel("<html>To catch a fish click on the fish that has <br/> the answer to the math question below. <br/> "
+				+ "<br/>The game ends when time runs out or the <br/> correct fish swims off screen.</html>");
+		g1instruct.setFont(new Font("Arial", Font.PLAIN, 30));
+		g1instruct.setForeground(new Color(70, 130, 180));
+		g1instruct.setBackground(new Color(208, 243, 255));
 		
 		add(timerLabel);
 		add(scoreLabel);
@@ -276,7 +286,7 @@ public class Game1 extends JPanel
 		{
 			public void actionPerformed(ActionEvent onClick)
 			{
-				needsInstructions = true;
+				needsHelp = true;
 			}
 		});
 	}
@@ -289,10 +299,14 @@ public class Game1 extends JPanel
 			public void actionPerformed(ActionEvent evt)
 			{
 				if (playing)
-				{	
+				{
 					if(needsInstructions){
 						showInstructions();
 						needsInstructions = false;
+					}
+					if(needsHelp){
+						JOptionPane.showMessageDialog(base.messagePanel, g1instruct, "Instructions",JOptionPane.INFORMATION_MESSAGE);
+						needsHelp = false;
 					}
 					if ((currentTime % 60) < 10)
 					{
@@ -334,24 +348,17 @@ public class Game1 extends JPanel
 		{
 			public void actionPerformed(ActionEvent event)
 			{
-				if (playing && !needsInstructions & !miss)
-				{
-					pause = 0;
+				if(playing && !needsInstructions && !needsHelp){
 					moveFish();
-					feedbackLabel.setIcon(null);
-				}
-				else if(playing && !needsInstructions & miss)
-				{
-					//feedbackLabel.setIcon(missIcon);
-					if (pause >= 20){
-						miss = false;
-						moveFish();
-						//addFish();
-						//add(background);
-						questionLabel.setText(question);
+					if(miss){
+						if (pause >= 20){
+							miss = false;
+							pause = 0;
+							moveFish();
+							questionLabel.setText(question);
+						}
+						pause ++;
 					}
-					moveFish();
-					pause ++;
 				}
 			}
 		};
@@ -473,7 +480,7 @@ public class Game1 extends JPanel
 				score -= 5;
 				scoreLabel.setText("Score: " + Integer.toString(score));
 			}
-			//hideFish();
+			questionLabel.setText(question + " Try again!");
 			miss = true;
 		}
 	}
@@ -549,7 +556,6 @@ public class Game1 extends JPanel
 		{
 			System.out.println("Incorrect answer given.");
 			removeFish(fish);
-			questionLabel.setText(question.substring(0, question.indexOf("?")) + fish.getAnswer() + " Incorrect!");
 			updateScore(false);
 		}
 	}
@@ -563,20 +569,14 @@ public class Game1 extends JPanel
 	}
 	
 	public void showInstructions(){
-		JLabel g1instruct = new JLabel("<html>To play click on the fish that has the <br/> answer to the math question. <br/> "
-				+ "<br/>The game ends when time runs out or the <br/> correct fish swims off screen.</html>");
-		g1instruct.setFont(new Font("Arial", Font.PLAIN, 30));
-		g1instruct.setForeground(new Color(70, 130, 180));
-		g1instruct.setBackground(new Color(208, 243, 255));
-		JOptionPane.showMessageDialog(base.messagePanel, g1instruct, "Instructions",JOptionPane.PLAIN_MESSAGE);
-	}
-	
-	public void hideFish(){
-		for (FishObject fish : currentFish)
-		{
-			this.remove(fish);
+		Object[] options = {"Okay", "Don't show again"};
+		int instructResult = JOptionPane.showOptionDialog(base.messagePanel, g1instruct, "Instructions",JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null, options, options[0]);
+		if(instructResult == 1){
+			// TODO save user preference to user does not initially need instructions
 		}
-		repaint();
+		else{
+			// TODO save user preference to user does need initial instructions
+		}
 	}
 
 }
