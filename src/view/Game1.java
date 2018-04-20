@@ -134,8 +134,8 @@ public class Game1 extends JPanel
 			if (i == randomPlacement)
 			{
 				fishAnswer = answer;
-				answerOptions.add(fishAnswer);
 			}
+			answerOptions.add(fishAnswer);
 			currentFish.add(new FishObject(fishAnswer, i, this, fishIcon));
 		}
 		addFish();
