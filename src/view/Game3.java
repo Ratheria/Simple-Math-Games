@@ -568,7 +568,7 @@ public class Game3 extends JPanel implements KeyListener
 		}
 	}
 
-	public void labelFlash(JLabel label)
+	public void labelFlash(final JLabel label)
 	{
 		new Thread(new Runnable()
 		{
