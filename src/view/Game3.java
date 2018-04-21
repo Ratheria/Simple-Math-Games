@@ -570,11 +570,12 @@ public class Game3 extends JPanel implements KeyListener
 
 	public void labelFlash(JLabel label)
 	{
+		final JLabel temp = label;
 		new Thread(new Runnable()
 		{
 			public void run()
 			{
-				label.setVisible(true);
+				temp.setVisible(true);
 				try
 				{
 					Thread.sleep(1000);
@@ -587,7 +588,7 @@ public class Game3 extends JPanel implements KeyListener
 				{
 					public void run()
 					{
-						label.setVisible(false);
+						temp.setVisible(false);
 					}
 				});
 			}

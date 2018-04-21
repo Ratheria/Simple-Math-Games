@@ -15,7 +15,7 @@ import java.util.Random;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import model.SQLiteData;
+import model.MySQLData;
 import view.Frame;
 
 public class Controller
@@ -26,8 +26,8 @@ public class Controller
 	public static String[] allUsersHeader = { "User ID", "Username", "First Name", "Last Name", "Class ID" };
 	public Frame frame;
 	public JPanel messagePanel;
-	private SQLiteData database;
-	private Connection databaseCon;
+//	private SQLiteData database;
+	private MySQLData database;
 	private ViewStates state;
 	private ViewStates lastState;
 	private int ID;
@@ -44,19 +44,8 @@ public class Controller
 	{
 		rng = new Random();
 		messagePanel = new JPanel();
-		database = new SQLiteData(this); 
-		
-		try {
-//			Class.forName("org.mysql.Driver");
-		    String dbName = "smg";
-			String host = "smg-database.cxdny0vkhuno.us-west-2.rds.amazonaws.com";
-			String userName = "smg_database";
-			String password = "5mg.Pa55w0rd";
-	        String jdbcUrl = "jdbc:mysql://" + host + ":" + "3306" + "/" + dbName + "?user=" + userName + "&password=" + password;
-		    databaseCon = DriverManager.getConnection(jdbcUrl);
-		}
-//		catch (ClassNotFoundException e) { e.printStackTrace(); }
-		catch (SQLException e) { e.printStackTrace(); }
+//		database = new SQLiteData(this); 
+		database = new MySQLData(this);
 		    
 		frame = new Frame(this);
 		logout();
@@ -78,7 +67,6 @@ public class Controller
 		frame.updateState();
 	}
 	
-	// TODO need to update this
 	public void checkLogin(String userName, String pass)
 	{
 		JPanel errorPanel = new JPanel();	
@@ -87,7 +75,7 @@ public class Controller
 		try
 		{
 			boolean hasRes = res.next();
-			if (database.isLocked(ID) && hasRes)
+			if ((database.isLocked(ID) != 0) && hasRes)
 			{
 				JOptionPane.showMessageDialog(errorPanel, "This account has been locked due to too many failed login attempts.", "Error", JOptionPane.ERROR_MESSAGE);
 			}
@@ -175,7 +163,7 @@ public class Controller
 		{
 			database.loginSuccess(ID);
 		}
-		if (database.isLocked(ID))
+		if (database.isLocked(ID) != 0)
 		{
 			JOptionPane.showMessageDialog(errorPanel, "Failed to unlock account.", "Error", JOptionPane.ERROR_MESSAGE);
 		}
