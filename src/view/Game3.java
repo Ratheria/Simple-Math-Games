@@ -15,6 +15,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JPanel;
@@ -76,12 +77,23 @@ public class Game3 extends JPanel implements KeyListener
 	private int sec;
 	private JLabel rightLabel;
 	private JLabel wrongLabel;
+	private JLabel feedbackLabel;
 	private int questionBase;
 	private int questionTypes; // TODO
 	private JButton menu;
 	private JButton help;
 	private boolean needsInstructions;
-
+	private JLabel questionLabel;
+	private boolean miss;
+	private int count;
+	private boolean reset;
+	private Image backgroundImg;
+	private ImageIcon backgroundIcon;
+	private JLabel background;
+	private JLabel g3instruct;
+	private ArrayList<Integer> answerOptions;
+	private Boolean needsHelp;
+	
 	public Game3(Controller base)
 	{
 		this.base = base;
@@ -91,6 +103,7 @@ public class Game3 extends JPanel implements KeyListener
 		question = "";
 		answer = 0;
 		score = 0;
+		count = 0;
 		timerLabel = new JLabel("Time: " + (GAME_PERIOD / 60) + ":" + (GAME_PERIOD % 60));
 		scoreLabel = new JLabel("Score: 0");
 		screenWidth = base.frame.getWidth();
@@ -100,6 +113,7 @@ public class Game3 extends JPanel implements KeyListener
 		answerLabel1 = new JLabel();
 		answerLabel2 = new JLabel();
 		answerLabel3 = new JLabel();
+		questionLabel = new JLabel(question);
 		movementSpeed = 3;
 		questionBase = 15;
 		questionTypes = 0; // both, addition, subtraction
@@ -116,8 +130,11 @@ public class Game3 extends JPanel implements KeyListener
 		guessed2 = false;
 		guessed3 = false;
 		playing = true;
-		needsInstructions = false;
+		needsHelp = false;
+		
+		needsInstructions = true; //TODO get from database
 
+		setBackground();
 		addKeyListener(this);
 		setFocusable(true);
 		requestFocus();
@@ -146,23 +163,40 @@ public class Game3 extends JPanel implements KeyListener
 		theLayout.putConstraint(SpringLayout.NORTH, scoreLabel, 0, SpringLayout.NORTH, menu);
 		theLayout.putConstraint(SpringLayout.EAST, scoreLabel, -20, SpringLayout.WEST, help);
 		
-		//answerLabel1.setFont(new Font("Ariel", Font.PLAIN, 20));
-		//answerLabel1.setForeground(Color.WHITE);
-		//answerLabel1.setHorizontalTextPosition(SwingConstants.CENTER);
-		//answerLabel1.setVerticalTextPosition(SwingConstants.CENTER);
-		answerLabel1.setForeground(new Color(70, 130, 180));
-		answerLabel1.setFont(new Font("Arial", Font.BOLD, 30));
-		answerLabel2.setForeground(new Color(70, 130, 180));
-		answerLabel2.setFont(new Font("Arial", Font.BOLD, 30));
-		answerLabel3.setForeground(new Color(70, 130, 180));
-		answerLabel3.setFont(new Font("Arial", Font.BOLD, 30));
+		questionLabel.setHorizontalAlignment(SwingConstants.LEFT);
+		questionLabel.setForeground(new Color(70, 130, 180));
+		questionLabel.setFont(new Font("Arial", Font.BOLD, 45));
+		theLayout.putConstraint(SpringLayout.WEST, questionLabel, 350, SpringLayout.WEST, this);
+		theLayout.putConstraint(SpringLayout.SOUTH, questionLabel, -25, SpringLayout.SOUTH, this);
+		
+		answerLabel1.setFont(new Font("Ariel", Font.PLAIN, 20));
+		answerLabel1.setForeground(Color.WHITE);
+		answerLabel1.setHorizontalTextPosition(SwingConstants.CENTER);
+		answerLabel1.setVerticalTextPosition(SwingConstants.CENTER);
+		answerLabel1.setIcon(fishIcon);
+		
+		answerLabel2.setFont(new Font("Ariel", Font.PLAIN, 20));
+		answerLabel2.setForeground(Color.WHITE);
+		answerLabel2.setHorizontalTextPosition(SwingConstants.CENTER);
+		answerLabel2.setVerticalTextPosition(SwingConstants.CENTER);
+		answerLabel2.setIcon(fishIcon);
+		
+		answerLabel3.setFont(new Font("Ariel", Font.PLAIN, 20));
+		answerLabel3.setForeground(Color.WHITE);
+		answerLabel3.setHorizontalTextPosition(SwingConstants.CENTER);
+		answerLabel3.setVerticalTextPosition(SwingConstants.CENTER);
+		answerLabel3.setIcon(fishIcon);
 
-		answerLabel1.setLocation(screenWidth - 150, 160);
-		answerLabel2.setLocation(screenWidth - 150, 280);
-		answerLabel3.setLocation(screenWidth - 150, 400);
 		answerLabel1.setBounds(answerLabel1.getX(), answerLabel1.getY(), 50, 25);
 		answerLabel2.setBounds(answerLabel2.getX(), answerLabel2.getY(), 50, 25);
 		answerLabel3.setBounds(answerLabel3.getX(), answerLabel3.getY(), 50, 25);
+		
+		feedbackLabel = new JLabel();
+		theLayout.putConstraint(SpringLayout.WEST, feedbackLabel, (base.frame.getWidth()/3), SpringLayout.WEST, this);
+		theLayout.putConstraint(SpringLayout.NORTH, feedbackLabel,  (base.frame.getHeight()/3), SpringLayout.NORTH, this);
+		feedbackLabel.setForeground(new Color(70, 130, 180));
+		feedbackLabel.setBackground(new Color(245, 245, 245));
+		feedbackLabel.setFont(new Font("Arial", Font.BOLD, 35));
 		
 		menu.setFont(new Font("Arial", Font.PLAIN, 30));
 		menu.setForeground(new Color(70, 130, 180));
@@ -182,6 +216,12 @@ public class Game3 extends JPanel implements KeyListener
 		theLayout.putConstraint(SpringLayout.NORTH, help, 0, SpringLayout.NORTH, menu);
 		theLayout.putConstraint(SpringLayout.EAST, help, -20, SpringLayout.WEST, menu);
 		
+		g3instruct = new JLabel("<html>To play use the arrow keys to help the <br/> shark swim to the correct fish. <br/> "
+				+ "<br/>The game ends when time runs out.</html>");
+		g3instruct.setFont(new Font("Arial", Font.PLAIN, 30));
+		g3instruct.setForeground(new Color(70, 130, 180));
+		g3instruct.setBackground(new Color(208, 243, 255));
+		
 		add(answerLabel1);
 		add(answerLabel2);
 		add(answerLabel3);
@@ -189,6 +229,22 @@ public class Game3 extends JPanel implements KeyListener
 		add(scoreLabel);
 		add(menu);
 		add(help);
+		add(questionLabel);
+		add(feedbackLabel);
+	}
+	
+	private void setBackground(){
+		try
+		{
+			backgroundImg = ImageIO.read(this.getClass().getResourceAsStream("background.jpg"));
+		}
+		catch (IOException ex)
+		{
+			System.out.println("File \"background.jpg\" is missing.");
+		}
+		backgroundImg = backgroundImg.getScaledInstance(base.frame.getWidth(), base.frame.getHeight(), java.awt.Image.SCALE_SMOOTH);
+		backgroundIcon = new ImageIcon(backgroundImg);
+		background = new JLabel(backgroundIcon);
 	}
 	
 	private void setUpImages()
@@ -206,7 +262,7 @@ public class Game3 extends JPanel implements KeyListener
 
 		sharkImg = sharkImg.getScaledInstance(sharkWidth, sharkHeight, java.awt.Image.SCALE_SMOOTH);
 		sharkIcon = new ImageIcon(sharkImg);
-		fishWidth = (base.frame.getWidth() / 10);
+		fishWidth = (base.frame.getWidth() / 9);
 		fishHeight = (base.frame.getHeight() / 8);
 		try
 		{
@@ -243,7 +299,7 @@ public class Game3 extends JPanel implements KeyListener
 		{
 			public void actionPerformed(ActionEvent onClick)
 			{
-				needsInstructions = true;
+				needsHelp = true;
 			}
 		});
 	}
@@ -259,6 +315,10 @@ public class Game3 extends JPanel implements KeyListener
 					showInstructions();
 					needsInstructions = false;
 				}
+				if(needsHelp){
+					JOptionPane.showMessageDialog(base.messagePanel, g3instruct, "Instructions",JOptionPane.INFORMATION_MESSAGE);
+					needsHelp = false;
+				}
 				if ((sec % 60) < 10)
 				{
 					timerLabel.setText("Time: " + (sec / 60) + ":0" + (sec % 60));
@@ -266,6 +326,13 @@ public class Game3 extends JPanel implements KeyListener
 				else
 				{
 					timerLabel.setText("Time: " + (sec / 60) + ":" + (sec % 60));
+				}
+				if(reset){
+					playGame();
+				}
+				if(!playing)
+				{
+					reset = true;
 				}
 				if (sec == 0)
 				{
@@ -287,14 +354,21 @@ public class Game3 extends JPanel implements KeyListener
 		{
 			public void actionPerformed(ActionEvent event)
 			{
-				if (playing)
+				if (playing && !needsInstructions && !needsHelp)
 				{
-					moveShark();
-					repaint();
-				}
-				else
-				{
-					refreshTimer.stop();
+					if(miss){
+						if(count >= 25){
+							feedbackLabel.setText("");	
+							repaint();
+							count = 0;
+							miss = false;
+						}
+						count ++;
+					}
+					else{
+						moveShark();
+						repaint();
+					}
 				}
 			}
 		};
@@ -306,26 +380,19 @@ public class Game3 extends JPanel implements KeyListener
 	private void playGame()
 	{
 		getQuestion();
-		
-		shark = new JLabel(sharkIcon);
-		sharkLocation.x = defaultSharkLocation.x;
-		sharkLocation.y = defaultSharkLocation.y;
-		shark.setText(question);
-		shark.setForeground(new Color(70, 130, 180));
-		shark.setFont(new Font("Arial", Font.BOLD, 30));
-		shark.setVerticalTextPosition(SwingConstants.BOTTOM);
-		shark.setHorizontalTextPosition(SwingConstants.LEFT);
-		add(shark);
-		addFeedbackLabels();
+		feedbackLabel.setText("");
+		addShark();
+		questionLabel.setText(question);
 		repaint();
 		guessed1 = false;
 		guessed2 = false;
 		guessed3 = false;
+		answerOptions = new ArrayList<Integer>();
 		randomPlacement = Controller.rng.nextInt(3);
 		for (int i = 0; i < 3; i++)
 		{
 			int randomAnswer = Controller.rng.nextInt(25);
-			while (randomAnswer == answer)
+			while (randomAnswer == answer || answerOptions.contains(randomAnswer))
 			{
 				randomAnswer = Controller.rng.nextInt(25);
 			}
@@ -333,40 +400,26 @@ public class Game3 extends JPanel implements KeyListener
 			{
 				randomAnswer = answer;
 			}
+			answerOptions.add(randomAnswer);
 			switch (i)
 			{
 				case 0:
-					answerLabel1.setText("= "+randomAnswer);
+					answerLabel1.setText(""+randomAnswer);
+					answerLabel1.setIcon(fishIcon);
 					break;
 				case 1:
-					answerLabel2.setText("= " + randomAnswer);
+					answerLabel2.setText("" + randomAnswer);
+					answerLabel2.setIcon(fishIcon);
 					break;
 				case 2:
-					answerLabel3.setText("= " + randomAnswer);
+					answerLabel3.setText("" + randomAnswer);
+					answerLabel3.setIcon(fishIcon);
 					break;
 			}
 		}
-	}
-
-	private void addFeedbackLabels()
-	{
-		rightLabel = new JLabel("Correct!  " + question.substring(0, question.indexOf("?")) + answer);
-		theLayout.putConstraint(SpringLayout.WEST, rightLabel, (base.frame.getWidth()/3), SpringLayout.WEST, this);
-		theLayout.putConstraint(SpringLayout.NORTH, rightLabel,  (base.frame.getHeight()/3), SpringLayout.NORTH, this);
-		rightLabel.setForeground(new Color(70, 130, 180));
-		rightLabel.setBackground(new Color(245, 245, 245));
-		rightLabel.setFont(new Font("Arial", Font.BOLD, 35));
-		rightLabel.setVisible(false);
-		add(rightLabel);
-
-		wrongLabel = new JLabel("Incorrect");
-		wrongLabel.setForeground(new Color(70, 130, 180));
-		wrongLabel.setBackground(new Color(245, 245, 245));
-		wrongLabel.setFont(new Font("Arial", Font.BOLD, 35));
-		theLayout.putConstraint(SpringLayout.NORTH, wrongLabel,  (base.frame.getHeight()/3), SpringLayout.NORTH, this);
-		theLayout.putConstraint(SpringLayout.WEST, wrongLabel, (base.frame.getWidth()/3), SpringLayout.WEST, this);
-		wrongLabel.setVisible(false);
-		add(wrongLabel);
+		add(background);
+		playing = true;
+		reset = false;
 	}
 
 	private void moveShark()
@@ -377,6 +430,7 @@ public class Game3 extends JPanel implements KeyListener
 			{
 				sharkLocation.y -= movementSpeed;
 			}
+			checkAnswer();
 		}
 		if (down)
 		{
@@ -384,6 +438,7 @@ public class Game3 extends JPanel implements KeyListener
 			{
 				sharkLocation.y += movementSpeed;
 			}
+			checkAnswer();
 		}
 		if (right)
 		{
@@ -391,6 +446,7 @@ public class Game3 extends JPanel implements KeyListener
 			{
 				sharkLocation.x += movementSpeed;
 			}
+			checkAnswer();
 		}
 		if (left)
 		{
@@ -398,8 +454,9 @@ public class Game3 extends JPanel implements KeyListener
 			{
 				sharkLocation.x -= movementSpeed;
 			}
+			checkAnswer();
 		}
-		checkAnswer();
+		//checkAnswer();
 	}
 
 	public void resolveKeyEvent(KeyEvent e, boolean value)
@@ -516,11 +573,25 @@ public class Game3 extends JPanel implements KeyListener
 		question = firstInteger + " + " + secondInteger + " = ? ";
 	}
 
+	private void addShark(){
+		shark = new JLabel(sharkIcon);
+		sharkLocation.x = defaultSharkLocation.x;
+		sharkLocation.y = defaultSharkLocation.y;
+		shark.setForeground(new Color(70, 130, 180));
+		shark.setFont(new Font("Arial", Font.BOLD, 30));
+		shark.setVerticalTextPosition(SwingConstants.BOTTOM);
+		shark.setHorizontalTextPosition(SwingConstants.LEFT);
+		add(shark);
+	}
 	private void updateScore(boolean correct)
 	{
 		if (correct)
 		{
 			score += 50;
+			scoreLabel.setText("Score: " + Integer.toString(score));
+			feedbackLabel.setText("Correct!  " + question.substring(0, question.indexOf("?")) + answer);
+			repaint();
+			playing = false;
 		}
 		else if (score > 0)
 		{
@@ -538,32 +609,33 @@ public class Game3 extends JPanel implements KeyListener
 			intersect = 0;
 			guessed1 = true;
 			answerLabel1.setText("");
-			// TODO
+			answerLabel1.setIcon(null);
 		}
 		else if (sharkBounds.intersects(answerLabel2.getBounds()) && !guessed2)
 		{
 			intersect = 1;
 			guessed2 = true;
 			answerLabel2.setText("");
+			answerLabel2.setIcon(null);
 		}
 		else if (sharkBounds.intersects(answerLabel3.getBounds()) && !guessed3)
 		{
 			intersect = 2;
 			guessed3 = true;
 			answerLabel3.setText("");
+			answerLabel3.setIcon(null);
 		}
 
 		if (intersect == randomPlacement)
 		{
-
-			labelFlash(rightLabel);
+			System.out.println("Correct answer given.");
 			updateScore(true);
 			remove(shark);
-			playGame();
 		}
 		else if (intersect != -1)
 		{
-			labelFlash(wrongLabel);
+			feedbackLabel.setText("Try again!");
+			miss = true;
 			updateScore(false);
 		}
 	}
@@ -599,9 +671,9 @@ public class Game3 extends JPanel implements KeyListener
 	public void paint(Graphics g)
 	{
 		requestFocus();
-		answerLabel1.setLocation(screenWidth - 150, 160);
-		answerLabel2.setLocation(screenWidth - 150, 280);
-		answerLabel3.setLocation(screenWidth - 150, 400);
+		answerLabel1.setLocation(screenWidth - 150, 100);
+		answerLabel2.setLocation(screenWidth - 150, 260);
+		answerLabel3.setLocation(screenWidth - 150, 420);
 		shark.setLocation(sharkLocation);
 		super.paint(g);
 	}
@@ -619,12 +691,14 @@ public class Game3 extends JPanel implements KeyListener
 	}
 	
 	public void showInstructions(){
-		JLabel g3instruct = new JLabel("<html>To play use the arrow keys to help the <br/> shark swim to the correct answer. <br/> "
-				+ "<br/>The game ends when time runs out.</html>");
-		g3instruct.setFont(new Font("Arial", Font.PLAIN, 30));
-		g3instruct.setForeground(new Color(70, 130, 180));
-		g3instruct.setBackground(new Color(208, 243, 255));
-		JOptionPane.showMessageDialog(base.messagePanel, g3instruct, "Instructions",JOptionPane.PLAIN_MESSAGE);
+		Object[] options = {"Okay", "Don't show again"};
+		int instructResult = JOptionPane.showOptionDialog(base.messagePanel, g3instruct, "Instructions",JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null, options, options[0]);
+		if(instructResult == 1){
+			// TODO save this user preference - no initial instructions
+		}
+		else{
+			// TODO save this user preference- initial instructions
+		}
 	}
 
 }
