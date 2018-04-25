@@ -563,5 +563,38 @@ public class MySQLData
 			catch (SQLException e){ e.printStackTrace(); }
 		}
 	}
+	
+	public int wantInstructions(String gameNum, int studentID){
+		int result = 1;
+		try
+		{
+			ResultSet res = null;
+			if (con == null)
+			{	getConnection();	}
+			String query = "SELECT " + gameNum + " FROM USER WHERE ID = ?;";
+			PreparedStatement preparedStatement = con.prepareStatement(query);
+			preparedStatement.setInt(1, studentID);
+			res = preparedStatement.executeQuery();
+			res.next();
+			result = res.getInt(gameNum);
+			}
+		catch (SQLException e){}
+		return result;
+	}
+	
+	public void setWantInstructions(String gameNum, int studentID){
+		try
+		{
+			if (con == null)
+			{	getConnection();	}
+			PreparedStatement preparedStatement = con.prepareStatement("UPDATE USER SET " + gameNum + " = ? WHERE ID = ?;");
+			preparedStatement.setInt(1, 0);
+			preparedStatement.setInt(2, studentID);
+			preparedStatement.executeUpdate();
+		}
+		catch (SQLException e){
+			e.printStackTrace();
+		}
+	}
 
 }
