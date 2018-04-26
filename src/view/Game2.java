@@ -30,10 +30,11 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Timer;
 
-public class Game2 extends JPanel implements KeyListener
+public class Game2 extends JPanel implements KeyListener, Game
 {
 	private static final long serialVersionUID = -5262708339581599541L;
 	private Controller base;
+	private Game thisGame;
 	private SpringLayout theLayout;
 	private JButton jelly;
 	private Timer jellyTimer;
@@ -79,10 +80,7 @@ public class Game2 extends JPanel implements KeyListener
 	private int questionTypes; // TODO
 	private int speed;
 	private Image backgroundImg;
-	private ImageIcon backgroundIcon;
 	private JLabel background;
-	private JLabel g2instruct;
-	private ArrayList<Integer> answerOptions;
 	
 	private int numQuestionsAsked;
 	private int questionsAnsweredCorrectly; // TODO
@@ -90,14 +88,12 @@ public class Game2 extends JPanel implements KeyListener
 	
 	private boolean playing;
 	private boolean reset;
-	private boolean needsInstructions;
-	private boolean needsHelp;
-
-	// TODO Grid bag layout conversion?
+	private boolean focus;
 
 	public Game2(Controller base)
 	{
 		this.base = base;
+		thisGame = this;
 		theLayout = new SpringLayout();
 		columnLabels = new ArrayList<JLabel>();
 		index = 1;
@@ -117,59 +113,45 @@ public class Game2 extends JPanel implements KeyListener
 		maxY = base.frame.getHeight();
 		xSpacing = (base.frame.getWidth()) / numberOfColumns;
 		jellyLocation = new Point();		
-		questionBase = 15;
+		questionBase = 20;
 		questionTypes = 0; // both, addition, subtraction
 		speed = 40;
 		numQuestionsAsked = 0;
 		questionsAnsweredCorrectly = 0;
-		needsHelp = false;
-		needsInstructions = base.getInstructionPreference("game2Instructions");
+		focus = true;
 
-		setBackground();
-		setUpImages();
+		try
+		{
+			backgroundImg = ImageIO.read(this.getClass().getResourceAsStream("background.jpg"));
+			jellyImg = ImageIO.read(this.getClass().getResourceAsStream("Jellyfish.png"));
+			chestImg = ImageIO.read(this.getClass().getResourceAsStream("chest_closed.png"));
+			fullChestImg = ImageIO.read(this.getClass().getResourceAsStream("chest_full.png"));
+			emptyChestImg = ImageIO.read(this.getClass().getResourceAsStream("chest_empty.png"));
+		}
+		catch (IOException ex){}
+		backgroundImg = backgroundImg.getScaledInstance(base.frame.getWidth(), base.frame.getHeight(), java.awt.Image.SCALE_SMOOTH);
+		background = new JLabel(new ImageIcon(backgroundImg));
+		jellyWidth = (int)(xSpacing / 2.5);
+		jellyHeight = (int) (xSpacing / 1.75);
+		jellyImg = jellyImg.getScaledInstance(jellyWidth, jellyHeight, java.awt.Image.SCALE_SMOOTH);
+		jellyIcon = new ImageIcon(jellyImg);
+		chestWidth = jellyWidth*2;
+		chestHeight = (int) (jellyWidth * 1.5);
+		chestImg = chestImg.getScaledInstance(chestWidth, chestHeight, java.awt.Image.SCALE_SMOOTH);
+		chestIcon = new ImageIcon(chestImg);
+		fullChestImg = fullChestImg.getScaledInstance(chestWidth, chestHeight, java.awt.Image.SCALE_SMOOTH);
+		fullChestIcon = new ImageIcon(fullChestImg);
+		emptyChestImg = emptyChestImg.getScaledInstance(chestWidth, chestHeight, java.awt.Image.SCALE_SMOOTH);
+		emptyChestIcon = new ImageIcon(emptyChestImg);
+		
 		addKeyListener(this);
 		setFocusable(true);
-		requestFocus();
+		focus();
 		setUpLayout();
 		playGame();
 		setUpTimers();
 		setUpListeners();
-	}
-
-	private void playGame()
-	{
-		index = 1;
-		movement = 2;
-		jellyLocation.y = 20;
-		getQuestion();
-		numQuestionsAsked++;
-		jelly = new JButton(question, jellyIcon);
-		jelly.setVerticalTextPosition(SwingConstants.TOP);
-		jelly.setFont(new Font("Tahoma", Font.BOLD, 25));
-		jelly.setForeground(new Color(20, 20, 217));
-		int randomPlacement = Controller.rng.nextInt(numberOfColumns);
-		columnLabels = null;
-		columnLabels = new ArrayList<JLabel>();
-		answerOptions = new ArrayList<Integer>();
-		for (int i = 0; i < numberOfColumns; i++)
-		{
-			int columnAnswer = Controller.rng.nextInt(25);
-			while (columnAnswer == answer || answerOptions.contains(columnAnswer))
-			{
-				columnAnswer = Controller.rng.nextInt(25);
-			}
-			if (i == randomPlacement)
-			{
-				columnAnswer = answer;
-				answerIndex = i;
-			}
-			answerOptions.add(columnAnswer);
-			columnLabels.add(new JLabel(" "+columnAnswer,chestIcon,JLabel.CENTER));
-		}
-		setUpVar();
-		add(background);
-		playing = true;
-		reset = false;
+		instructionsHandling();
 	}
 
 	private void setUpLayout()
@@ -217,13 +199,6 @@ public class Game2 extends JPanel implements KeyListener
 		theLayout.putConstraint(SpringLayout.NORTH, help, 0, SpringLayout.NORTH, menu);
 		theLayout.putConstraint(SpringLayout.EAST, help, -20, SpringLayout.WEST, menu);
 		
-		g2instruct = new JLabel("<html>To play use the side arrow keys to help the jellyfish <br/> float down to the correct treasure chest. <br/> "
-				+ "<br/>The down arrow will help the jellyfish go faster <br/> and the up arrow will slow it back down. <br/>"
-				+ " <br/>The game ends when time runs out. </html>");
-		g2instruct.setFont(new Font("Arial", Font.PLAIN, 30));
-		g2instruct.setForeground(new Color(70, 130, 180));
-		g2instruct.setBackground(new Color(208, 243, 255));
-		
 		add(timerLabel);
 		add(scoreLabel);
 		add(feedbackLabel);
@@ -231,55 +206,40 @@ public class Game2 extends JPanel implements KeyListener
 		add(help);
 	}
 	
-	private void setUpImages()
+	private void playGame()
 	{
-		jellyWidth = (int)(xSpacing / 2.5);
-		jellyHeight = (int) (xSpacing / 1.75);
-
-		try
+		index = 1;
+		movement = 2;
+		jellyLocation.y = 20;
+		getQuestion();
+		numQuestionsAsked++;
+		jelly = new JButton(question, jellyIcon);
+		jelly.setVerticalTextPosition(SwingConstants.TOP);
+		jelly.setFont(new Font("Tahoma", Font.BOLD, 25));
+		jelly.setForeground(new Color(20, 20, 217));
+		int randomPlacement = Controller.rng.nextInt(numberOfColumns);
+		columnLabels = null;
+		columnLabels = new ArrayList<JLabel>();
+		ArrayList<Integer> answerOptions = new ArrayList<Integer>();
+		for (int i = 0; i < numberOfColumns; i++)
 		{
-			jellyImg = ImageIO.read(this.getClass().getResourceAsStream("Jellyfish.png"));
+			int columnAnswer = Controller.rng.nextInt(questionBase);
+			while (columnAnswer == answer || answerOptions.contains(columnAnswer))
+			{
+				columnAnswer = Controller.rng.nextInt(questionBase);
+			}
+			if (i == randomPlacement)
+			{
+				columnAnswer = answer;
+				answerIndex = i;
+			}
+			answerOptions.add(columnAnswer);
+			columnLabels.add(new JLabel(" " + columnAnswer, chestIcon, JLabel.CENTER));
 		}
-		catch (IOException ex)
-		{
-			System.out.println("File \"Jellyfish.png\" is missing.");
-		}
-		jellyImg = jellyImg.getScaledInstance(jellyWidth, jellyHeight, java.awt.Image.SCALE_SMOOTH);
-		jellyIcon = new ImageIcon(jellyImg);
-		
-		chestWidth = jellyWidth*2;
-		chestHeight = (int) (jellyWidth * 1.5);
-		
-		try
-		{
-			chestImg = ImageIO.read(this.getClass().getResourceAsStream("chest_closed.png"));
-		}
-		catch (IOException ex)
-		{
-			System.out.println("File \"chest_closed.png\" is missing.");
-		}
-		chestImg = chestImg.getScaledInstance(chestWidth, chestHeight, java.awt.Image.SCALE_SMOOTH);
-		chestIcon = new ImageIcon(chestImg);
-		try
-		{
-			fullChestImg = ImageIO.read(this.getClass().getResourceAsStream("chest_full.png"));
-		}
-		catch (IOException ex)
-		{
-			System.out.println("File \"chest_full.png\" is missing.");
-		}
-		fullChestImg = fullChestImg.getScaledInstance(chestWidth, chestHeight, java.awt.Image.SCALE_SMOOTH);
-		fullChestIcon = new ImageIcon(fullChestImg);
-		try
-		{
-			emptyChestImg = ImageIO.read(this.getClass().getResourceAsStream("chest_empty.png"));
-		}
-		catch (IOException ex)
-		{
-			System.out.println("File \"chest_empty.png\" is missing.");
-		}
-		emptyChestImg = emptyChestImg.getScaledInstance(chestWidth, chestHeight, java.awt.Image.SCALE_SMOOTH);
-		emptyChestIcon = new ImageIcon(emptyChestImg);
+		setUpVar();
+		add(background);
+		playing = true;
+		reset = false;
 	}
 
 	private void setUpListeners()
@@ -291,12 +251,14 @@ public class Game2 extends JPanel implements KeyListener
 				stopTimers();
 				playing = false;
 				int dialogResult = JOptionPane.showConfirmDialog (null, "Your score is " + score + ".  Would you like to exit the game?","Exit game?",JOptionPane.OK_CANCEL_OPTION);
-				if(dialogResult == JOptionPane.OK_OPTION){
-					//add game record
+				if(dialogResult == JOptionPane.OK_OPTION)
+				{
+					//TODO add game record
 					base.returnToMenu();
 					removeVar();
 				}
-				else{
+				else
+				{
 					startTimers();
 					playing = true;
 				}
@@ -306,23 +268,9 @@ public class Game2 extends JPanel implements KeyListener
 		{
 			public void actionPerformed(ActionEvent onClick)
 			{
-				needsHelp = true;
+				new InstructionPanel(base, 2, base.getInstructionPreference("game2Instructions"), thisGame);
 			}
 		});
-	}
-	
-	private void setBackground(){
-		try
-		{
-			backgroundImg = ImageIO.read(this.getClass().getResourceAsStream("background.jpg"));
-		}
-		catch (IOException ex)
-		{
-			System.out.println("File \"background.jpg\" is missing.");
-		}
-		backgroundImg = backgroundImg.getScaledInstance(base.frame.getWidth(), base.frame.getHeight(), java.awt.Image.SCALE_SMOOTH);
-		backgroundIcon = new ImageIcon(backgroundImg);
-		background = new JLabel(backgroundIcon);
 	}
 
 	private void setUpVar()
@@ -374,14 +322,6 @@ public class Game2 extends JPanel implements KeyListener
 			{
 				if (playing)
 				{	
-					if(needsInstructions){
-						showInstructions();
-						needsInstructions = false;
-					}
-					if(needsHelp){
-						JOptionPane.showMessageDialog(base.messagePanel, g2instruct, "Instructions",JOptionPane.INFORMATION_MESSAGE);
-						needsHelp = false;
-					}
 					if ((currentTime % 60) < 10)
 					{
 						timerLabel.setText("Time: " + (int) (currentTime / 60) + ":0" + (int) (currentTime % 60));
@@ -397,7 +337,8 @@ public class Game2 extends JPanel implements KeyListener
 					removeVar();
 					playGame();
 				}
-				else if (!playing){
+				else if (!playing)
+				{
 					reset = true;
 				}
 				if (currentTime == 0)
@@ -420,7 +361,7 @@ public class Game2 extends JPanel implements KeyListener
 		{
 			public void actionPerformed(ActionEvent event)
 			{
-				if (playing && !needsInstructions && !needsHelp)
+				if (playing)
 				{
 					jellyLocation.y += movement;
 					if (jellyLocation.y >= maxY - chestWidth)
@@ -435,6 +376,15 @@ public class Game2 extends JPanel implements KeyListener
 		jellyTimer.start();
 		jellyTimer.setRepeats(true);
 
+	}
+	
+	private void instructionsHandling()
+	{
+		boolean showInstructions = base.getInstructionPreference("game2Instructions");
+		if(showInstructions)
+		{
+			new InstructionPanel(base, 2, showInstructions, this);
+		}
 	}
 
 	private void updateScore(boolean correct)
@@ -540,7 +490,7 @@ public class Game2 extends JPanel implements KeyListener
 		else
 		{
 			System.out.println("Incorrect answer given.");
-			feedbackLabel.setText("Nice try!  " + question.substring(0, question.indexOf("?")) + answer);
+			feedbackLabel.setText("Oops,  " + question.substring(0, question.indexOf("?")) + answer);
 			feedbackLabel.setIcon(emptyChestIcon);
 			removeVar();
 			repaint();
@@ -567,6 +517,29 @@ public class Game2 extends JPanel implements KeyListener
 		jelly.setLocation(jellyLocation);
 	}
 
+	private void focus()
+	{
+		if(focus)
+		{	
+			requestFocus();	
+		}
+	}
+	
+	public void stopTimers()
+	{
+		jelly.setVisible(false);
+		focus = false;
+		displayTime.stop();
+		jellyTimer.stop();
+	}
+	public void startTimers()
+	{
+		jelly.setVisible(true);
+		focus = true;
+		displayTime.start();
+		jellyTimer.start();
+	}
+	
 	public void keyPressed(KeyEvent e)
 	{
 		if ((e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A) && index > 0)
@@ -590,37 +563,17 @@ public class Game2 extends JPanel implements KeyListener
 	}
 
 	@Override
-	public void keyReleased(KeyEvent e)
-	{}
+	public void keyReleased(KeyEvent e){}
 
 	@Override
-	public void keyTyped(KeyEvent e)
-	{}
+	public void keyTyped(KeyEvent e){}
 
 	@Override
 	public void paint(Graphics g)
 	{
-		requestFocus();
+		focus();
 		updateJellyLocation();
+		g.drawImage(backgroundImg,0,0,this);
 		super.paint(g);;
-	}
-	
-	private void stopTimers()
-	{
-		displayTime.stop();
-		jellyTimer.stop();
-	}
-	private void startTimers()
-	{
-		displayTime.start();
-		jellyTimer.start();
-	}
-
-	public void showInstructions(){
-		Object[] options = {"Okay", "Don't show again"};
-		int instructResult = JOptionPane.showOptionDialog(base.messagePanel, g2instruct, "Instructions",JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null, options, options[0]);
-		if(instructResult == 1){
-			base.setInstructionPreferences("game2Instructions");
-		}
 	}
 }

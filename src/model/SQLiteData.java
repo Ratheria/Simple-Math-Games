@@ -29,7 +29,6 @@ public class SQLiteData
 		this.base = base;
 		hasData = false;
 		getConnection();
-		initial();
 	}
 	
 	public ResultSet query(String SQLCommand)
@@ -473,11 +472,8 @@ public class SQLiteData
 				System.out.println("linux fix didn't work");
 			}
 		}
-		initial();
-	}
 
-	private void initial() 
-	{
+		
 		if (!hasData)
 		{
 			hasData = true;

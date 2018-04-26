@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
 
+import com.mysql.jdbc.exceptions.jdbc4.CommunicationsException;
 
 import adapter.Controller;
 
@@ -27,7 +28,6 @@ public class MySQLData
 		this.base = base;
 		hasData = true;
 		getConnection();
-		initial();
 	}
 	
 	public ResultSet query(String SQLCommand)
@@ -362,23 +362,6 @@ public class MySQLData
 		{	e.printStackTrace();	}
 		return result;
 	}
-
-	private void addCustomEquations(String classID, String questionList, int numberOfEquations, int frequency)
-	{
-		if (con == null)
-		{	getConnection();	}
-		try 
-		{
-			PreparedStatement preparedStatement;
-			preparedStatement = con.prepareStatement("INSERT INTO CUSTOM_EQUATIONS VALUES( ?, ?, ?, ?);");		
-			preparedStatement.setString(1, classID);
-			preparedStatement.setString(2, questionList);
-			preparedStatement.setInt(3, numberOfEquations);
-			preparedStatement.setInt(4, frequency);
-			preparedStatement.execute();
-		} 
-		catch (SQLException e) {e.printStackTrace();}
-	}
 	
 	public void addGameRecord(int studentID, int gameID, int questionsAnswered, int questionsCorrect, int guesses, int totalSeconds)
 	{
@@ -437,6 +420,23 @@ public class MySQLData
 		return res;
 	}
 	
+	private void addCustomEquations(String classID, String questionList, int numberOfEquations, int frequency)
+	{
+		if (con == null)
+		{	getConnection();	}
+		try 
+		{
+			PreparedStatement preparedStatement;
+			preparedStatement = con.prepareStatement("INSERT INTO CUSTOM_EQUATIONS VALUES( ?, ?, ?, ?);");		
+			preparedStatement.setString(1, classID);
+			preparedStatement.setString(2, questionList);
+			preparedStatement.setInt(3, numberOfEquations);
+			preparedStatement.setInt(4, frequency);
+			preparedStatement.execute();
+		} 
+		catch (SQLException e) {e.printStackTrace();}
+	}
+	
 	private boolean userExists(int ID)
 	{
 		boolean result = false;
@@ -457,114 +457,27 @@ public class MySQLData
 
 	private void getConnection()
 	{
-		try {
-//			Class.forName("org.mysql.JDBC");
-		    String dbName = "smg";
-			String host = "smg-database.cxdny0vkhuno.us-west-2.rds.amazonaws.com";
-			String userName = "smg_database";
-			String password = "5mg.Pa55w0rd";
-	        String jdbcUrl = "jdbc:mysql://" + host + ":" + "3306" + "/" + dbName + "?user=" + userName + "&password=" + password;
-		    con = DriverManager.getConnection(jdbcUrl);
-		}
-//		try
-//		{
-//			Class.forName("org.sqlite.JDBC");
-//			String databaseFilePath = "jdbc:sqlite:C:/ProgramData/MPDKWID";
-//			con = DriverManager.getConnection(databaseFilePath);
-//		}
-		catch (SQLException  e)
-		{
-			e.printStackTrace();
-//			//TODO Mac?
-//			try			
-//			{
-//				Class.forName("org.sqlite.JDBC");
-//				File homedir = new File(System.getProperty("user.home"));
-//				String databaseFilePath = "jdbc:sqlite:" + homedir + "/MPDKWID";
-//				con = DriverManager.getConnection(databaseFilePath);
-//			}
-//			catch (SQLException | ClassNotFoundException e2)
-//			{
-//				e2.printStackTrace();
-//				System.out.println("linux fix didn't work");
-//			}
-		}
-		initial();
-	}
-
-	private void initial() 
-	{
-		if (!hasData)
-		{
-			hasData = true;
-			Statement state;
-			try
-			{
-				state = con.createStatement();
-				
-				// drop table if exists
-				state.execute("DROP TABLE IF EXISTS USER;");
-				
-				ResultSet res = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='USER'");
-				if (!res.next())
-				{
-					System.out.println("Building the User table.");
-					state = con.createStatement();
-					state.executeUpdate("CREATE TABLE USER("
-							+ "ID INTEGER," + "userName VARCHAR(15)," + "pass VARCHAR(15)," + "firstName VARCHAR(30)," + "lastName VARCHAR(30)," 
-							+ "classID VARCHAR(5)," + "permission INTEGER," + "failedAttempts INTEGER," + "isLocked BOOLEAN,"
-							+ "PRIMARY KEY (ID));");
-					
-					addUser(000000, "root", "root", "Root", "User", "00", 0);
-					addUser(111111, "deft", "deft", "Default", "Teacher", "1A", 2);
-					addUser(222222, "defs", "defs", "Default", "Student", "1A", 3);
-				}
-				
-				//Drop table			
-				state.execute("DROP TABLE IF EXISTS CUSTOM_EQUATIONS;");
-				
-				ResultSet customEq = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' " +
-						"AND name='CUSTOM_EQUATIONS'");
-				if (!customEq.next())
-				{
-					System.out.println("Building the custom equations table.");
-					state = con.createStatement();
-					state.executeUpdate("CREATE TABLE CUSTOM_EQUATIONS("
-							+ "classID VARCHAR(5)," + "questionList VARCHAR(600)," + "numberOfEquations INTEGER," + "frequency INTEGER," 
-							+ "FOREIGN KEY (classID) REFERENCES USER(classID),"
-							+ "PRIMARY KEY (classID));");
-					
-					addCustomEquations("1A", "5+10:7-2", 2, 5);
-				}
-				
-				// drop table if exists
-				//TODO Once we are done testing we want to get rid of this logic so it doesn't reset every time you open the application.
-				state.execute("DROP TABLE IF EXISTS GAME_RECORDS;");
-				ResultSet gameRecords = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' " +
-						"AND name='GAME_RECORDS'");
-				
-				if (!gameRecords.next())
-				{
-					System.out.println("Building Game Records table.");
-					state = con.createStatement();
-					state.executeUpdate("CREATE TABLE GAME_RECORDS("
-							+ "studentID INTEGER," + "gameID INTEGER," 
-							+ "questionsAnswered INTEGER," + "questionsCorrect INTEGER," + "guesses INTEGER," + "totalSeconds INTEGER,"
-							+ "date VARCHAR(19)," + "recordID INTEGER,"
-							+ "PRIMARY KEY (recordID),"  
-							+ "FOREIGN KEY (studentID) REFERENCES USER(ID));");
-				}
-				
-				
-				//TODO User high scores and general stats database (games played, total score(s))
-				//TODO overall high scores
-				
-			}
-			catch (SQLException e){ e.printStackTrace(); }
-		}
+		String dbName = "smg";
+		String host = "smg-database.cxdny0vkhuno.us-west-2.rds.amazonaws.com";
+		String userName = "smg_database";
+		String password = "5mg.Pa55w0rd";
+        String jdbcUrl = "jdbc:mysql://" + host + ":" + "3306" + "/" + dbName + "?user=" + userName + "&password=" + password;
+		try 
+		{	con = DriverManager.getConnection(jdbcUrl);	}
+		catch(SQLException se)
+		{	se.printStackTrace();	}
 	}
 	
-	public int wantInstructions(String gameNum, int studentID){
+	
+	
+	
+	//TODO User high scores and general stats database (games played, total score(s))
+	//TODO overall high scores
+	
+	
+	
+	public int wantInstructions(String gameNum, int studentID)
+	{
 		int result = 1;
 		try
 		{
@@ -577,24 +490,27 @@ public class MySQLData
 			res = preparedStatement.executeQuery();
 			res.next();
 			result = res.getInt(gameNum);
-			}
+		}
 		catch (SQLException e){}
 		return result;
 	}
 	
-	public void setWantInstructions(String gameNum, int studentID){
+	public void setWantInstructions(String gameNum, int studentID, boolean value)
+	{
+		int valueAsInt = value ? 1 : 0;
 		try
 		{
 			if (con == null)
 			{	getConnection();	}
 			PreparedStatement preparedStatement = con.prepareStatement("UPDATE USER SET " + gameNum + " = ? WHERE ID = ?;");
-			preparedStatement.setInt(1, 0);
+			preparedStatement.setInt(1, valueAsInt);
 			preparedStatement.setInt(2, studentID);
 			preparedStatement.executeUpdate();
 		}
-		catch (SQLException e){
+		catch (SQLException e)
+		{
 			e.printStackTrace();
 		}
 	}
-
+	
 }

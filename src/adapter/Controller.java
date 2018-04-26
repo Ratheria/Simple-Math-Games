@@ -437,18 +437,21 @@ public class Controller
 		}
 	}
 	
-	public boolean getInstructionPreference(String gameInstructions){
-		int result = database.wantInstructions(gameInstructions, ID);
+	public boolean getInstructionPreference(String gameInstructions)
+	{
+		boolean result = true;
+		int displayInstructions = database.wantInstructions(gameInstructions, ID);
 		System.out.println(result);
-		if(result == 0)
+		if(displayInstructions == 0)
 		{
-			return false;
+			result = false;
 		}
-		return true;
+		return result;
 	}
 	
-	public void setInstructionPreferences(String gameInstructions){
-		database.setWantInstructions(gameInstructions, ID);
+	public void setInstructionPreferences(String gameInstructions, boolean value)
+	{
+		database.setWantInstructions(gameInstructions, ID, value);
 	}
 		
 }

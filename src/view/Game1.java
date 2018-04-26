@@ -15,7 +15,6 @@ import java.io.IOException;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 import adapter.Controller;
 import javax.imageio.ImageIO;
@@ -27,12 +26,12 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Timer;
 
-public class Game1 extends JPanel
+public class Game1 extends JPanel implements Game
 {
 	private static final long serialVersionUID = -5262708339581599541L;
 	private Controller base;
+	private Game thisGame;
 	private ArrayList<FishObject> currentFish;
-	private ArrayList<Integer> answerOptions;
 	private int width;
 	private int height;
 	private int maxFishVertical;
@@ -62,13 +61,9 @@ public class Game1 extends JPanel
 	private ImageIcon fishIcon;
 	private Image catchImg;
 	private ImageIcon catchIcon;
-	private Image missImg;
-	private ImageIcon missIcon;
 	private Image backgroundImg;
-	private ImageIcon backgroundIcon;
 	private JLabel feedbackLabel;
 	private JLabel background;
-	private JLabel g1instruct;
 
 	private int questionBase;
 	private int questionTypes; // TODO
@@ -82,13 +77,12 @@ public class Game1 extends JPanel
 
 	private boolean playing;
 	private boolean reset;
-	private boolean needsInstructions;
-	private boolean needsHelp;
 	private boolean miss;
 
 	public Game1(Controller base)
 	{
 		this.base = base;
+		thisGame = this;
 		currentFish = new ArrayList<FishObject>();
 		width = base.frame.getWidth();
 		height = base.frame.getHeight();
@@ -105,53 +99,44 @@ public class Game1 extends JPanel
 		questionLabel.setBackground(new Color(245, 245, 245));
 		scoreLabel = new JLabel("Score: 0");
 		menu = new JButton(" Exit ");
-		help = new JButton( "Help" );
-		questionBase = 15;
+		help = new JButton(" Help ");
+		
+		questionBase = 20;
 		questionTypes = 0; // both, addition, subtraction
+		
 		fishSpeed = 40;
 		questionsAnswered = 0;
 		questionsCorrect = 0;
 		guesses = 0;
 		pause = 0;
 		feedbackLabel = new JLabel("");
-		needsHelp = false;
-		needsInstructions = base.getInstructionPreference("game1Instructions");
+		
+		fishImageWidth = (width - 250) / 8;
+		fishImageHeight = (height - 250) / 5;
+		poleWidth = (base.frame.getWidth() / 3);
+		poleHeight = (base.frame.getHeight() / 2);
+		try
+		{
+			fishImg = ImageIO.read(this.getClass().getResourceAsStream("fish.png"));
+			backgroundImg = ImageIO.read(this.getClass().getResourceAsStream("background.jpg"));
+			catchImg = ImageIO.read(this.getClass().getResourceAsStream("fishingpoleHooked.png"));
+		}
+		catch (IOException e){e.printStackTrace();}
+		fishImg = fishImg.getScaledInstance(fishImageWidth, fishImageHeight, java.awt.Image.SCALE_SMOOTH);
+		fishIcon = new ImageIcon(fishImg);
+		backgroundImg = backgroundImg.getScaledInstance(base.frame.getWidth(), base.frame.getHeight(), java.awt.Image.SCALE_SMOOTH);
+		background = new JLabel(new ImageIcon(backgroundImg));
+		catchImg = catchImg.getScaledInstance(poleWidth, poleHeight, java.awt.Image.SCALE_SMOOTH);
+		catchIcon = new ImageIcon(catchImg);
 		
 		setBorder(new LineBorder(new Color(70, 130, 180), 10));
-		setBackground();
-		setUpImages();
 		setUpLayout();
 		playGame();
 		setUpListeners();
 		setUpTimers();
+		instructionsHandling();
 	}
-
-	private void playGame()
-	{
-		feedbackLabel.setIcon(null);
-		getQuestion();
-		int randomPlacement = Controller.rng.nextInt(maxFishVertical);
-		answerOptions = new ArrayList();
-		for (int i = 0; i < maxFishVertical; i++)
-		{
-			int fishAnswer = Controller.rng.nextInt(25);
-			while (fishAnswer == answer || answerOptions.contains(fishAnswer))
-			{
-				fishAnswer = Controller.rng.nextInt(25);
-			}
-			if (i == randomPlacement)
-			{
-				fishAnswer = answer;
-			}
-			answerOptions.add(fishAnswer);
-			currentFish.add(new FishObject(fishAnswer, i, this, fishIcon));
-		}
-		addFish();
-		add(background);
-		playing = true;
-		reset = false;
-	}
-
+	
 	private void setUpLayout()
 	{
 		setLayout(theLayout);
@@ -195,12 +180,6 @@ public class Game1 extends JPanel
 		theLayout.putConstraint(SpringLayout.NORTH, help, 0, SpringLayout.NORTH, menu);
 		theLayout.putConstraint(SpringLayout.EAST, help, -20, SpringLayout.WEST, menu);
 		
-		g1instruct = new JLabel("<html>To catch a fish click on the fish that has <br/> the answer to the math question below. <br/> "
-				+ "<br/>The game ends when time runs out or the <br/> correct fish swims off screen.</html>");
-		g1instruct.setFont(new Font("Arial", Font.PLAIN, 30));
-		g1instruct.setForeground(new Color(70, 130, 180));
-		g1instruct.setBackground(new Color(208, 243, 255));
-		
 		add(timerLabel);
 		add(scoreLabel);
 		add(questionLabel);
@@ -208,60 +187,34 @@ public class Game1 extends JPanel
 		add(help);
 		add(feedbackLabel);
 	}
-	private void setBackground(){
-		try
+
+	private void playGame()
+	{
+		feedbackLabel.setIcon(null);
+		getQuestion();
+		int randomPlacement = Controller.rng.nextInt(maxFishVertical);
+		ArrayList<Integer> answerOptions = new ArrayList<Integer>();
+		for (int i = 0; i < maxFishVertical; i++)
 		{
-			backgroundImg = ImageIO.read(this.getClass().getResourceAsStream("background.jpg"));
+			int fishAnswer = Controller.rng.nextInt(questionBase);
+			while (fishAnswer == answer || answerOptions.contains(fishAnswer))
+			{
+				fishAnswer = Controller.rng.nextInt(questionBase);
+			}
+			if (i == randomPlacement)
+			{
+				fishAnswer = answer;
+			}
+			answerOptions.add(fishAnswer);
+			currentFish.add(new FishObject(fishAnswer, i, this, fishIcon));
 		}
-		catch (IOException ex)
-		{
-			System.out.println("File \"background.jpg\" is missing.");
-		}
-		backgroundImg = backgroundImg.getScaledInstance(base.frame.getWidth(), base.frame.getHeight(), java.awt.Image.SCALE_SMOOTH);
-		backgroundIcon = new ImageIcon(backgroundImg);
-		background = new JLabel(backgroundIcon);
+		remove(background);
+		addFish();
+		add(background);
+		playing = true;
+		reset = false;
 	}
 	
-	private void setUpImages(){
-		fishImageWidth = (width - 250) / 8;
-		fishImageHeight = (height - 250) / 5;
-		
-		try
-		{
-			fishImg = ImageIO.read(this.getClass().getResourceAsStream("fish.png"));
-		}
-		catch (IOException ex)
-		{
-			System.out.println("File fish.png is missing.");
-		}
-		fishImg = fishImg.getScaledInstance(fishImageWidth, fishImageHeight, java.awt.Image.SCALE_SMOOTH);
-		fishIcon = new ImageIcon(fishImg);
-		
-		poleWidth = (base.frame.getWidth() / 3);
-		poleHeight = (base.frame.getHeight() / 2);
-
-		try
-		{
-			catchImg = ImageIO.read(this.getClass().getResourceAsStream("fishingpoleHooked.png"));
-		}
-		catch (IOException ex)
-		{
-			System.out.println("File \"fishingpoleHooked.png\" is missing.");
-		}
-		catchImg = catchImg.getScaledInstance(poleWidth, poleHeight, java.awt.Image.SCALE_SMOOTH);
-		catchIcon = new ImageIcon(catchImg);
-		try
-		{
-			missImg = ImageIO.read(this.getClass().getResourceAsStream("fishingpole.png"));
-		}
-		catch (IOException ex)
-		{
-			System.out.println("File \"fishingpole.png\" is missing.");
-		}
-		missImg = missImg.getScaledInstance(poleWidth, poleHeight, java.awt.Image.SCALE_SMOOTH);
-		missIcon = new ImageIcon(missImg);
-	}
-
 	private void setUpListeners()
 	{
 		menu.addActionListener(new ActionListener()
@@ -270,12 +223,14 @@ public class Game1 extends JPanel
 			{
 				stopTimers();
 				playing = false;
-				int dialogResult = JOptionPane.showConfirmDialog (null, "Your score is " + score + ".  Would you like to exit the game?","Exit game?",JOptionPane.OK_CANCEL_OPTION);
-				if(dialogResult == JOptionPane.OK_OPTION){
+				int dialogResult = JOptionPane.showConfirmDialog(null, "Your score is " + score + ". Would you like to exit the game?", "Exit game?", JOptionPane.OK_CANCEL_OPTION);
+				if(dialogResult == JOptionPane.OK_OPTION)
+				{
 					base.addGameRecord(1, questionsAnswered, questionsCorrect, guesses, gamePeriod - currentTime);
 					base.returnToMenu();
 				}
-				else{
+				else
+				{
 					startTimers();
 					playing = true;
 				}
@@ -285,7 +240,7 @@ public class Game1 extends JPanel
 		{
 			public void actionPerformed(ActionEvent onClick)
 			{
-				needsHelp = true;
+				new InstructionPanel(base, 1, base.getInstructionPreference("game1Instructions"), thisGame);
 			}
 		});
 	}
@@ -299,14 +254,6 @@ public class Game1 extends JPanel
 			{
 				if (playing)
 				{
-					if(needsInstructions){
-						showInstructions();
-						needsInstructions = false;
-					}
-					if(needsHelp){
-						JOptionPane.showMessageDialog(base.messagePanel, g1instruct, "Instructions",JOptionPane.INFORMATION_MESSAGE);
-						needsHelp = false;
-					}
 					if ((currentTime % 60) < 10)
 					{
 						timerLabel.setText("Time: " + (int) (currentTime / 60) + ":0" + (int) (currentTime % 60));
@@ -320,7 +267,7 @@ public class Game1 extends JPanel
 				else if (reset)
 				{
 					clearCurrentFish();
-					remove(background);
+					//remove(background);
 					playGame();
 				}
 				else if (!playing)
@@ -347,16 +294,19 @@ public class Game1 extends JPanel
 		{
 			public void actionPerformed(ActionEvent event)
 			{
-				if(playing && !needsInstructions && !needsHelp){
+				if(playing)
+				{
 					moveFish();
-					if(miss){
-						if (pause >= 20){
+					if(miss)
+					{
+						if (pause >= 15)
+						{
 							miss = false;
 							pause = 0;
 							moveFish();
 							questionLabel.setText(question);
 						}
-						pause ++;
+						pause++;
 					}
 				}
 			}
@@ -366,19 +316,16 @@ public class Game1 extends JPanel
 
 		startTimers();
 	}
-
-	private void startTimers()
+	
+	private void instructionsHandling()
 	{
-		displayTime.start();
-		fishTimer.start();
+		boolean showInstructions = base.getInstructionPreference("game1Instructions");
+		if(showInstructions)
+		{
+			new InstructionPanel(base, 1, showInstructions, this);
+		}
 	}
-
-	private void stopTimers()
-	{
-		displayTime.stop();
-		fishTimer.stop();
-	}
-
+	
 	private void getQuestion()
 	{
 		int random = Controller.rng.nextInt(10);
@@ -426,13 +373,9 @@ public class Game1 extends JPanel
 			case 0:
 				int random = Controller.rng.nextInt(2);
 				if (random < 1)
-				{
-					generateAddition();
-				}
+				{	generateAddition();	}
 				else
-				{
-					generateSubtraction();
-				}
+				{	generateSubtraction();	}
 				break;
 			case 1:
 				generateAddition();
@@ -529,6 +472,20 @@ public class Game1 extends JPanel
 		}
 	}
 
+	public void startTimers()
+	{
+		questionLabel.setVisible(true);
+		displayTime.start();
+		fishTimer.start();
+	}
+
+	public void stopTimers()
+	{
+		questionLabel.setVisible(false);
+		displayTime.stop();
+		fishTimer.stop();
+	}
+	
 	public void fishWentOffScreen(FishObject fish)
 	{
 		if (fish.getAnswer() == answer)
@@ -567,12 +524,4 @@ public class Game1 extends JPanel
 		super.paint(g);
 	}
 	
-	public void showInstructions(){
-		Object[] options = {"Okay", "Don't show again"};
-		int instructResult = JOptionPane.showOptionDialog(base.messagePanel, g1instruct, "Instructions",JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null, options, options[0]);
-		if(instructResult == 1){
-			base.setInstructionPreferences("game1Instructions");
-		}
-	}
-
 }
