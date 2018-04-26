@@ -75,6 +75,7 @@ public class MySQLData
 				PreparedStatement preparedStatement = con.prepareStatement(query);
 				preparedStatement.setInt(1, ID);
 				res = preparedStatement.executeQuery();
+				res.next();
 				String result = res.getString("pass");
 				if (pass.equals(result))
 				{
@@ -135,31 +136,41 @@ public class MySQLData
 		catch (SQLException e){ e.printStackTrace(); }
 	}
 	
-	public void loginFailure(int ID)
+	public void loginFailure(int ID, String userName)
 	{
 		try
 		{
 			ResultSet res = null;
 			if (con == null)
 			{	getConnection();	}
+			System.out.println("userNameExists");
+			String getID = "SELECT ID from USER WHERE userName = ?";
+			PreparedStatement prepState = con.prepareStatement(getID);
+			prepState.setString(1, userName);
+			res = prepState.executeQuery();
+			res.next();
+			ID = res.getInt("ID");
+			System.out.println("ID: " + ID);
+
 			String query = "SELECT failedAttempts FROM USER WHERE ID = ?";
 			PreparedStatement preparedStatement = con.prepareStatement(query);
 			preparedStatement.setInt(1, ID);
 			res = preparedStatement.executeQuery();
+			res.next();
 			int result = res.getInt("failedAttempts");
+			System.out.println("failedAttempts: " + result);
 			result += 1;
-			if(ID != 0)
-			{
+			if (ID != 0) {
 				query = "UPDATE USER SET failedAttempts = ? WHERE ID = ?";
 				preparedStatement = con.prepareStatement(query);
 				preparedStatement.setInt(1, result);
 				preparedStatement.setInt(2, ID);
 				preparedStatement.executeUpdate();
-				if (result > 5)
-				{
+				if (result > 5) {
+					System.out.println("should be checking if locked");
 					query = "UPDATE USER SET isLocked = ? WHERE ID = ?";
 					preparedStatement = con.prepareStatement(query);
-					preparedStatement.setBoolean(1, true);
+					preparedStatement.setInt(1, 1);
 					preparedStatement.setInt(2, ID);
 					preparedStatement.executeUpdate();
 				}
@@ -453,6 +464,41 @@ public class MySQLData
 		}
 		catch (SQLException e){}
 		return result;
+	}
+	
+	public boolean userNameExists(String userName) {
+		boolean result = false;
+		ResultSet res = null;
+		try
+		{
+			if (con == null)
+			{	getConnection();	}
+			String query = "SELECT userName FROM USER WHERE userName = ?";
+			PreparedStatement preparedStatement = con.prepareStatement(query);
+			preparedStatement.setString(1, userName);
+			res = preparedStatement.executeQuery();
+			result = res.next();
+		}
+		catch (SQLException e){}
+		return result;
+	}
+	
+	public int getID(String userName) {
+		ResultSet res = null;
+		
+		try
+		{
+			if (con == null)
+			{	getConnection();	}
+			String query = "SELECT ID FROM USER WHERE userName = ?";
+			PreparedStatement preparedStatement = con.prepareStatement(query);
+			preparedStatement.setString(1, userName);
+			res = preparedStatement.executeQuery();
+			res.next();
+			return res.getInt("ID");
+		}
+		catch (SQLException e){}
+		return -1;
 	}
 
 	private void getConnection()

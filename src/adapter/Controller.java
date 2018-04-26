@@ -71,52 +71,58 @@ public class Controller
 	{
 		JPanel errorPanel = new JPanel();	
 		
-		ResultSet res = database.compareLogin(userName, pass);
-		try
-		{
-			boolean hasRes = res.next();
-			if ((database.isLocked(ID) != 0) && hasRes)
+		// check if user exists here
+		if (database.userNameExists(userName)) {
+			ID = database.getID(userName);
+			// these two steps are basically the same, but it works
+			ResultSet res = database.compareLogin(userName, pass);
+			try
 			{
-				JOptionPane.showMessageDialog(errorPanel, "This account has been locked due to too many failed login attempts.", "Error", JOptionPane.ERROR_MESSAGE);
+				boolean hasRes = res.next();
+							
+				if ((database.isLocked(ID) != 0) && hasRes)
+				{
+					JOptionPane.showMessageDialog(errorPanel, "This account has been locked due to too many failed login attempts.", "Error", JOptionPane.ERROR_MESSAGE);
+				}
+				else if (hasRes)
+				{
+					ID = res.getInt("ID");
+					res = database.getUserInfo(ID);
+					if (res.next())
+					{
+						permission = res.getInt("permission");
+						firstName = res.getString("firstName");
+						lastName = res.getString("lastName");
+						classID = res.getString("classID");
+					}
+					res = database.getCustomEquationInfo(classID);
+					if (res.next())
+					{
+						equationString = res.getString("questionList");
+						customEquations = getCustomEquationList(equationString);
+						frequency = res.getInt("frequency");
+						numberOfEquations = res.getInt("numberOfEquations");
+					}
+					returnToMenu();
+					frame.updateState();
+					database.loginSuccess(ID);
+				}
+				else
+				{
+					JOptionPane.showMessageDialog(errorPanel, "Incorrect username or password.", "Error", JOptionPane.ERROR_MESSAGE);
+					if (!(userName.equals("root")))
+					{					
+						database.loginFailure(ID, userName);
+					}
+				}
 			}
-			else if (hasRes)
+			catch (SQLException e)
 			{
-				System.out.println("Done.");
-				ID = res.getInt("ID");
-				res = database.getUserInfo(ID);
-				if (res.next())
-				{
-					permission = res.getInt("permission");
-					firstName = res.getString("firstName");
-					lastName = res.getString("lastName");
-					classID = res.getString("classID");
-				}
-				res = database.getCustomEquationInfo(classID);
-				if (res.next())
-				{
-					equationString = res.getString("questionList");
-					customEquations = getCustomEquationList(equationString);
-					frequency = res.getInt("frequency");
-					numberOfEquations = res.getInt("numberOfEquations");
-				}
-				returnToMenu();
-				System.out.println(ID);
-				frame.updateState();
-				database.loginSuccess(ID);
+				e.printStackTrace();
 			}
-			else
-			{
-				JOptionPane.showMessageDialog(errorPanel, "Incorrect username or password.", "Error", JOptionPane.ERROR_MESSAGE);
-				if (!(userName.equals("root")))
-				{
-					database.loginFailure(ID);
-				}
 			}
-		}
-		catch (SQLException e)
-		{
-			e.printStackTrace();
-		}
+		else
+			JOptionPane.showMessageDialog(errorPanel, "Incorrect username or password.", "Error", JOptionPane.ERROR_MESSAGE);
 	}
 
 	public void changePassword(String pass, String newPass)

@@ -168,6 +168,7 @@ public class Login extends JPanel
 				pass = pass.substring(0, 15);
 			}
 			base.checkLogin(userName, pass);
+			// get ID here???
 		}
 		else
 		{
