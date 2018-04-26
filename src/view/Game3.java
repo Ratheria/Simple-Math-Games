@@ -131,8 +131,7 @@ public class Game3 extends JPanel implements KeyListener
 		guessed3 = false;
 		playing = true;
 		needsHelp = false;
-		
-		needsInstructions = true; //TODO get from database
+		needsInstructions = base.getInstructionPreference("game3Instructions");
 
 		setBackground();
 		addKeyListener(this);
@@ -694,11 +693,8 @@ public class Game3 extends JPanel implements KeyListener
 		Object[] options = {"Okay", "Don't show again"};
 		int instructResult = JOptionPane.showOptionDialog(base.messagePanel, g3instruct, "Instructions",JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null, options, options[0]);
 		if(instructResult == 1){
-			// TODO save this user preference - no initial instructions
-		}
-		else{
-			// TODO save this user preference- initial instructions
-		}
+			base.setInstructionPreferences("game2Instructions");
+		}	
 	}
 
 }

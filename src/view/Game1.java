@@ -115,8 +115,7 @@ public class Game1 extends JPanel
 		pause = 0;
 		feedbackLabel = new JLabel("");
 		needsHelp = false;
-		
-		needsInstructions = true; // TODO get from database
+		needsInstructions = base.getInstructionPreference("game1Instructions");
 		
 		setBorder(new LineBorder(new Color(70, 130, 180), 10));
 		setBackground();
@@ -572,10 +571,7 @@ public class Game1 extends JPanel
 		Object[] options = {"Okay", "Don't show again"};
 		int instructResult = JOptionPane.showOptionDialog(base.messagePanel, g1instruct, "Instructions",JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null, options, options[0]);
 		if(instructResult == 1){
-			// TODO save user preference to user does not initially need instructions
-		}
-		else{
-			// TODO save user preference to user does need initial instructions
+			base.setInstructionPreferences("game1Instructions");
 		}
 	}
 

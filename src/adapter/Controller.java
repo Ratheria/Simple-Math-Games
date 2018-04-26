@@ -442,5 +442,21 @@ public class Controller
 			JOptionPane.showMessageDialog(messagePanel, "User successfully added.", "", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
-
+	
+	public boolean getInstructionPreference(String gameInstructions){
+		int result = database.wantInstructions(gameInstructions, ID);
+		System.out.println(result);
+		if(result == 0)
+		{
+			return false;
+		}
+		return true;
+	}
+	
+	public void setInstructionPreferences(String gameInstructions){
+		database.setWantInstructions(gameInstructions, ID);
+	}
+		
 }
+
+
