@@ -74,11 +74,13 @@ public class Game3 extends JPanel implements KeyListener, Game
 	private int answer;
 	private int randomPlacement;
 	private int score;
-	private static final int GAME_PERIOD = 40;
+	private static final int gamePeriod = 40;
 	private int sec;
 	private JLabel feedbackLabel;
+	
 	private int questionBase;
 	private int questionTypes; // TODO
+	
 	private JButton menu;
 	private JButton help;
 	private JLabel questionLabel;
@@ -88,6 +90,10 @@ public class Game3 extends JPanel implements KeyListener, Game
 	private boolean focus;
 	private Image backgroundImg;
 	private JLabel background;
+	
+	private int questionsAnswered;
+	private int questionsCorrect;
+	private int guesses;
 	
 	public Game3(Controller base)
 	{
@@ -100,7 +106,7 @@ public class Game3 extends JPanel implements KeyListener, Game
 		answer = 0;
 		score = 0;
 		count = 0;
-		timerLabel = new JLabel("Time: " + (GAME_PERIOD / 60) + ":" + (GAME_PERIOD % 60));
+		timerLabel = new JLabel("Time: " + (gamePeriod / 60) + ":" + (gamePeriod % 60));
 		scoreLabel = new JLabel("Score: 0");
 		screenWidth = base.frame.getWidth();
 		screenHeight = base.frame.getHeight();
@@ -112,7 +118,7 @@ public class Game3 extends JPanel implements KeyListener, Game
 		questionLabel = new JLabel(question);
 		movementSpeed = 3;
 		questionBase = 15;
-		questionTypes = 0; // both, addition, subtraction
+		questionTypes = base.questionTypes; // both, addition, subtraction
 		menu = new JButton(" Exit ");
 		help = new JButton(" Help ");
 		shark = new JLabel(sharkIcon);
@@ -143,6 +149,10 @@ public class Game3 extends JPanel implements KeyListener, Game
 		fishHeight = (base.frame.getHeight() / 8);
 		fishImg = fishImg.getScaledInstance(fishWidth, fishHeight, java.awt.Image.SCALE_SMOOTH);
 		fishIcon = new ImageIcon(fishImg);
+		
+		questionsAnswered = 0;
+		questionsCorrect = 0;
+		guesses = 0;
 
 		addKeyListener(this);
 		setFocusable(true);
@@ -239,7 +249,7 @@ public class Game3 extends JPanel implements KeyListener, Game
 	
 	private void setUpTimers()
 	{
-		sec = GAME_PERIOD - 1;
+		sec = gamePeriod - 1;
 		timeDisplayer = new ActionListener()
 		{
 			public void actionPerformed(ActionEvent evt)
@@ -266,6 +276,7 @@ public class Game3 extends JPanel implements KeyListener, Game
 					playing = false;
 					System.out.println("Time's up!");
 					JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "Time's up!", JOptionPane.PLAIN_MESSAGE);
+					base.addGameRecord(3, questionsAnswered, questionsCorrect, guesses, gamePeriod, score);
 					remove(shark);
 					base.returnToMenu();
 				}
@@ -318,6 +329,7 @@ public class Game3 extends JPanel implements KeyListener, Game
 				{
 					//TODO add game record
 					remove(shark);
+					base.addGameRecord(3, questionsAnswered, questionsCorrect, guesses, (int) (gamePeriod - sec), score);
 					base.returnToMenu();
 				}
 				else
@@ -438,6 +450,18 @@ public class Game3 extends JPanel implements KeyListener, Game
 		{
 			generateQuestion();
 		}
+		feedbackLabel.setText("");
+		feedbackLabel.setIcon(null);
+		while (question.contains("+") && questionTypes == 2)
+		{
+			generateSubtraction();
+			System.out.println("reached");
+		}
+		while( question.contains("-") && questionTypes == 1)
+		{
+			generateAddition();
+			System.out.println("reached 2");
+		}
 		while (answer < 0)
 		{
 			generateQuestion();
@@ -473,13 +497,9 @@ public class Game3 extends JPanel implements KeyListener, Game
 			case 0:
 				int random = Controller.rng.nextInt(2);
 				if (random < 1)
-				{
-					generateAddition();
-				}
+				{	generateAddition();	}
 				else
-				{
-					generateSubtraction();
-				}
+				{	generateSubtraction();	}
 				break;
 			case 1:
 				generateAddition();
@@ -494,16 +514,16 @@ public class Game3 extends JPanel implements KeyListener, Game
 	{
 		int firstInteger = Controller.rng.nextInt(questionBase);
 		int secondInteger = Controller.rng.nextInt(questionBase);
-		answer = firstInteger - secondInteger;
-		question = firstInteger + " - " + secondInteger + " = ? ";
+		answer = firstInteger + secondInteger;
+		question = firstInteger + " + " + secondInteger + " = ? ";
 	}
 
 	private void generateSubtraction()
 	{
 		int firstInteger = Controller.rng.nextInt(questionBase);
 		int secondInteger = Controller.rng.nextInt(questionBase);
-		answer = firstInteger + secondInteger;
-		question = firstInteger + " + " + secondInteger + " = ? ";
+		answer = firstInteger - secondInteger;
+		question = firstInteger + " - " + secondInteger + " = ? ";
 	}
 
 	private void addShark(){
@@ -543,6 +563,7 @@ public class Game3 extends JPanel implements KeyListener, Game
 			guessed1 = true;
 			answerLabel1.setText("");
 			answerLabel1.setIcon(null);
+			questionsAnswered++;
 		}
 		else if (sharkBounds.intersects(answerLabel2.getBounds()) && !guessed2)
 		{
@@ -550,6 +571,7 @@ public class Game3 extends JPanel implements KeyListener, Game
 			guessed2 = true;
 			answerLabel2.setText("");
 			answerLabel2.setIcon(null);
+			questionsAnswered++;
 		}
 		else if (sharkBounds.intersects(answerLabel3.getBounds()) && !guessed3)
 		{
@@ -557,10 +579,12 @@ public class Game3 extends JPanel implements KeyListener, Game
 			guessed3 = true;
 			answerLabel3.setText("");
 			answerLabel3.setIcon(null);
+			questionsAnswered++;
 		}
 
 		if (intersect == randomPlacement)
 		{
+			questionsCorrect++;
 			System.out.println("Correct answer given.");
 			updateScore(true);
 			remove(shark);

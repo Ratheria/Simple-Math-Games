@@ -82,8 +82,8 @@ public class Game2 extends JPanel implements KeyListener, Game
 	private Image backgroundImg;
 	private JLabel background;
 	
-	private int numQuestionsAsked;
-	private int questionsAnsweredCorrectly; // TODO
+	private int questionsAnswered;
+	private int questionsCorrect; // TODO
 	private int guesses;
 	
 	private boolean playing;
@@ -114,10 +114,10 @@ public class Game2 extends JPanel implements KeyListener, Game
 		xSpacing = (base.frame.getWidth()) / numberOfColumns;
 		jellyLocation = new Point();		
 		questionBase = 20;
-		questionTypes = 0; // both, addition, subtraction
+		questionTypes = base.questionTypes; // both, addition, subtraction
 		speed = 40;
-		numQuestionsAsked = 0;
-		questionsAnsweredCorrectly = 0;
+		questionsAnswered = 0;
+		questionsCorrect = 0;
 		focus = true;
 
 		try
@@ -143,6 +143,8 @@ public class Game2 extends JPanel implements KeyListener, Game
 		fullChestIcon = new ImageIcon(fullChestImg);
 		emptyChestImg = emptyChestImg.getScaledInstance(chestWidth, chestHeight, java.awt.Image.SCALE_SMOOTH);
 		emptyChestIcon = new ImageIcon(emptyChestImg);
+		
+		System.out.println(questionTypes);
 		
 		addKeyListener(this);
 		setFocusable(true);
@@ -212,7 +214,6 @@ public class Game2 extends JPanel implements KeyListener, Game
 		movement = 2;
 		jellyLocation.y = 20;
 		getQuestion();
-		numQuestionsAsked++;
 		jelly = new JButton(question, jellyIcon);
 		jelly.setVerticalTextPosition(SwingConstants.TOP);
 		jelly.setFont(new Font("Tahoma", Font.BOLD, 25));
@@ -253,7 +254,7 @@ public class Game2 extends JPanel implements KeyListener, Game
 				int dialogResult = JOptionPane.showConfirmDialog (null, "Your score is " + score + ".  Would you like to exit the game?","Exit game?",JOptionPane.OK_CANCEL_OPTION);
 				if(dialogResult == JOptionPane.OK_OPTION)
 				{
-					//TODO add game record
+					base.addGameRecord(2, questionsAnswered, questionsCorrect, guesses, (int) (gamePeriod - currentTime), score);
 					base.returnToMenu();
 					removeVar();
 				}
@@ -347,6 +348,7 @@ public class Game2 extends JPanel implements KeyListener, Game
 					playing = false;
 					System.out.println("Time's up!");
 					JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "Time's up!", JOptionPane.PLAIN_MESSAGE);
+					base.addGameRecord(2, questionsAnswered, questionsCorrect, guesses, gamePeriod, score);
 					remove(jelly);
 					base.returnToMenu();
 				}
@@ -404,12 +406,22 @@ public class Game2 extends JPanel implements KeyListener, Game
 		{
 			generateQuestion();
 		}
+		feedbackLabel.setText("");
+		feedbackLabel.setIcon(null);
+		while (question.contains("+") && questionTypes == 2)
+		{
+			generateSubtraction();
+			System.out.println("reached");
+		}
+		while( question.contains("-") && questionTypes == 1)
+		{
+			generateAddition();
+			System.out.println("reached 2");
+		}
 		while (answer < 0)
 		{
 			generateQuestion();
 		}
-		feedbackLabel.setText("");
-		feedbackLabel.setIcon(null);
 	}
 
 	private void questionFromList()
@@ -441,13 +453,9 @@ public class Game2 extends JPanel implements KeyListener, Game
 			case 0:
 				int random = Controller.rng.nextInt(2);
 				if (random < 1)
-				{
-					generateAddition();
-				}
+				{	generateAddition();	}
 				else
-				{
-					generateSubtraction();
-				}
+				{	generateSubtraction();	}
 				break;
 			case 1:
 				generateAddition();
@@ -462,25 +470,26 @@ public class Game2 extends JPanel implements KeyListener, Game
 	{
 		int firstInteger = Controller.rng.nextInt(questionBase);
 		int secondInteger = Controller.rng.nextInt(questionBase);
-		answer = firstInteger - secondInteger;
-		question = firstInteger + " - " + secondInteger + " = ? ";
+		answer = firstInteger + secondInteger;
+		question = firstInteger + " + " + secondInteger + " = ? ";
 	}
 
 	private void generateSubtraction()
 	{
 		int firstInteger = Controller.rng.nextInt(questionBase);
 		int secondInteger = Controller.rng.nextInt(questionBase);
-		answer = firstInteger + secondInteger;
-		question = firstInteger + " + " + secondInteger + " = ? ";
+		answer = firstInteger - secondInteger;
+		question = firstInteger + " - " + secondInteger + " = ? ";
 	}
 
 	private void wentOffScreen()
 	{
+		questionsAnswered++;
 		playing = false;
 		if (index == answerIndex)
 		{
 			System.out.println("Correct answer given.");
-			questionsAnsweredCorrectly++;
+			questionsCorrect++;
 			feedbackLabel.setText("Correct!  " + question.substring(0, question.indexOf("?")) + answer);
 			feedbackLabel.setIcon(fullChestIcon);
 			removeVar();

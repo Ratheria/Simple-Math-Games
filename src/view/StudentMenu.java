@@ -18,6 +18,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
 
 public class StudentMenu extends JPanel
 {
@@ -30,6 +32,7 @@ public class StudentMenu extends JPanel
 	private JButton btnGame3;
 	private JButton btnGame2;
 	private JButton viewStats;
+	private JComboBox comboBox;
 
 	public StudentMenu(Controller base)
 	{
@@ -37,7 +40,7 @@ public class StudentMenu extends JPanel
 		layout = new GridBagLayout();
 		displayName = new JLabel(" ");
 		settingsButton = new JButton("    ");
-
+		comboBox = new JComboBox();
 		btnGame = new JButton(" Play Fish Game ");
 		btnGame2 = new JButton(" Play Jellyfish Game ");
 		btnGame3 = new JButton(" Play Shark Game ");
@@ -50,9 +53,9 @@ public class StudentMenu extends JPanel
 	private void setUpLayout()
 	{
 		layout.rowHeights = new int[]
-		{ 0, 0, 0, 0, 0, 0, 0 };
+		{ 0, 0, 0, 0, 0, 0, 0, 0 };
 		layout.rowWeights = new double[]
-		{ 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 };
+		{ 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0 };
 		layout.columnWidths = new int[]
 		{ 20, 0, 0, 0 };
 		layout.columnWeights = new double[]
@@ -95,6 +98,15 @@ public class StudentMenu extends JPanel
 		gbc_settingsButton.gridx = 0;
 		gbc_settingsButton.gridy = 0;
 
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {" Addition and Subtraction ", " Addition ", " Subtraction "}));
+		comboBox.setSelectedIndex(base.questionTypes);
+		comboBox.setForeground(new Color(70, 130, 180));
+		GridBagConstraints gbc_comboBox = new GridBagConstraints();
+		gbc_comboBox.gridwidth = 4;
+		gbc_comboBox.insets = new Insets(0, 0, 5, 5);
+		gbc_comboBox.gridx = 0;
+		gbc_comboBox.gridy = 2;
+		
 		btnGame.setFont(new Font("Arial", Font.PLAIN, 25));
 		btnGame.setForeground(new Color(70, 130, 180));
 		btnGame.setBackground(new Color(70, 130, 180));
@@ -105,7 +117,7 @@ public class StudentMenu extends JPanel
 		gbc_btnGame.gridwidth = 4;
 		gbc_btnGame.insets = new Insets(5, 0, 15, 0);
 		gbc_btnGame.gridx = 0;
-		gbc_btnGame.gridy = 2;
+		gbc_btnGame.gridy = 3;
 
 		btnGame2.setFont(new Font("Arial", Font.PLAIN, 25));
 		btnGame2.setForeground(new Color(70, 130, 180));
@@ -117,7 +129,7 @@ public class StudentMenu extends JPanel
 		gbc_btnGame2.gridwidth = 4;
 		gbc_btnGame2.insets = new Insets(5, 0, 15, 0);
 		gbc_btnGame2.gridx = 0;
-		gbc_btnGame2.gridy = 3;
+		gbc_btnGame2.gridy = 4;
 
 		btnGame3.setFont(new Font("Arial", Font.PLAIN, 25));
 		btnGame3.setForeground(new Color(70, 130, 180));
@@ -127,9 +139,9 @@ public class StudentMenu extends JPanel
 		btnGame3.setBorder(new LineBorder(new Color(135, 206, 250), 2));
 		GridBagConstraints gbc_btnGame3 = new GridBagConstraints();
 		gbc_btnGame3.gridwidth = 4;
-		gbc_btnGame3.insets = new Insets(5, 0, 15, 5);
+		gbc_btnGame3.insets = new Insets(5, 0, 15, 0);
 		gbc_btnGame3.gridx = 0;
-		gbc_btnGame3.gridy = 4;
+		gbc_btnGame3.gridy = 5;
 
 		viewStats.setFont(new Font("Arial", Font.PLAIN, 25));
 		viewStats.setForeground(new Color(70, 130, 180));
@@ -139,14 +151,14 @@ public class StudentMenu extends JPanel
 		viewStats.setBorder(new LineBorder(new Color(135, 206, 250), 2));
 		GridBagConstraints gbc_viewStats = new GridBagConstraints();
 		gbc_viewStats.gridwidth = 4;
-		gbc_viewStats.insets = new Insets(5, 0, 15, 5);
+		gbc_viewStats.insets = new Insets(5, 0, 15, 0);
 		gbc_viewStats.gridx = 0;
-		gbc_viewStats.gridy = 5;
+		gbc_viewStats.gridy = 6;
 
 		add(displayName, gbc_displayName);
 		add(settingsButton, gbc_settingsButton);
+		add(comboBox, gbc_comboBox);
 		add(btnGame, gbc_btnGame);
-
 		add(btnGame2, gbc_btnGame2);
 		add(btnGame3, gbc_btnGame3);
 		add(viewStats, gbc_viewStats);
@@ -154,6 +166,14 @@ public class StudentMenu extends JPanel
 
 	private void setUpListeners()
 	{
+		comboBox.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				base.questionTypes = comboBox.getSelectedIndex();
+			}
+		});
+		
 		settingsButton.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent onClick)

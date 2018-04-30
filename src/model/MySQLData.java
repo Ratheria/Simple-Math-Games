@@ -363,7 +363,7 @@ public class MySQLData
 		return result;
 	}
 	
-	public void addGameRecord(int studentID, int gameID, int questionsAnswered, int questionsCorrect, int guesses, int totalSeconds)
+	public void addGameRecord(int studentID, int gameID, int questionsAnswered, int questionsCorrect, int guesses, int totalSeconds, int score)
 	{
 		if (con == null)
 		{	getConnection();	}
@@ -371,8 +371,8 @@ public class MySQLData
 		{
 			PreparedStatement preparedStatement;
 			preparedStatement = con.prepareStatement("INSERT INTO GAME_RECORDS(studentID, gameID, " +
-					"questionsAnswered, questionsCorrect, guesses, totalSeconds, datePlayed) " +
-					"VALUES(?, ?, ?, ?, ?, ?, ?);");
+					"questionsAnswered, questionsCorrect, guesses, totalSeconds, datePlayed, score) " +
+					"VALUES(?, ?, ?, ?, ?, ?, ?, ?);");
 			preparedStatement.setInt(1, studentID);
 			preparedStatement.setInt(2, gameID);
 			preparedStatement.setInt(3, questionsAnswered);
@@ -380,6 +380,7 @@ public class MySQLData
 			preparedStatement.setInt(5, guesses);
 			preparedStatement.setInt(6, totalSeconds);
 			preparedStatement.setString(7, Controller.dtf.format(LocalDateTime.now()));
+			preparedStatement.setInt(8, score);
 			preparedStatement.executeUpdate();
 		}
 		catch (SQLException e) {e.printStackTrace();}

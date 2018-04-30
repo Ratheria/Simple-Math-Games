@@ -91,5 +91,11 @@ public class Frame extends JFrame
 		panel.revalidate();
 		panel.repaint();
 	}
+	
+	public void updateState(int studentID)
+	{
+		panel.removeAll();
+		panel = new ViewStudentStats(base, studentID);
+	}
 
 }

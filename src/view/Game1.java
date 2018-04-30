@@ -66,14 +66,12 @@ public class Game1 extends JPanel implements Game
 	private JLabel background;
 
 	private int questionBase;
-	private int questionTypes; // TODO
+	private int questionTypes; //TODO
 	private int fishSpeed;
 
 	private int questionsAnswered;
 	private int questionsCorrect;
 	private int guesses;
-
-	private int guessesThisQuestion; // TODO
 
 	private boolean playing;
 	private boolean reset;
@@ -102,7 +100,7 @@ public class Game1 extends JPanel implements Game
 		help = new JButton(" Help ");
 		
 		questionBase = 20;
-		questionTypes = 0; // both, addition, subtraction
+		questionTypes = base.questionTypes; // both, addition, subtraction
 		
 		fishSpeed = 40;
 		questionsAnswered = 0;
@@ -192,6 +190,7 @@ public class Game1 extends JPanel implements Game
 	{
 		feedbackLabel.setIcon(null);
 		getQuestion();
+		questionLabel.setText(question);
 		int randomPlacement = Controller.rng.nextInt(maxFishVertical);
 		ArrayList<Integer> answerOptions = new ArrayList<Integer>();
 		for (int i = 0; i < maxFishVertical; i++)
@@ -226,7 +225,7 @@ public class Game1 extends JPanel implements Game
 				int dialogResult = JOptionPane.showConfirmDialog(null, "Your score is " + score + ". Would you like to exit the game?", "Exit game?", JOptionPane.OK_CANCEL_OPTION);
 				if(dialogResult == JOptionPane.OK_OPTION)
 				{
-					base.addGameRecord(1, questionsAnswered, questionsCorrect, guesses, gamePeriod - currentTime);
+					base.addGameRecord(1, questionsAnswered, questionsCorrect, guesses, gamePeriod - currentTime, score);
 					base.returnToMenu();
 				}
 				else
@@ -266,6 +265,7 @@ public class Game1 extends JPanel implements Game
 				}
 				else if (reset)
 				{
+					playing = true;
 					clearCurrentFish();
 					//remove(background);
 					playGame();
@@ -279,7 +279,7 @@ public class Game1 extends JPanel implements Game
 					playing = false;
 					timerLabel.setText("Time: 0:00");
 					stopTimers();
-					base.addGameRecord(1, questionsAnswered, questionsCorrect, guesses, gamePeriod);
+					base.addGameRecord(1, questionsAnswered, questionsCorrect, guesses, gamePeriod, score);
 					System.out.println("Time's up!");
 					JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "Time's up!", JOptionPane.PLAIN_MESSAGE);
 					clearCurrentFish();
@@ -337,11 +337,22 @@ public class Game1 extends JPanel implements Game
 		{
 			generateQuestion();
 		}
+		feedbackLabel.setText("");
+		feedbackLabel.setIcon(null);
+		while (question.contains("+") && questionTypes == 2)
+		{
+			generateSubtraction();
+			System.out.println("reached");
+		}
+		while( question.contains("-") && questionTypes == 1)
+		{
+			generateAddition();
+			System.out.println("reached 2");
+		}
 		while (answer < 0)
 		{
 			generateQuestion();
 		}
-		questionLabel.setText(question);
 	}
 
 	private void questionFromList()
@@ -390,16 +401,16 @@ public class Game1 extends JPanel implements Game
 	{
 		int firstInteger = Controller.rng.nextInt(questionBase);
 		int secondInteger = Controller.rng.nextInt(questionBase);
-		answer = firstInteger - secondInteger;
-		question = firstInteger + " - " + secondInteger + " = ? ";
+		answer = firstInteger + secondInteger;
+		question = firstInteger + " + " + secondInteger + " = ? ";
 	}
 
 	private void generateSubtraction()
 	{
 		int firstInteger = Controller.rng.nextInt(questionBase);
 		int secondInteger = Controller.rng.nextInt(questionBase);
-		answer = firstInteger + secondInteger;
-		question = firstInteger + " + " + secondInteger + " = ? ";
+		answer = firstInteger - secondInteger;
+		question = firstInteger + " - " + secondInteger + " = ? ";
 	}
 
 	private void updateScore(boolean correct)
@@ -493,7 +504,7 @@ public class Game1 extends JPanel implements Game
 			System.out.println("Correct answer went off screen.");
 			stopTimers();
 			playing = false;
-			base.addGameRecord(1, questionsAnswered, questionsCorrect, guesses, gamePeriod - currentTime);
+			base.addGameRecord(1, questionsAnswered, questionsCorrect, guesses, gamePeriod - currentTime, score);
 			JOptionPane.showMessageDialog(base.messagePanel, "The correct answer went off screen.\nYour score was " + score + ".", "Game Over", JOptionPane.INFORMATION_MESSAGE);
 			clearCurrentFish();
 			base.returnToMenu();

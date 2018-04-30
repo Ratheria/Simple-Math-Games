@@ -20,12 +20,13 @@ import view.Frame;
 
 public class Controller
 {
-	public static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+	public static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 	public static Random rng;
 	public static String[] selectStudentRecordHeader = { "Student ID", "First Name", "Last Name" };
 	public static String[] allUsersHeader = { "User ID", "Username", "First Name", "Last Name", "Class ID" };
 	public Frame frame;
 	public JPanel messagePanel;
+	public int questionTypes;
 //	private SQLiteData database;
 	private MySQLData database;
 	private ViewStates state;
@@ -53,6 +54,7 @@ public class Controller
 
 	public void logout()
 	{
+		questionTypes = 0;
 		state = ViewStates.login;
 		lastState = ViewStates.login;
 		ID = 0;
@@ -138,6 +140,13 @@ public class Controller
 		lastState = state;
 		state = nextState;
 		frame.updateState();
+	}
+	
+	public void changeState(int studentID)
+	{
+		lastState = state;
+		state = ViewStates.viewStudentStats;
+		frame.updateState(studentID);
 	}
 	
 	public void returnToMenu()
@@ -324,9 +333,9 @@ public class Controller
 		}
 	}
 
-	public void addGameRecord(int gameID, int questionsAnswered, int questionsCorrect, int guesses, int totalSeconds)
+	public void addGameRecord(int gameID, int questionsAnswered, int questionsCorrect, int guesses, int totalSeconds, int score)
 	{
-		database.addGameRecord(ID, gameID, questionsAnswered, questionsCorrect, guesses, totalSeconds);
+		database.addGameRecord(ID, gameID, questionsAnswered, questionsCorrect, guesses, totalSeconds, score);
 	}
 
 	public void changeCustomEquations(String equationString, int frequency, int numberOfEquations)
@@ -360,7 +369,7 @@ public class Controller
 		result = database.getStudents(classID);
 		return result;
 	}
-
+	
 	public String getName()
 	{
 		return firstName;
