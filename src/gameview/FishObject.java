@@ -3,7 +3,7 @@
 *	@author Jadie Adams
  */
 
-package view;
+package gameview;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -13,6 +13,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
 import adapter.Controller;
+import view.Frame;
 
 public class FishObject extends JButton implements ActionListener
 {

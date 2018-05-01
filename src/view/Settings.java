@@ -7,6 +7,8 @@ package view;
 import javax.swing.*;
 import adapter.Controller;
 import adapter.ViewStates;
+import gameview.InstructionPanel;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;

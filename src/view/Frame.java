@@ -8,6 +8,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import adapter.Controller;
 import adapter.ViewStates;
+import gameview.Game1;
+import gameview.Game2;
+import gameview.Game3;
 
 public class Frame extends JFrame
 {
@@ -23,7 +26,7 @@ public class Frame extends JFrame
 		this.base = base;
 		login = new Login(base);
 		panel = login;
-		minSize = new Dimension(960, 600);
+		minSize = new Dimension(900, 600);
 		setName("My Parents Don't Know What I Do");
 		setTitle("My Parents Don't Know What I Do");
 		// setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -92,10 +95,10 @@ public class Frame extends JFrame
 		panel.repaint();
 	}
 	
-	public void updateState(int studentID)
+	public void updateState(int studentID, int value)
 	{
 		panel.removeAll();
-		panel = new ViewStudentStats(base, studentID);
+		panel = new ViewStudentStats(base, studentID, value);
 	}
 
 }

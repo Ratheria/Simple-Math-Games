@@ -3,7 +3,7 @@
  * @author Jadie Adams
  */
 
-package view;
+package gameview;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -17,6 +17,7 @@ import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import adapter.Controller;
+
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;

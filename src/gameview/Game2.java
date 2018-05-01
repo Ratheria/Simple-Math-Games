@@ -3,7 +3,7 @@
  *	@author Ariana Fairbanks
  */
 
-package view;
+package gameview;
 
 import java.awt.Color;
 import java.awt.Font;

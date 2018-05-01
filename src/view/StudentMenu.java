@@ -28,11 +28,13 @@ public class StudentMenu extends JPanel
 	private GridBagLayout layout;
 	private JLabel displayName;
 	private JButton settingsButton;
+	private JComboBox<String> comboBox;
 	private JButton btnGame;
 	private JButton btnGame3;
 	private JButton btnGame2;
 	private JButton viewStats;
-	private JComboBox comboBox;
+	private JButton gameRecords;
+	private JButton sessionRecords;
 
 	public StudentMenu(Controller base)
 	{
@@ -40,11 +42,12 @@ public class StudentMenu extends JPanel
 		layout = new GridBagLayout();
 		displayName = new JLabel(" ");
 		settingsButton = new JButton("    ");
-		comboBox = new JComboBox();
+		comboBox = new JComboBox<String>();
 		btnGame = new JButton(" Play Fish Game ");
 		btnGame2 = new JButton(" Play Jellyfish Game ");
 		btnGame3 = new JButton(" Play Shark Game ");
-		viewStats = new JButton(" View Stats ");
+		viewStats = new JButton(" Stats ");
+		viewStats.setHorizontalTextPosition(SwingConstants.CENTER);
 
 		setUpLayout();
 		setUpListeners();
@@ -53,13 +56,13 @@ public class StudentMenu extends JPanel
 	private void setUpLayout()
 	{
 		layout.rowHeights = new int[]
-		{ 0, 0, 0, 0, 0, 0, 0, 0 };
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 		layout.rowWeights = new double[]
-		{ 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0 };
+		{ 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0 };
 		layout.columnWidths = new int[]
-		{ 20, 0, 0, 0 };
+		{ 20, 0, 0, 0, 0 };
 		layout.columnWeights = new double[]
-		{ 0.0, 0.0, 1.0, 0.0 };
+		{ 0.0, 0.0, 5.0, 1.0, 0.0 };
 		setLayout(layout);
 		setBorder(new LineBorder(new Color(70, 130, 180), 10));
 		setForeground(new Color(0, 255, 255));
@@ -71,7 +74,7 @@ public class StudentMenu extends JPanel
 		displayName.setText(base.getFullName());
 		GridBagConstraints gbc_displayName = new GridBagConstraints();
 		gbc_displayName.anchor = GridBagConstraints.NORTHWEST;
-		gbc_displayName.gridwidth = 3;
+		gbc_displayName.gridwidth = 4;
 		gbc_displayName.insets = new Insets(15, 10, 5, 0);
 		gbc_displayName.gridx = 1;
 		gbc_displayName.gridy = 0;
@@ -98,12 +101,13 @@ public class StudentMenu extends JPanel
 		gbc_settingsButton.gridx = 0;
 		gbc_settingsButton.gridy = 0;
 
+		comboBox.setEditable(false);
 		comboBox.setModel(new DefaultComboBoxModel(new String[] {" Addition and Subtraction ", " Addition ", " Subtraction "}));
 		comboBox.setSelectedIndex(base.questionTypes);
 		comboBox.setForeground(new Color(70, 130, 180));
 		GridBagConstraints gbc_comboBox = new GridBagConstraints();
-		gbc_comboBox.gridwidth = 4;
-		gbc_comboBox.insets = new Insets(0, 0, 5, 5);
+		gbc_comboBox.gridwidth = 5;
+		gbc_comboBox.insets = new Insets(0, 0, 20, 0);
 		gbc_comboBox.gridx = 0;
 		gbc_comboBox.gridy = 2;
 		
@@ -114,7 +118,7 @@ public class StudentMenu extends JPanel
 		btnGame.setContentAreaFilled(false);
 		btnGame.setBorder(new LineBorder(new Color(135, 206, 250), 2));
 		GridBagConstraints gbc_btnGame = new GridBagConstraints();
-		gbc_btnGame.gridwidth = 4;
+		gbc_btnGame.gridwidth = 5;
 		gbc_btnGame.insets = new Insets(5, 0, 15, 0);
 		gbc_btnGame.gridx = 0;
 		gbc_btnGame.gridy = 3;
@@ -126,7 +130,7 @@ public class StudentMenu extends JPanel
 		btnGame2.setContentAreaFilled(false);
 		btnGame2.setBorder(new LineBorder(new Color(135, 206, 250), 2));
 		GridBagConstraints gbc_btnGame2 = new GridBagConstraints();
-		gbc_btnGame2.gridwidth = 4;
+		gbc_btnGame2.gridwidth = 5;
 		gbc_btnGame2.insets = new Insets(5, 0, 15, 0);
 		gbc_btnGame2.gridx = 0;
 		gbc_btnGame2.gridy = 4;
@@ -138,7 +142,7 @@ public class StudentMenu extends JPanel
 		btnGame3.setContentAreaFilled(false);
 		btnGame3.setBorder(new LineBorder(new Color(135, 206, 250), 2));
 		GridBagConstraints gbc_btnGame3 = new GridBagConstraints();
-		gbc_btnGame3.gridwidth = 4;
+		gbc_btnGame3.gridwidth = 5;
 		gbc_btnGame3.insets = new Insets(5, 0, 15, 0);
 		gbc_btnGame3.gridx = 0;
 		gbc_btnGame3.gridy = 5;
@@ -150,10 +154,11 @@ public class StudentMenu extends JPanel
 		viewStats.setContentAreaFilled(false);
 		viewStats.setBorder(new LineBorder(new Color(135, 206, 250), 2));
 		GridBagConstraints gbc_viewStats = new GridBagConstraints();
-		gbc_viewStats.gridwidth = 4;
-		gbc_viewStats.insets = new Insets(5, 0, 15, 0);
+		gbc_viewStats.gridwidth = 3;
+		gbc_viewStats.fill = GridBagConstraints.HORIZONTAL;
+		gbc_viewStats.insets = new Insets(10, 60, 15, 60);
 		gbc_viewStats.gridx = 0;
-		gbc_viewStats.gridy = 6;
+		gbc_viewStats.gridy = 7;
 
 		add(displayName, gbc_displayName);
 		add(settingsButton, gbc_settingsButton);
@@ -162,6 +167,37 @@ public class StudentMenu extends JPanel
 		add(btnGame2, gbc_btnGame2);
 		add(btnGame3, gbc_btnGame3);
 		add(viewStats, gbc_viewStats);
+		gameRecords = new JButton(" Game Records ");
+		
+		gameRecords.setFont(new Font("Arial", Font.PLAIN, 25));
+		gameRecords.setForeground(new Color(70, 130, 180));
+		gameRecords.setBackground(new Color(70, 130, 180));
+		gameRecords.setFocusPainted(false);
+		gameRecords.setContentAreaFilled(false);
+		gameRecords.setBorder(new LineBorder(new Color(135, 206, 250), 2));
+		GridBagConstraints gbc_gameRecords = new GridBagConstraints();
+		gbc_gameRecords.fill = GridBagConstraints.HORIZONTAL;
+		gbc_gameRecords.insets = new Insets(10, 0, 15, 0);
+		gbc_gameRecords.gridx = 3;
+		gbc_gameRecords.gridy = 7;
+		add(gameRecords, gbc_gameRecords);
+		sessionRecords = new JButton(" Session Records ");
+		sessionRecords.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		
+		sessionRecords.setFont(new Font("Arial", Font.PLAIN, 25));
+		sessionRecords.setForeground(new Color(70, 130, 180));
+		sessionRecords.setBackground(new Color(70, 130, 180));
+		sessionRecords.setFocusPainted(false);
+		sessionRecords.setContentAreaFilled(false);
+		sessionRecords.setBorder(new LineBorder(new Color(135, 206, 250), 2));
+		GridBagConstraints gbc_sessionRecords = new GridBagConstraints();
+		gbc_sessionRecords.insets = new Insets(10, 60, 15, 60);
+		gbc_sessionRecords.gridx = 4;
+		gbc_sessionRecords.gridy = 7;
+		add(sessionRecords, gbc_sessionRecords);
 	}
 
 	private void setUpListeners()

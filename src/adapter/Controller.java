@@ -142,11 +142,11 @@ public class Controller
 		frame.updateState();
 	}
 	
-	public void changeState(int studentID)
+	public void changeState(int studentID, int value)
 	{
 		lastState = state;
 		state = ViewStates.viewStudentStats;
-		frame.updateState(studentID);
+		frame.updateState(studentID, value);
 	}
 	
 	public void returnToMenu()
@@ -163,6 +163,12 @@ public class Controller
 		{
 			changeState(ViewStates.studentMenu);
 		}
+	}
+	
+	public void returnToLastState()
+	{
+		state = lastState;
+		frame.updateState();
 	}
 
 	public void unlockAccount(int ID)
@@ -367,6 +373,20 @@ public class Controller
 	{
 		ResultSet result = null;
 		result = database.getStudents(classID);
+		return result;
+	}
+	
+	public ResultSet getGameRecords(int studentID)
+	{
+		ResultSet result = null;
+		result = database.getGameRecords(studentID);
+		return result;
+	}
+	
+	public ResultSet getSessionRecords(int studentID)
+	{
+		ResultSet result = null;
+		result = database.getSessionRecords(studentID);
 		return result;
 	}
 	
