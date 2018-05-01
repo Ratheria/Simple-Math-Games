@@ -28,6 +28,7 @@ public class Login extends JPanel
 	private JPasswordField pTextField;
 	private JButton enterButton;
 
+	//TODO reset loginAttempts on every login???
 	public Login(Controller base)
 	{
 		this.base = base;

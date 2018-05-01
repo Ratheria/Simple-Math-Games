@@ -582,6 +582,7 @@ public class Game3 extends JPanel implements KeyListener
 		shark.setHorizontalTextPosition(SwingConstants.LEFT);
 		add(shark);
 	}
+	
 	private void updateScore(boolean correct)
 	{
 		if (correct)
