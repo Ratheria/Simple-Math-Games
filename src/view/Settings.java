@@ -154,7 +154,7 @@ public class Settings extends JPanel
 		{
 			public void actionPerformed(ActionEvent onClick)
 			{	
-				base.changeState(ViewStates.passwordChange);	
+				base.changeState(ViewStates.PASSWORDCHANGE);	
 			}
 		});
 

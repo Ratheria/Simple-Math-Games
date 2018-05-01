@@ -12,21 +12,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
-
-import com.mysql.jdbc.exceptions.jdbc4.CommunicationsException;
-
 import adapter.Controller;
 
 public class MySQLData
 {
 	private Controller base;
 	private static Connection con;
-	private static boolean hasData;
 
 	public MySQLData(Controller base)
 	{
 		this.base = base;
-		hasData = true;
 		getConnection();
 	}
 	
@@ -333,7 +328,125 @@ public class MySQLData
         }
         return currentLine;
     }
+	
+	public ResultSet getStudents(String classID)
+	{
+		ResultSet res = null;
+		PreparedStatement preparedStatement;
+		if (con == null)
+		{	getConnection();	}
+		try 
+		{
+			String query = "SELECT ID, userName, firstName, lastName from USER WHERE classID = ? AND permission = ?";
+			preparedStatement = con.prepareStatement(query);
+			preparedStatement.setString(1, classID);
+			preparedStatement.setInt(2, 3);
+			res = preparedStatement.executeQuery();
+		}
+		catch (SQLException e) { e.printStackTrace(); }		
+		return res;
+	}
+	
+	public ResultSet getAllUsers()
+	{
+		ResultSet res = null;
+		PreparedStatement preparedStatement;
+		if (con == null)
+		{	getConnection();	}
+		try 
+		{
+			String query = "SELECT ID, userName, firstName, lastName, classID from USER WHERE NOT ID = ?";
+			preparedStatement = con.prepareStatement(query);
+			preparedStatement.setInt(1, 0);
+			res = preparedStatement.executeQuery();
+		}
+		catch (SQLException e) { e.printStackTrace(); }		
+		return res;
+	}
+	
+	@SuppressWarnings("unused")
+	private void addCustomEquations(String classID, String questionList, int numberOfEquations, int frequency)
+	{
+		if (con == null)
+		{	getConnection();	}
+		try 
+		{
+			PreparedStatement preparedStatement;
+			preparedStatement = con.prepareStatement("INSERT INTO CUSTOM_EQUATIONS VALUES( ?, ?, ?, ?);");		
+			preparedStatement.setString(1, classID);
+			preparedStatement.setString(2, questionList);
+			preparedStatement.setInt(3, numberOfEquations);
+			preparedStatement.setInt(4, frequency);
+			preparedStatement.execute();
+		} 
+		catch (SQLException e) {e.printStackTrace();}
+	}
+	
+	private boolean userExists(int ID)
+	{
+		boolean result = false;
+		ResultSet res = null;
+		try
+		{
+			if (con == null)
+			{	getConnection();	}
+			String query = "SELECT ID FROM USER WHERE ID = ?";
+			PreparedStatement preparedStatement = con.prepareStatement(query);
+			preparedStatement.setInt(1, ID);
+			res = preparedStatement.executeQuery();
+			result = res.next();
+		}
+		catch (SQLException e){}
+		return result;
+	}
 
+	private void getConnection()
+	{
+		String dbName = "smg";
+		String host = "smg-database.cxdny0vkhuno.us-west-2.rds.amazonaws.com";
+		String userName = "smg_database";
+		String password = "5mg.Pa55w0rd";
+        String jdbcUrl = "jdbc:mysql://" + host + ":" + "3306" + "/" + dbName + "?user=" + userName + "&password=" + password;
+		try 
+		{	con = DriverManager.getConnection(jdbcUrl);	}
+		catch(SQLException se)
+		{	se.printStackTrace();	}
+	}
+	
+	
+	
+	//TODO User high scores and general stats database (games played, total score(s))
+	//TODO overall high scores
+	
+	
+	public void addGameRecord(int studentID, int gameID, int questionsAnswered, int questionsCorrect, int guesses, int totalSeconds, int score, String classID, String firstName, String lastName)
+	{
+		String date = Controller.dtf.format(LocalDateTime.now());
+		if (con == null)
+		{	getConnection();	}
+		try 
+		{
+			//(studentID, gameID, questionsAnswered, questionsCorrect, guesses, totalSeconds, datePlayed, score, classID)
+			PreparedStatement preparedStatement;
+			preparedStatement = con.prepareStatement("INSERT INTO GAME_RECORDS(studentID, gameID, questionsAnswered, questionsCorrect, guesses, totalSeconds, datePlayed, score, classID) "
+					+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);");
+			preparedStatement.setInt(1, studentID);
+			preparedStatement.setInt(2, gameID);
+			preparedStatement.setInt(3, questionsAnswered);
+			preparedStatement.setInt(4, questionsCorrect);
+			preparedStatement.setInt(5, guesses);
+			preparedStatement.setInt(6, totalSeconds);
+			preparedStatement.setString(7, date);
+			preparedStatement.setInt(8, score);
+			preparedStatement.setString(9, classID);
+			preparedStatement.executeUpdate();
+			
+			updateGameHighscore(studentID, gameID, score, classID, firstName, lastName);
+			updateSession(studentID, date, questionsAnswered, questionsCorrect, score);
+		}
+		catch (SQLException e) {e.printStackTrace();}
+	}
+	
 	public boolean addUser(int id, String userName, String pass, String firstName, String lastName, String classID, int permissions)
 	{
 		boolean result = false;
@@ -343,8 +456,12 @@ public class MySQLData
 		{
 			if(!userExists(id))
 			{
+				if(!classExists(classID))
+				{
+					addClass(classID);
+				}
 				PreparedStatement preparedStatement;
-				preparedStatement = con.prepareStatement("INSERT INTO USER VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+				preparedStatement = con.prepareStatement("INSERT INTO USER VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
 				preparedStatement.setInt(1, id);
 				preparedStatement.setString(2, userName);
 				preparedStatement.setString(3, pass);
@@ -354,6 +471,9 @@ public class MySQLData
 				preparedStatement.setInt(7, permissions);
 				preparedStatement.setInt(8, 0);
 				preparedStatement.setBoolean(9, false);
+				preparedStatement.setInt(10, 1);
+				preparedStatement.setInt(11, 1);
+				preparedStatement.setInt(12, 1);
 				preparedStatement.execute();
 				result = true;
 			}
@@ -363,31 +483,148 @@ public class MySQLData
 		return result;
 	}
 	
-	public void addGameRecord(int studentID, int gameID, int questionsAnswered, int questionsCorrect, int guesses, int totalSeconds, int score)
+	public void updateGameHighscore(int studentID, int gameID, int score, String classID, String firstName, String lastName)
 	{
-		String date = Controller.dtf.format(LocalDateTime.now());
+		try
+		{
+			ResultSet res = null;
+			if (con == null)
+			{	getConnection();	}
+			String query = "SELECT score FROM GAME_HIGH_SCORES WHERE studentID = ? AND gameID = ?;";
+			PreparedStatement preparedStatement = con.prepareStatement(query);
+			preparedStatement.setInt(1, studentID);
+			preparedStatement.setInt(2, gameID);
+			res = preparedStatement.executeQuery();
+			if(res.next())
+			{
+				if(res.getInt("score") < score)
+				{
+					query = "UPDATE GAME_HIGH_SCORES SET score = ? WHERE studentID = ? AND gameID = ?;";
+					preparedStatement = con.prepareStatement(query);
+					preparedStatement.setInt(1, score);
+					preparedStatement.setInt(2, studentID);
+					preparedStatement.setInt(3, gameID);
+					preparedStatement.executeUpdate();
+				}
+			}
+			else
+			{
+				insertGameHighscore(studentID, gameID, score, classID, firstName, lastName);
+			}
+		}
+		catch (SQLException e){}
+	}
+	
+	
+	private void insertGameHighscore(int studentID, int gameID, int score, String classID, String firstName, String lastName)
+	{
 		if (con == null)
 		{	getConnection();	}
 		try 
 		{
 			PreparedStatement preparedStatement;
-			preparedStatement = con.prepareStatement("INSERT INTO GAME_RECORDS(studentID, gameID, " +
-					"questionsAnswered, questionsCorrect, guesses, totalSeconds, datePlayed, score) " +
-					"VALUES(?, ?, ?, ?, ?, ?, ?, ?);");
+			preparedStatement = con.prepareStatement("INSERT INTO GAME_HIGH_SCORES VALUES(?, ?, ?, ?, ?, ?);");		
 			preparedStatement.setInt(1, studentID);
 			preparedStatement.setInt(2, gameID);
-			preparedStatement.setInt(3, questionsAnswered);
-			preparedStatement.setInt(4, questionsCorrect);
-			preparedStatement.setInt(5, guesses);
-			preparedStatement.setInt(6, totalSeconds);
-			preparedStatement.setString(7, date);
-			preparedStatement.setInt(8, score);
-			preparedStatement.executeUpdate();
-			
-			updateGameHighscore(studentID, gameID, score);
-			updateSession(studentID, date, questionsAnswered, questionsCorrect, score);
-		}
+			preparedStatement.setInt(3, score);
+			preparedStatement.setString(4, classID);
+			preparedStatement.setString(5, firstName);
+			preparedStatement.setString(6, lastName);
+			preparedStatement.execute();
+		} 
 		catch (SQLException e) {e.printStackTrace();}
+	}
+	
+	public int getPersonalHighscore(int studentID, int gameID)
+	{
+		int result = 0;
+		try
+		{
+			ResultSet res = null;
+			if (con == null)
+			{	getConnection();	}
+			String query = "SELECT score FROM GAME_HIGH_SCORES WHERE studentID = ? AND gameID = ?;";
+			PreparedStatement preparedStatement = con.prepareStatement(query);
+			preparedStatement.setInt(1, studentID);
+			preparedStatement.setInt(2, gameID);
+			res = preparedStatement.executeQuery();
+			res.next();
+			result = res.getInt("score");
+		}
+		catch (SQLException e){}
+		return result;
+	}
+	
+	public ResultSet getClassHighscore(String classID, int gameID)
+	{
+		ResultSet res = null;
+		try
+		{
+			if (con == null)
+			{	getConnection();	}
+			String query = "SELECT MAX(score) AS maxScore, firstName, lastName FROM GAME_HIGH_SCORES WHERE classID = ? AND gameID = ?;";
+			PreparedStatement preparedStatement = con.prepareStatement(query);
+			preparedStatement.setString(1, classID);
+			preparedStatement.setInt(2, gameID);
+			res = preparedStatement.executeQuery();
+		}
+		catch (SQLException e){}
+		return res;
+	}
+	
+	public ResultSet getHighscore(int gameID)
+	{
+		ResultSet res = null;
+		try
+		{
+			if (con == null)
+			{	getConnection();	}
+			String query = "SELECT MAX(score) AS maxScore, firstName, lastName FROM GAME_HIGH_SCORES WHERE gameID = ?;";
+			PreparedStatement preparedStatement = con.prepareStatement(query);
+			preparedStatement.setInt(1, gameID);
+			res = preparedStatement.executeQuery();
+		}
+		catch (SQLException e){}
+		return res;
+	}
+	
+	public int wantInstructions(String gameID, int studentID)
+	{
+		int result = 0;
+		try
+		{
+			ResultSet res = null;
+			if (con == null)
+			{	getConnection();	}
+			String query = "SELECT " + gameID + " FROM USER WHERE ID = ?;";
+			PreparedStatement preparedStatement = con.prepareStatement(query);
+			preparedStatement.setInt(1, studentID);
+			res = preparedStatement.executeQuery();
+			if(res.next())
+			{
+				result = res.getInt(gameID);
+			}
+		}
+		catch (SQLException e){}
+		return result;
+	}
+	
+	public void setWantInstructions(String gameID, int studentID, boolean value)
+	{
+		int valueAsInt = value ? 1 : 0;
+		try
+		{
+			if (con == null)
+			{	getConnection();	}
+			PreparedStatement preparedStatement = con.prepareStatement("UPDATE USER SET " + gameID + " = ? WHERE ID = ?;");
+			preparedStatement.setInt(1, valueAsInt);
+			preparedStatement.setInt(2, studentID);
+			preparedStatement.executeUpdate();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	public ResultSet getGameRecords(int studentID)
@@ -398,7 +635,24 @@ public class MySQLData
 		{	getConnection();	}
 		try 
 		{
-			String query = "SELECT * FROM GAME_RECORDS WHERE studentID = ?";
+			String query = "SELECT gameID, questionsAnswered, questionsCorrect, datePlayed, score FROM GAME_RECORDS WHERE studentID = ?";
+			preparedStatement = con.prepareStatement(query);
+			preparedStatement.setInt(1, studentID);
+			res = preparedStatement.executeQuery();
+		}		
+		catch (SQLException e){e.printStackTrace();}
+		return res;
+	}
+	
+	public ResultSet getStats(int studentID)
+	{
+		ResultSet res = null;
+		PreparedStatement preparedStatement;
+		if (con == null)
+		{	getConnection();	}
+		try 
+		{
+			String query = "SELECT SUM(score) AS scoreSum, SUM(gamesPlayed) AS gameSum, SUM(questionsAnswered) AS answerSum, SUM(questionsCorrect) AS correctSum FROM SESSION_RECORDS WHERE studentID = ?";
 			preparedStatement = con.prepareStatement(query);
 			preparedStatement.setInt(1, studentID);
 			res = preparedStatement.executeQuery();
@@ -415,7 +669,7 @@ public class MySQLData
 		{	getConnection();	}
 		try 
 		{
-			String query = "SELECT * FROM SESSION_RECORDS WHERE studentID = ?";
+			String query = "SELECT datePlayed, gamesPlayed, questionsAnswered, questionsCorrect, score FROM SESSION_RECORDS WHERE studentID = ?";
 			preparedStatement = con.prepareStatement(query);
 			preparedStatement.setInt(1, studentID);
 			res = preparedStatement.executeQuery();
@@ -483,10 +737,9 @@ public class MySQLData
 		{	getConnection();	}
 		try 
 		{
+			//studentID, datePlayed, gamesPlayed, questionsAnswered, questionsCorrect, score
 			PreparedStatement preparedStatement;
-			preparedStatement = con.prepareStatement("INSERT INTO SESSION_RECORDS(studentID, datePlayed, " +
-					"gamesPlayed, questionsAnswered, questionsCorrect, score) " +
-					"VALUES(?, ?, ?, ?, ?, ?, ?, ?);");
+			preparedStatement = con.prepareStatement("INSERT INTO SESSION_RECORDS VALUES(?, ?, ?, ?, ?, ?);");
 			preparedStatement.setInt(1, studentID);
 			preparedStatement.setString(2, date);
 			preparedStatement.setInt(3, 1);
@@ -498,59 +751,21 @@ public class MySQLData
 		catch (SQLException e) {e.printStackTrace();}
 	}
 	
-	public ResultSet getStudents(String classID)
-	{
-		ResultSet res = null;
-		PreparedStatement preparedStatement;
-		if (con == null)
-		{	getConnection();	}
-		try 
-		{
-			String query = "SELECT ID, userName, firstName, lastName from USER WHERE classID = ? AND permission = ?";
-			preparedStatement = con.prepareStatement(query);
-			preparedStatement.setString(1, classID);
-			preparedStatement.setInt(2, 3);
-			res = preparedStatement.executeQuery();
-		}
-		catch (SQLException e) { e.printStackTrace(); }		
-		return res;
-	}
-	
-	public ResultSet getAllUsers()
-	{
-		ResultSet res = null;
-		PreparedStatement preparedStatement;
-		if (con == null)
-		{	getConnection();	}
-		try 
-		{
-			String query = "SELECT ID, userName, firstName, lastName, classID from USER WHERE NOT ID = ?";
-			preparedStatement = con.prepareStatement(query);
-			preparedStatement.setInt(1, 0);
-			res = preparedStatement.executeQuery();
-		}
-		catch (SQLException e) { e.printStackTrace(); }		
-		return res;
-	}
-	
-	private void addCustomEquations(String classID, String questionList, int numberOfEquations, int frequency)
+	public void addClass(String classID)
 	{
 		if (con == null)
 		{	getConnection();	}
 		try 
 		{
 			PreparedStatement preparedStatement;
-			preparedStatement = con.prepareStatement("INSERT INTO CUSTOM_EQUATIONS VALUES( ?, ?, ?, ?);");		
+			preparedStatement = con.prepareStatement("INSERT INTO CLASS VALUES(?);");
 			preparedStatement.setString(1, classID);
-			preparedStatement.setString(2, questionList);
-			preparedStatement.setInt(3, numberOfEquations);
-			preparedStatement.setInt(4, frequency);
-			preparedStatement.execute();
-		} 
+			preparedStatement.executeUpdate();
+		}
 		catch (SQLException e) {e.printStackTrace();}
 	}
 	
-	private boolean userExists(int ID)
+	private boolean classExists(String classID)
 	{
 		boolean result = false;
 		ResultSet res = null;
@@ -558,127 +773,14 @@ public class MySQLData
 		{
 			if (con == null)
 			{	getConnection();	}
-			String query = "SELECT ID FROM USER WHERE ID = ?";
+			String query = "SELECT * FROM CLASS WHERE classID = ?";
 			PreparedStatement preparedStatement = con.prepareStatement(query);
-			preparedStatement.setInt(1, ID);
+			preparedStatement.setString(1, classID);
 			res = preparedStatement.executeQuery();
 			result = res.next();
 		}
 		catch (SQLException e){}
 		return result;
-	}
-
-	private void getConnection()
-	{
-		String dbName = "smg";
-		String host = "smg-database.cxdny0vkhuno.us-west-2.rds.amazonaws.com";
-		String userName = "smg_database";
-		String password = "5mg.Pa55w0rd";
-        String jdbcUrl = "jdbc:mysql://" + host + ":" + "3306" + "/" + dbName + "?user=" + userName + "&password=" + password;
-		try 
-		{	con = DriverManager.getConnection(jdbcUrl);	}
-		catch(SQLException se)
-		{	se.printStackTrace();	}
-	}
-	
-	
-	
-	
-	//TODO User high scores and general stats database (games played, total score(s))
-	//TODO overall high scores
-	
-	
-	public void updateGameHighscore(int studentID, int gameID, int score)
-	{
-		try
-		{
-			ResultSet res = null;
-			if (con == null)
-			{	getConnection();	}
-			String query = "SELECT score FROM GAME_HIGH_SCORES WHERE studentID = ? AND gameID = ?;";
-			PreparedStatement preparedStatement = con.prepareStatement(query);
-			preparedStatement.setInt(1, studentID);
-			preparedStatement.setInt(2, gameID);
-			res = preparedStatement.executeQuery();
-			if(res.next())
-			{
-				if(res.getInt("score") < score)
-				{
-					query = "UPDATE GAME_HIGH_SCORES SET score = ? WHERE studentID = ? AND gameID = ?;";
-					preparedStatement = con.prepareStatement(query);
-					preparedStatement.setInt(1, score);
-					preparedStatement.setInt(2, studentID);
-					preparedStatement.setInt(3, gameID);
-					preparedStatement.executeUpdate();
-				}
-			}
-			else
-			{
-				insertGameHighscore(studentID, gameID, score);
-			}
-		}
-		catch (SQLException e){}
-	}
-	
-	
-	private void insertGameHighscore(int studentID, int gameID, int score)
-	{
-		if (con == null)
-		{	getConnection();	}
-		try 
-		{
-			PreparedStatement preparedStatement;
-			preparedStatement = con.prepareStatement("INSERT INTO GAME_HIGH_SCORES VALUES( ?, ?, ?);");		
-			preparedStatement.setInt(1, studentID);
-			preparedStatement.setInt(2, gameID);
-			preparedStatement.setInt(3, score);
-			preparedStatement.execute();
-		} 
-		catch (SQLException e) {e.printStackTrace();}
-	}
-	
-	public int getGameHighscore(int studentID, int gameID)
-	{
-		int result = 0;
-		
-		return result;
-	}
-	
-	public int wantInstructions(String gameID, int studentID)
-	{
-		int result = 1;
-		try
-		{
-			ResultSet res = null;
-			if (con == null)
-			{	getConnection();	}
-			String query = "SELECT " + gameID + " FROM USER WHERE ID = ?;";
-			PreparedStatement preparedStatement = con.prepareStatement(query);
-			preparedStatement.setInt(1, studentID);
-			res = preparedStatement.executeQuery();
-			res.next();
-			result = res.getInt(gameID);
-		}
-		catch (SQLException e){}
-		return result;
-	}
-	
-	public void setWantInstructions(String gameID, int studentID, boolean value)
-	{
-		int valueAsInt = value ? 1 : 0;
-		try
-		{
-			if (con == null)
-			{	getConnection();	}
-			PreparedStatement preparedStatement = con.prepareStatement("UPDATE USER SET " + gameID + " = ? WHERE ID = ?;");
-			preparedStatement.setInt(1, valueAsInt);
-			preparedStatement.setInt(2, studentID);
-			preparedStatement.executeUpdate();
-		}
-		catch (SQLException e)
-		{
-			e.printStackTrace();
-		}
 	}
 	
 	//preparedStatement = con.prepareStatement("INSERT INTO GAME_RECORDS(studentID, gameID, " +

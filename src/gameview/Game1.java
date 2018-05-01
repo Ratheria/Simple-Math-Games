@@ -65,15 +65,12 @@ public class Game1 extends JPanel implements Game
 	private Image backgroundImg;
 	private JLabel feedbackLabel;
 	private JLabel background;
-
 	private int questionBase;
 	private int questionTypes; //TODO
 	private int fishSpeed;
-
 	private int questionsAnswered;
 	private int questionsCorrect;
 	private int guesses;
-
 	private boolean playing;
 	private boolean reset;
 	private boolean miss;
@@ -226,7 +223,10 @@ public class Game1 extends JPanel implements Game
 				int dialogResult = JOptionPane.showConfirmDialog(null, "Your score is " + score + ". Would you like to exit the game?", "Exit game?", JOptionPane.OK_CANCEL_OPTION);
 				if(dialogResult == JOptionPane.OK_OPTION)
 				{
-					base.addGameRecord(1, questionsAnswered, questionsCorrect, guesses, gamePeriod - currentTime, score);
+					if(questionsAnswered > 0)
+					{
+						base.addGameRecord(1, questionsAnswered, questionsCorrect, guesses, gamePeriod - currentTime, score);
+					}
 					base.returnToMenu();
 				}
 				else
@@ -280,7 +280,10 @@ public class Game1 extends JPanel implements Game
 					playing = false;
 					timerLabel.setText("Time: 0:00");
 					stopTimers();
-					base.addGameRecord(1, questionsAnswered, questionsCorrect, guesses, gamePeriod, score);
+					if(questionsAnswered > 0)
+					{
+						base.addGameRecord(1, questionsAnswered, questionsCorrect, guesses, gamePeriod, score);
+					}
 					System.out.println("Time's up!");
 					JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "Time's up!", JOptionPane.PLAIN_MESSAGE);
 					clearCurrentFish();
@@ -343,12 +346,10 @@ public class Game1 extends JPanel implements Game
 		while (question.contains("+") && questionTypes == 2)
 		{
 			generateSubtraction();
-			System.out.println("reached");
 		}
 		while( question.contains("-") && questionTypes == 1)
 		{
 			generateAddition();
-			System.out.println("reached 2");
 		}
 		while (answer < 0)
 		{
@@ -505,7 +506,10 @@ public class Game1 extends JPanel implements Game
 			System.out.println("Correct answer went off screen.");
 			stopTimers();
 			playing = false;
-			base.addGameRecord(1, questionsAnswered, questionsCorrect, guesses, gamePeriod - currentTime, score);
+			if(questionsAnswered > 0)
+			{
+				base.addGameRecord(1, questionsAnswered, questionsCorrect, guesses, gamePeriod - currentTime, score);
+			}
 			JOptionPane.showMessageDialog(base.messagePanel, "The correct answer went off screen.\nYour score was " + score + ".", "Game Over", JOptionPane.INFORMATION_MESSAGE);
 			clearCurrentFish();
 			base.returnToMenu();

@@ -172,7 +172,7 @@ public class PassChange extends JPanel
 		{
 			public void actionPerformed(ActionEvent onClick)
 			{
-				base.changeState(ViewStates.settings);
+				base.changeState(ViewStates.SETTINGS);
 			}
 		});
 	}

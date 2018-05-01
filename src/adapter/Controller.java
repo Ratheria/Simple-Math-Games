@@ -24,6 +24,8 @@ public class Controller
 	public static Random rng;
 	public static String[] selectStudentRecordHeader = { "Student ID", "First Name", "Last Name" };
 	public static String[] allUsersHeader = { "User ID", "Username", "First Name", "Last Name", "Class ID" };
+	public static String[] gamesHeader = { "Game", "Total Answers", "Correct Answers", "Date", "Score" };
+	public static String[] sessionsHeader = { "Date", "Games Played", "Total Answers", "Correct Answers", "Total Score" };
 	public Frame frame;
 	public JPanel messagePanel;
 	public int questionTypes;
@@ -55,8 +57,8 @@ public class Controller
 	public void logout()
 	{
 		questionTypes = 0;
-		state = ViewStates.login;
-		lastState = ViewStates.login;
+		state = ViewStates.LOGIN;
+		lastState = ViewStates.LOGIN;
 		ID = 0;
 		firstName = "";
 		lastName = "";
@@ -145,7 +147,15 @@ public class Controller
 	public void changeState(int studentID, int value)
 	{
 		lastState = state;
-		state = ViewStates.viewStudentStats;
+		if(studentID == 0)
+		{	
+			studentID = this.ID;	
+		}
+		state = ViewStates.VIEWGAMERECORDS;
+		if(value == -1)
+		{
+			state = ViewStates.VIEWSTUDENTSTATS;
+		}
 		frame.updateState(studentID, value);
 	}
 	
@@ -153,15 +163,15 @@ public class Controller
 	{
 		if (permission < 2)
 		{
-			changeState(ViewStates.rootMenu);
+			changeState(ViewStates.ROOTMENU);
 		}
 		else if (permission == 2)
 		{
-			changeState(ViewStates.teacherMenu);
+			changeState(ViewStates.TEACHERMENU);
 		}
 		else
 		{
-			changeState(ViewStates.studentMenu);
+			changeState(ViewStates.STUDENTMENU);
 		}
 	}
 	
@@ -339,29 +349,6 @@ public class Controller
 		}
 	}
 
-	public void addGameRecord(int gameID, int questionsAnswered, int questionsCorrect, int guesses, int totalSeconds, int score)
-	{
-		database.addGameRecord(ID, gameID, questionsAnswered, questionsCorrect, guesses, totalSeconds, score);
-	}
-
-	public void changeCustomEquations(String equationString, int frequency, int numberOfEquations)
-	{
-		database.updateCustomEquations(classID, equationString, frequency, numberOfEquations);
-		ResultSet res = database.getCustomEquationInfo(classID);
-		try
-		{
-			if (res.next())
-			{
-				this.equationString = res.getString("questionList");
-				customEquations = getCustomEquationList(equationString);
-				this.frequency = res.getInt("frequency");
-				this.numberOfEquations = res.getInt("numberOfEquations");
-			}
-		}
-		catch (SQLException e)
-		{}
-	}
-
 	public ResultSet getAllUsers()
 	{
 		ResultSet result = null;
@@ -373,20 +360,6 @@ public class Controller
 	{
 		ResultSet result = null;
 		result = database.getStudents(classID);
-		return result;
-	}
-	
-	public ResultSet getGameRecords(int studentID)
-	{
-		ResultSet result = null;
-		result = database.getGameRecords(studentID);
-		return result;
-	}
-	
-	public ResultSet getSessionRecords(int studentID)
-	{
-		ResultSet result = null;
-		result = database.getSessionRecords(studentID);
 		return result;
 	}
 	
@@ -466,6 +439,29 @@ public class Controller
 		}
 	}
 	
+	public void addGameRecord(int gameID, int questionsAnswered, int questionsCorrect, int guesses, int totalSeconds, int score)
+	{
+		database.addGameRecord(ID, gameID, questionsAnswered, questionsCorrect, guesses, totalSeconds, score, classID, firstName, lastName);
+	}
+
+	public void changeCustomEquations(String equationString, int frequency, int numberOfEquations)
+	{
+		database.updateCustomEquations(classID, equationString, frequency, numberOfEquations);
+		ResultSet res = database.getCustomEquationInfo(classID);
+		try
+		{
+			if (res.next())
+			{
+				this.equationString = res.getString("questionList");
+				customEquations = getCustomEquationList(equationString);
+				this.frequency = res.getInt("frequency");
+				this.numberOfEquations = res.getInt("numberOfEquations");
+			}
+		}
+		catch (SQLException e)
+		{}
+	}
+	
 	public boolean getInstructionPreference(String gameInstructions)
 	{
 		boolean result = true;
@@ -482,7 +478,36 @@ public class Controller
 	{
 		database.setWantInstructions(gameInstructions, ID, value);
 	}
+	
+	public int getPersonalHighscore(int studentID, int gameID)
+	{
+		return database.getPersonalHighscore(studentID, gameID);
+	}
+	
+	public ResultSet getClassHighscore(int gameID)
+	{
+		return database.getClassHighscore(classID, gameID);
+	}
+	
+	public ResultSet getHighscore(int gameID)
+	{
+		return database.getHighscore(gameID);
+	}
 		
+	public ResultSet getGameRecords(int studentID)
+	{
+		return database.getGameRecords(studentID);
+	}
+	
+	public ResultSet getSessionRecords(int studentID)
+	{
+		return database.getSessionRecords(studentID);
+	}
+	
+	public ResultSet getStats(int studentID)
+	{
+		return database.getStats(studentID);
+	}
 }
 
 

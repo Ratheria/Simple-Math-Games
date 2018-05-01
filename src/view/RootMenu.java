@@ -238,7 +238,7 @@ public class RootMenu extends JPanel
 		{
 			public void actionPerformed(ActionEvent onClick)
 			{
-				base.changeState(ViewStates.settings);
+				base.changeState(ViewStates.SETTINGS);
 			}
 		});
 
@@ -344,7 +344,7 @@ public class RootMenu extends JPanel
 		{
 			public void actionPerformed(ActionEvent onClick)
 			{
-				base.changeState(ViewStates.addUsers);
+				base.changeState(ViewStates.ADDUSERS);
 			}
 		});
 	}

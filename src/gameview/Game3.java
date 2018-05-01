@@ -78,10 +78,8 @@ public class Game3 extends JPanel implements KeyListener, Game
 	private static final int gamePeriod = 40;
 	private int sec;
 	private JLabel feedbackLabel;
-	
 	private int questionBase;
 	private int questionTypes; // TODO
-	
 	private JButton menu;
 	private JButton help;
 	private JLabel questionLabel;
@@ -91,7 +89,6 @@ public class Game3 extends JPanel implements KeyListener, Game
 	private boolean focus;
 	private Image backgroundImg;
 	private JLabel background;
-	
 	private int questionsAnswered;
 	private int questionsCorrect;
 	private int guesses;
@@ -277,7 +274,10 @@ public class Game3 extends JPanel implements KeyListener, Game
 					playing = false;
 					System.out.println("Time's up!");
 					JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "Time's up!", JOptionPane.PLAIN_MESSAGE);
-					base.addGameRecord(3, questionsAnswered, questionsCorrect, guesses, gamePeriod, score);
+					if(questionsAnswered > 0)
+					{
+						base.addGameRecord(3, questionsAnswered, questionsCorrect, guesses, gamePeriod, score);
+					}
 					remove(shark);
 					base.returnToMenu();
 				}
@@ -328,9 +328,11 @@ public class Game3 extends JPanel implements KeyListener, Game
 				int dialogResult = JOptionPane.showConfirmDialog (null, "Your score is " + score + ".  Would you like to exit the game?","Exit game?",JOptionPane.OK_CANCEL_OPTION);
 				if(dialogResult == JOptionPane.OK_OPTION)
 				{
-					//TODO add game record
 					remove(shark);
-					base.addGameRecord(3, questionsAnswered, questionsCorrect, guesses, (int) (gamePeriod - sec), score);
+					if(questionsAnswered > 0)
+					{
+						base.addGameRecord(3, questionsAnswered, questionsCorrect, guesses, (int) (gamePeriod - sec), score);
+					}
 					base.returnToMenu();
 				}
 				else
@@ -456,12 +458,10 @@ public class Game3 extends JPanel implements KeyListener, Game
 		while (question.contains("+") && questionTypes == 2)
 		{
 			generateSubtraction();
-			System.out.println("reached");
 		}
 		while( question.contains("-") && questionTypes == 1)
 		{
 			generateAddition();
-			System.out.println("reached 2");
 		}
 		while (answer < 0)
 		{
