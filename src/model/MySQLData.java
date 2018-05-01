@@ -562,10 +562,18 @@ public class MySQLData
 		{
 			if (con == null)
 			{	getConnection();	}
-			String query = "SELECT MAX(score) AS maxScore, firstName, lastName FROM GAME_HIGH_SCORES WHERE classID = ? AND gameID = ?;";
+			String query = "SELECT MAX(score) AS maxScore FROM GAME_HIGH_SCORES WHERE gameID = ? AND classID = ?;";
 			PreparedStatement preparedStatement = con.prepareStatement(query);
-			preparedStatement.setString(1, classID);
+			preparedStatement.setInt(1, gameID);
+			preparedStatement.setString(2, classID);
+			res = preparedStatement.executeQuery();
+			res.next();
+			int max = res.getInt("maxScore");
+			query = "SELECT score, firstName, lastName FROM GAME_HIGH_SCORES WHERE score = ? AND gameID = ? AND classID = ?;";
+			preparedStatement = con.prepareStatement(query);
+			preparedStatement.setInt(1, max);
 			preparedStatement.setInt(2, gameID);
+			preparedStatement.setString(3, classID);
 			res = preparedStatement.executeQuery();
 		}
 		catch (SQLException e){}
@@ -579,9 +587,16 @@ public class MySQLData
 		{
 			if (con == null)
 			{	getConnection();	}
-			String query = "SELECT MAX(score) AS maxScore, firstName, lastName FROM GAME_HIGH_SCORES WHERE gameID = ?;";
+			String query = "SELECT MAX(score) AS maxScore FROM GAME_HIGH_SCORES WHERE gameID = ?;";
 			PreparedStatement preparedStatement = con.prepareStatement(query);
 			preparedStatement.setInt(1, gameID);
+			res = preparedStatement.executeQuery();
+			res.next();
+			int max = res.getInt("maxScore");
+			query = new String("SELECT score, firstName, lastName FROM GAME_HIGH_SCORES WHERE score = ? AND gameID = ?;");
+			preparedStatement = con.prepareStatement(query);
+			preparedStatement.setInt(1, max);
+			preparedStatement.setInt(2, gameID);
 			res = preparedStatement.executeQuery();
 		}
 		catch (SQLException e){}

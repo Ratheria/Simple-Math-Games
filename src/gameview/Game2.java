@@ -111,7 +111,7 @@ public class Game2 extends JPanel implements KeyListener, Game
 		maxY = base.frame.getHeight();
 		xSpacing = (base.frame.getWidth()) / numberOfColumns;
 		jellyLocation = new Point();		
-		questionBase = 20;
+		questionBase = 15;
 		questionTypes = base.questionTypes; // both, addition, subtraction
 		speed = 40;
 		questionsAnswered = 0;

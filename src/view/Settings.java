@@ -8,7 +8,6 @@ import javax.swing.*;
 import adapter.Controller;
 import adapter.ViewStates;
 import gameview.InstructionPanel;
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -17,7 +16,6 @@ import java.awt.Insets;
 import javax.swing.border.LineBorder;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import javax.swing.JOptionPane;
 
 public class Settings extends JPanel
 {

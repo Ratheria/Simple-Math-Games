@@ -114,7 +114,7 @@ public class Game3 extends JPanel implements KeyListener, Game
 		answerLabel2 = new JLabel();
 		answerLabel3 = new JLabel();
 		questionLabel = new JLabel(question);
-		movementSpeed = 3;
+		movementSpeed = 7;
 		questionBase = 15;
 		questionTypes = base.questionTypes; // both, addition, subtraction
 		menu = new JButton(" Exit ");
@@ -140,7 +140,7 @@ public class Game3 extends JPanel implements KeyListener, Game
 		backgroundImg = backgroundImg.getScaledInstance(base.frame.getWidth(), base.frame.getHeight(), java.awt.Image.SCALE_SMOOTH);
 		background = new JLabel(new ImageIcon(backgroundImg));
 		sharkWidth = (base.frame.getWidth() / 5);
-		sharkHeight = (base.frame.getHeight() / 5);
+		sharkHeight = (base.frame.getHeight() / 6);
 		sharkImg = sharkImg.getScaledInstance(sharkWidth, sharkHeight, java.awt.Image.SCALE_SMOOTH);
 		sharkIcon = new ImageIcon(sharkImg);
 		fishWidth = (base.frame.getWidth() / 9);

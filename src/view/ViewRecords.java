@@ -62,8 +62,8 @@ public class ViewRecords extends JPanel
 	
 	private void setUpLayout() 
 	{
-		layout.rowHeights = new int[]{0, 0, 0};
-		layout.rowWeights = new double[]{0.0, 1.0, 20.0};
+		layout.rowHeights = new int[]{0, 0};
+		layout.rowWeights = new double[]{0.0, 20.0};
 		layout.columnWidths = new int[]{0, 0, 0};
 		layout.columnWeights = new double[]{0.0, 1.0, 1.0};
 		setLayout(layout);
@@ -79,7 +79,7 @@ public class ViewRecords extends JPanel
 		backButton.setBorder(new LineBorder(new Color(135, 206, 250), 2));
 		GridBagConstraints gbc_backButton = new GridBagConstraints();
 		gbc_backButton.anchor = GridBagConstraints.NORTHWEST;
-		gbc_backButton.insets = new Insets(20, 20, 5, 5);
+		gbc_backButton.insets = new Insets(20, 20, 20, 5);
 		gbc_backButton.gridx = 0;
 		gbc_backButton.gridy = 0;
 		
@@ -101,7 +101,7 @@ public class ViewRecords extends JPanel
 		scrollPane.setBorder(new LineBorder(new Color(70, 130, 180), 2));
 		GridBagConstraints gbc_dataSet = new GridBagConstraints();
 		gbc_dataSet.gridwidth = 3;
-		gbc_dataSet.gridy = 2;
+		gbc_dataSet.gridy = 1;
 		gbc_dataSet.insets = new Insets(0, 20, 20, 20);
 		gbc_dataSet.fill = GridBagConstraints.BOTH;
 		gbc_dataSet.gridx = 0;

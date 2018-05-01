@@ -97,7 +97,7 @@ public class Game1 extends JPanel implements Game
 		menu = new JButton(" Exit ");
 		help = new JButton(" Help ");
 		
-		questionBase = 20;
+		questionBase = 15;
 		questionTypes = base.questionTypes; // both, addition, subtraction
 		
 		fishSpeed = 40;

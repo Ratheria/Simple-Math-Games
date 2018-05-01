@@ -56,87 +56,117 @@ public class ViewStudentStats extends JPanel
 			
 			ResultSet classHighscore = base.getClassHighscore(1);
 			ResultSet highscore = base.getHighscore(1);
-			classHighscore.next();
-			highscore.next();
-			String classHigh = classHighscore.getString("firstName");
-			String high = highscore.getString("firstName");
-			if(classHigh == null)
+			String classHigh = "";
+			String high = "";
+			int classHighScore = 0;
+			int highScore = 0;
+			if(classHighscore.next())
 			{
-				classHigh = "";
+				classHigh = classHighscore.getString("firstName");
+				if(classHigh == null)
+				{
+					classHigh = "";
+				}
+				else 
+				{
+					classHighScore = classHighscore.getInt("score");
+					classHigh = "   -   " + classHigh + " " + classHighscore.getString("lastName");
+				}
 			}
-			else 
+			if(highscore.next())
 			{
-				classHigh = "   -   " + classHigh + " " + classHighscore.getString("lastName");
-			}
-			if(high == null)
-			{
-				high = "";
-			}
-			else 
-			{
-				high = "   -   " + high + " " + highscore.getString("lastName");
+				high = highscore.getString("firstName");
+				if(high == null)
+				{
+					high = "";
+				}
+				else 
+				{
+					highScore = highscore.getInt("score");
+					high = "   -   " + high + " " + highscore.getString("lastName");
+				}	
 			}
 			statsString = statsString
 						+ "FISH GAME HIGH SCORES\n"
 						+ "    Personal\t: " + base.getPersonalHighscore(studentID, 1) + "\n"
-						+ "    Class\t: " + classHighscore.getInt("maxScore") + classHigh + "\n"
-						+ "    School\t: " + highscore.getInt("maxScore") + high + "\n\n";
+						+ "    Class\t: " + classHighScore + classHigh + "\n"
+						+ "    School\t: " + highScore + high + "\n\n";
 			
 			classHighscore = base.getClassHighscore(2);
 			highscore = base.getHighscore(2);
-			classHighscore.next();
-			highscore.next();
-			classHigh = classHighscore.getString("firstName");
-			high = highscore.getString("firstName");
-			if(classHigh == null)
+			classHigh = "";
+			high = "";
+			classHighScore = 0;
+			highScore = 0;
+			if(classHighscore.next())
 			{
-				classHigh = "";
+				classHigh = classHighscore.getString("firstName");
+				if(classHigh == null)
+				{
+					classHigh = "";
+				}
+				else 
+				{
+					classHighScore = classHighscore.getInt("score");
+					classHigh = "   -   " + classHigh + " " + classHighscore.getString("lastName");
+				}
 			}
-			else 
+			if(highscore.next())
 			{
-				classHigh = "   -   " + classHigh + " " + classHighscore.getString("lastName");
-			}
-			if(high == null)
-			{
-				high = "";
-			}
-			else 
-			{
-				high = "   -   " + high + " " + highscore.getString("lastName");
+				high = highscore.getString("firstName");
+				if(high == null)
+				{
+					high = "";
+				}
+				else 
+				{
+					highScore = highscore.getInt("score");
+					high = "   -   " + high + " " + highscore.getString("lastName");
+				}	
 			}
 			statsString = statsString
 						+ "JELLYFISH GAME HIGH SCORES\n"
 						+ "    Personal\t: " + base.getPersonalHighscore(studentID, 2) + "\n"
-						+ "    Class\t: " + classHighscore.getInt("maxScore") + classHigh + "\n"
-						+ "    School\t: " + highscore.getInt("maxScore") + high + "\n\n";
+						+ "    Class\t: " + classHighScore + classHigh + "\n"
+						+ "    School\t: " + highScore + high + "\n\n";
 			
 			classHighscore = base.getClassHighscore(3);
 			highscore = base.getHighscore(3);
-			classHighscore.next();
-			highscore.next();
-			classHigh = classHighscore.getString("firstName");
-			high = highscore.getString("firstName");
-			if(classHigh == null)
+			classHigh = "";
+			high = "";
+			classHighScore = 0;
+			highScore = 0;
+			if(classHighscore.next())
 			{
-				classHigh = "";
+				classHigh = classHighscore.getString("firstName");
+				if(classHigh == null)
+				{
+					classHigh = "";
+				}
+				else 
+				{
+					classHighScore = classHighscore.getInt("score");
+					classHigh = "   -   " + classHigh + " " + classHighscore.getString("lastName");
+				}
 			}
-			else 
+			if(highscore.next())
 			{
-				classHigh = "   -   " + classHigh + " " + classHighscore.getString("lastName");
-			}
-			if(high == null)
-			{
-				high = "";
-			}
-			else 
-			{
-				high = "   -   " + high + " " + highscore.getString("lastName");
+				high = highscore.getString("firstName");
+				if(high == null)
+				{
+					high = "";
+				}
+				else 
+				{
+					highScore = highscore.getInt("score");
+					high = "   -   " + high + " " + highscore.getString("lastName");
+				}	
 			}
 			statsString = statsString
 						+ "SHARK GAME HIGH SCORES\n"
 						+ "    Personal\t: " + base.getPersonalHighscore(studentID, 3) + "\n"
-						+ "    Class\t: " + classHighscore.getInt("maxScore") + classHigh + "\n"
-						+ "    School\t: " + highscore.getInt("maxScore") + high + "\n\n";
+						+ "    Class\t: " + classHighScore + classHigh + "\n"
+						+ "    School\t: " + highScore + high + "\n\n";
 			
 			textArea.setText(statsString);
 		}
@@ -161,7 +191,7 @@ public class ViewStudentStats extends JPanel
 		setForeground(new Color(0, 255, 255));
 		setBackground(new Color(245, 245, 245));
 		
-		backButton.setFont(new Font("Arial", Font.PLAIN, 25));
+		backButton.setFont(new Font("Arial", Font.PLAIN, 22));
 		backButton.setForeground(new Color(70, 130, 180));
 		backButton.setBackground(new Color(0, 0, 0));
 		backButton.setFocusPainted(false);
@@ -183,7 +213,7 @@ public class ViewStudentStats extends JPanel
 		gbc_textArea.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textArea.gridwidth = 2;
 		gbc_textArea.anchor = GridBagConstraints.NORTH;
-		gbc_textArea.insets = new Insets(20, 50, 20, 50);
+		gbc_textArea.insets = new Insets(20, 100, 20, 100);
 		gbc_textArea.gridx = 0;
 		gbc_textArea.gridy = 1;
 		
