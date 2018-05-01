@@ -42,8 +42,13 @@ public class SelectStudentRecord extends JPanel
 	private GridBagLayout layout;
 	private JLabel header;
 	private JButton backButton;
-	private JTextField studentLookupField;
-	private JTable studentRecordsSet;
+	private JTextField selectionField;
+	private JButton statsButton;
+	private JButton gamesButton;
+	private JButton sessionsButton;
+	private JTextField searchField;
+	private JTable dataSet;
+	private ListSelectionModel listSelectionModel;
 	private TableRowSorter<TableModel> rowSorter;
 	private JScrollPane scrollPane;
 
@@ -53,36 +58,49 @@ public class SelectStudentRecord extends JPanel
 		layout = new GridBagLayout();
 		header = new JLabel("Select Student Records");
 		backButton = new JButton(" BACK ");
-		studentLookupField = new JTextField();
-		studentRecordsSet = new JTable();
+		selectionField = new JTextField();
+		statsButton = new JButton("   STATS   ");
+		gamesButton = new JButton("   GAMES   ");
+		sessionsButton = new JButton(" SESSIONS ");
+		searchField = new JTextField();
+		dataSet = new JTable();
 
+		setUpTable();
+		setUpLayout();
+		setUpListeners();
+		searchField.requestFocusInWindow();
+	}
+
+	private void setUpTable()
+	{
 		ResultSet res = base.getStudents();
 		try
 		{
-			studentRecordsSet = new JTable(CustomTableModel.buildTableModel(res, Controller.selectStudentRecordHeader));
+			dataSet = new JTable(CustomTableModel.buildTableModel(res, Controller.selectStudentRecordHeader));
 		}
 		catch (SQLException e)
 		{
 			e.printStackTrace();
 		}
-
-		rowSorter = new TableRowSorter<>(studentRecordsSet.getModel());
-		studentRecordsSet.setRowSorter(rowSorter);
-
-		setUpLayout();
-		setUpListeners();
+		dataSet.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		rowSorter = new TableRowSorter<>(dataSet.getModel());
+		dataSet.setRowSorter(rowSorter);
+		listSelectionModel = dataSet.getSelectionModel();
+		listSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		listSelectionModel.addListSelectionListener(new SharedListSelectionHandler());
+		dataSet.setSelectionModel(listSelectionModel);
 	}
-
+	
 	private void setUpLayout()
 	{
 		layout.rowHeights = new int[]
-		{ 0, 0, 0, 0, 0 };
+		{ 0, 0, 0, 0, 0, 0 };
 		layout.rowWeights = new double[]
-		{ 0.0, 1.0, 0.0, 1.0, 20.0 };
+		{ 0.0, 2.0, 0.0, 0.0, 1.0, 20.0 };
 		layout.columnWidths = new int[]
 		{ 0, 0, 0 };
 		layout.columnWeights = new double[]
-		{ 0.0, 1.0, 1.0 };
+		{ 0.0, 1.0, 0.0 };
 		setLayout(layout);
 		setBorder(new LineBorder(new Color(70, 130, 180), 10));
 		setForeground(new Color(0, 255, 255));
@@ -106,33 +124,84 @@ public class SelectStudentRecord extends JPanel
 		backButton.setBorder(new LineBorder(new Color(70, 130, 180), 2));
 		GridBagConstraints gbc_backButton = new GridBagConstraints();
 		gbc_backButton.anchor = GridBagConstraints.NORTHWEST;
-		gbc_backButton.insets = new Insets(20, 20, 5, 5);
+		gbc_backButton.insets = new Insets(20, 20, 10, 5);
 		gbc_backButton.gridx = 0;
 		gbc_backButton.gridy = 0;
 
-		studentLookupField.setFont(new Font("Arial", Font.PLAIN, 20));
-		studentLookupField.setForeground(new Color(0, 0, 128));
-		studentLookupField.setBackground(new Color(245, 245, 245));
-		studentLookupField.setToolTipText("Username");
-		studentLookupField.setBorder(new CompoundBorder(new LineBorder(new Color(70, 130, 180)), new EmptyBorder(0, 10, 0, 0)));
-		GridBagConstraints gbc_studentLookupField = new GridBagConstraints();
-		gbc_studentLookupField.gridwidth = 4;
-		gbc_studentLookupField.insets = new Insets(10, 100, 10, 100);
-		gbc_studentLookupField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_studentLookupField.gridx = 0;
-		gbc_studentLookupField.gridy = 2;
+		selectionField.setFont(new Font("Arial", Font.PLAIN, 20));
+		selectionField.setForeground(new Color(0, 0, 128));
+		selectionField.setBackground(new Color(245, 245, 245));
+		selectionField.setToolTipText("Username");
+		selectionField.setBorder(new CompoundBorder(new LineBorder(new Color(70, 130, 180)), new EmptyBorder(0, 10, 0, 0)));
+		GridBagConstraints gbc_selectionField = new GridBagConstraints();
+		gbc_selectionField.gridwidth = 2;
+		gbc_selectionField.insets = new Insets(10, 50, 10, 5);
+		gbc_selectionField.fill = GridBagConstraints.HORIZONTAL;
+		gbc_selectionField.gridx = 0;
+		gbc_selectionField.gridy = 2;
+		
+		statsButton.setHorizontalTextPosition(SwingConstants.CENTER);
+		statsButton.setFont(new Font("Arial", Font.PLAIN, 20));
+		statsButton.setForeground(new Color(70, 130, 180));
+		statsButton.setBackground(new Color(0, 0, 0));
+		statsButton.setFocusPainted(false);
+		statsButton.setContentAreaFilled(false);
+		statsButton.setBorder(new LineBorder(new Color(70, 130, 180), 2));
+		GridBagConstraints gbc_statsButton = new GridBagConstraints();
+		gbc_statsButton.fill = GridBagConstraints.HORIZONTAL;
+		gbc_statsButton.insets = new Insets(10, 10, 10, 5);
+		gbc_statsButton.gridx = 2;
+		gbc_statsButton.gridy = 2;
+		
+		gamesButton.setHorizontalTextPosition(SwingConstants.CENTER);
+		gamesButton.setFont(new Font("Arial", Font.PLAIN, 20));
+		gamesButton.setForeground(new Color(70, 130, 180));
+		gamesButton.setBackground(new Color(0, 0, 0));
+		gamesButton.setFocusPainted(false);
+		gamesButton.setContentAreaFilled(false);
+		gamesButton.setBorder(new LineBorder(new Color(70, 130, 180), 2));
+		GridBagConstraints gbc_gamesButton = new GridBagConstraints();
+		gbc_gamesButton.fill = GridBagConstraints.HORIZONTAL;
+		gbc_gamesButton.insets = new Insets(10, 5, 10, 5);
+		gbc_gamesButton.gridx = 3;
+		gbc_gamesButton.gridy = 2;
+		
+		sessionsButton.setHorizontalTextPosition(SwingConstants.CENTER);
+		sessionsButton.setFont(new Font("Arial", Font.PLAIN, 20));
+		sessionsButton.setForeground(new Color(70, 130, 180));
+		sessionsButton.setBackground(new Color(0, 0, 0));
+		sessionsButton.setFocusPainted(false);
+		sessionsButton.setContentAreaFilled(false);
+		sessionsButton.setBorder(new LineBorder(new Color(70, 130, 180), 2));
+		GridBagConstraints gbc_sessionsButton = new GridBagConstraints();
+		gbc_sessionsButton.fill = GridBagConstraints.HORIZONTAL;
+		gbc_sessionsButton.insets = new Insets(10, 5, 10, 50);
+		gbc_sessionsButton.gridx = 4;
+		gbc_sessionsButton.gridy = 2;
+		
+		searchField.setFont(new Font("Arial", Font.PLAIN, 20));
+		searchField.setForeground(new Color(0, 0, 128));
+		searchField.setBackground(new Color(245, 245, 245));
+		searchField.setToolTipText("Username");
+		searchField.setBorder(new CompoundBorder(new LineBorder(new Color(70, 130, 180)), new EmptyBorder(0, 10, 0, 0)));
+		GridBagConstraints gbc_searchField = new GridBagConstraints();
+		gbc_searchField.gridwidth = 5;
+		gbc_searchField.insets = new Insets(0, 50, 5, 50);
+		gbc_searchField.fill = GridBagConstraints.HORIZONTAL;
+		gbc_searchField.gridx = 0;
+		gbc_searchField.gridy = 3;
 
-		studentRecordsSet.setForeground(new Color(0, 0, 128));
-		studentRecordsSet.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-		studentRecordsSet.setBackground(new Color(240, 240, 245));
-		studentRecordsSet.setRowHeight(30);
-		JTableHeader header = studentRecordsSet.getTableHeader();
+		dataSet.setForeground(new Color(0, 0, 128));
+		dataSet.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+		dataSet.setBackground(new Color(240, 240, 245));
+		dataSet.setRowHeight(30);
+		JTableHeader header = dataSet.getTableHeader();
 		header.setReorderingAllowed(false);
 		header.setForeground(new Color(245, 245, 245));
 		header.setFont(new Font("Arial", Font.PLAIN, 25));
 		header.setBackground(new Color(70, 130, 180));
 		header.setBorder(new LineBorder(new Color(70, 130, 180), 2));
-		scrollPane = new JScrollPane(studentRecordsSet);
+		scrollPane = new JScrollPane(dataSet);
 		scrollPane.setViewportBorder(new LineBorder(new Color(70, 130, 180)));
 		scrollPane.getViewport().setForeground(Color.BLACK);
 		scrollPane.getViewport().setFont(new Font("Arial", Font.PLAIN, 20));
@@ -140,14 +209,18 @@ public class SelectStudentRecord extends JPanel
 		scrollPane.setBorder(new LineBorder(new Color(70, 130, 180), 2));
 		GridBagConstraints gbc_studentRecordsSet = new GridBagConstraints();
 		gbc_studentRecordsSet.gridwidth = 5;
-		gbc_studentRecordsSet.gridy = 4;
+		gbc_studentRecordsSet.gridy = 5;
 		gbc_studentRecordsSet.insets = new Insets(0, 20, 20, 20);
 		gbc_studentRecordsSet.fill = GridBagConstraints.BOTH;
 		gbc_studentRecordsSet.gridx = 0;
 
 		add(header, gbc_header);
 		add(backButton, gbc_backButton);
-		add(studentLookupField, gbc_studentLookupField);
+		add(selectionField, gbc_selectionField);
+		add(statsButton, gbc_statsButton);
+		add(gamesButton, gbc_gamesButton);
+		add(sessionsButton, gbc_sessionsButton);
+		add(searchField, gbc_searchField);
 		add(scrollPane, gbc_studentRecordsSet);
 	}
 
@@ -161,64 +234,109 @@ public class SelectStudentRecord extends JPanel
 			}
 		});
 
-		studentLookupField.getDocument().addDocumentListener(new DocumentListener()
+		searchField.getDocument().addDocumentListener(new DocumentListener()
 		{
-			@Override
-			public void insertUpdate(DocumentEvent e)
+            @Override
+            public void insertUpdate(DocumentEvent e) 
+            {
+                String text = searchField.getText();
+                if (text.trim().length() == 0) 
+                {
+                	rowSorter.setRowFilter(null);
+                } 
+                else 
+                {	
+                	rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));	
+                }
+            }
+            @Override
+            public void removeUpdate(DocumentEvent e) 
+            {
+                String text = searchField.getText();
+                if (text.trim().length() == 0) 
+                {
+                	rowSorter.setRowFilter(null);	
+                } 
+                else 
+                {
+                	rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));	
+                }
+            }
+            @Override
+            public void changedUpdate(DocumentEvent e) 
+            {	
+            	throw new UnsupportedOperationException("Not supported."); 
+            }
+        });
+		
+		statsButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent onClick)
 			{
-				String text = studentLookupField.getText();
-				if (text.trim().length() == 0)
+				try
 				{
-					rowSorter.setRowFilter(null);
+					if(selectionField.getText().length() > 0)
+					{
+						base.changeState(Integer.parseInt(selectionField.getText()), -1);
+					}
 				}
-				else
-				{
-					rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
-				}
-			}
-
-			@Override
-			public void removeUpdate(DocumentEvent e)
-			{
-				String text = studentLookupField.getText();
-				if (text.trim().length() == 0)
-				{
-					rowSorter.setRowFilter(null);
-				}
-				else
-				{
-					rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
-				}
-			}
-
-			@Override
-			public void changedUpdate(DocumentEvent e)
-			{
-				throw new UnsupportedOperationException("Not supported.");
+				catch(NumberFormatException e){	}
+				selectionField.setText("");
 			}
 		});
+		
+		gamesButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent onClick)
+			{
+				try
+				{
+					if(selectionField.getText().length() > 0)
+					{
+						base.changeState(Integer.parseInt(selectionField.getText()), 0);
+					}
+				}
+				catch(NumberFormatException e){	}
+				selectionField.setText("");
+			}
+		});
+		
+		sessionsButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent onClick)
+			{
+				try
+				{
+					if(selectionField.getText().length() > 0)
+					{
+						base.changeState(Integer.parseInt(selectionField.getText()), 1);
+					}
+				}
+				catch(NumberFormatException e){	}
+				selectionField.setText("");
+			}
+		});
+		
 	}
 
 	private void updateField()
 	{
-		int row = studentRecordsSet.getSelectedRow();
-		String selection = (String) studentRecordsSet.getValueAt(row, 0);
-		// userField.setText(selection);
-		// TODO
+		int row = dataSet.getSelectedRow();
+		selectionField.setText("" + ((Integer) dataSet.getValueAt(row, 0)).intValue());
 	}
 
-	private class SharedListSelectionHandler implements ListSelectionListener
-	{
-		public void valueChanged(ListSelectionEvent e)
-		{
-			ListSelectionModel lsm = (ListSelectionModel) e.getSource();
-			if (lsm.isSelectionEmpty())
-			{}
-			else
-			{
-				updateField();
-			}
-		}
+	class SharedListSelectionHandler implements ListSelectionListener 
+	{		
+	    public void valueChanged(ListSelectionEvent e) 
+	    {
+	        ListSelectionModel lsm = (ListSelectionModel)e.getSource();;
+	        if (lsm.isSelectionEmpty())
+	        {	} 
+	        else 
+	        {	
+	        	updateField();
+	        }
+	    }
 	}
 
 }

@@ -20,12 +20,15 @@ import view.Frame;
 
 public class Controller
 {
-	public static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+	public static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 	public static Random rng;
 	public static String[] selectStudentRecordHeader = { "Student ID", "First Name", "Last Name" };
 	public static String[] allUsersHeader = { "User ID", "Username", "First Name", "Last Name", "Class ID" };
+	public static String[] gamesHeader = { "Game", "Total Answers", "Correct Answers", "Date", "Score" };
+	public static String[] sessionsHeader = { "Date", "Games Played", "Total Answers", "Correct Answers", "Total Score" };
 	public Frame frame;
 	public JPanel messagePanel;
+	public int questionTypes;
 //	private SQLiteData database;
 	private MySQLData database;
 	private ViewStates state;
@@ -53,8 +56,9 @@ public class Controller
 
 	public void logout()
 	{
-		state = ViewStates.login;
-		lastState = ViewStates.login;
+		questionTypes = 0;
+		state = ViewStates.LOGIN;
+		lastState = ViewStates.LOGIN;
 		ID = 0;
 		firstName = "";
 		lastName = "";
@@ -146,20 +150,41 @@ public class Controller
 		frame.updateState();
 	}
 	
+	public void changeState(int studentID, int value)
+	{
+		lastState = state;
+		if(studentID == 0)
+		{	
+			studentID = this.ID;	
+		}
+		state = ViewStates.VIEWGAMERECORDS;
+		if(value == -1)
+		{
+			state = ViewStates.VIEWSTUDENTSTATS;
+		}
+		frame.updateState(studentID, value);
+	}
+	
 	public void returnToMenu()
 	{
 		if (permission < 2)
 		{
-			changeState(ViewStates.rootMenu);
+			changeState(ViewStates.ROOTMENU);
 		}
 		else if (permission == 2)
 		{
-			changeState(ViewStates.teacherMenu);
+			changeState(ViewStates.TEACHERMENU);
 		}
 		else
 		{
-			changeState(ViewStates.studentMenu);
+			changeState(ViewStates.STUDENTMENU);
 		}
+	}
+	
+	public void returnToLastState()
+	{
+		state = lastState;
+		frame.updateState();
 	}
 
 	public void unlockAccount(int ID)
@@ -330,29 +355,6 @@ public class Controller
 		}
 	}
 
-	public void addGameRecord(int gameID, int questionsAnswered, int questionsCorrect, int guesses, int totalSeconds)
-	{
-		database.addGameRecord(ID, gameID, questionsAnswered, questionsCorrect, guesses, totalSeconds);
-	}
-
-	public void changeCustomEquations(String equationString, int frequency, int numberOfEquations)
-	{
-		database.updateCustomEquations(classID, equationString, frequency, numberOfEquations);
-		ResultSet res = database.getCustomEquationInfo(classID);
-		try
-		{
-			if (res.next())
-			{
-				this.equationString = res.getString("questionList");
-				customEquations = getCustomEquationList(equationString);
-				this.frequency = res.getInt("frequency");
-				this.numberOfEquations = res.getInt("numberOfEquations");
-			}
-		}
-		catch (SQLException e)
-		{}
-	}
-
 	public ResultSet getAllUsers()
 	{
 		ResultSet result = null;
@@ -366,7 +368,7 @@ public class Controller
 		result = database.getStudents(classID);
 		return result;
 	}
-
+	
 	public String getName()
 	{
 		return firstName;
@@ -443,20 +445,75 @@ public class Controller
 		}
 	}
 	
-	public boolean getInstructionPreference(String gameInstructions){
-		int result = database.wantInstructions(gameInstructions, ID);
-		System.out.println(result);
-		if(result == 0)
+	public void addGameRecord(int gameID, int questionsAnswered, int questionsCorrect, int guesses, int totalSeconds, int score)
+	{
+		database.addGameRecord(ID, gameID, questionsAnswered, questionsCorrect, guesses, totalSeconds, score, classID, firstName, lastName);
+	}
+
+	public void changeCustomEquations(String equationString, int frequency, int numberOfEquations)
+	{
+		database.updateCustomEquations(classID, equationString, frequency, numberOfEquations);
+		ResultSet res = database.getCustomEquationInfo(classID);
+		try
 		{
-			return false;
+			if (res.next())
+			{
+				this.equationString = res.getString("questionList");
+				customEquations = getCustomEquationList(equationString);
+				this.frequency = res.getInt("frequency");
+				this.numberOfEquations = res.getInt("numberOfEquations");
+			}
 		}
-		return true;
+		catch (SQLException e)
+		{}
 	}
 	
-	public void setInstructionPreferences(String gameInstructions){
-		database.setWantInstructions(gameInstructions, ID);
+	public boolean getInstructionPreference(String gameInstructions)
+	{
+		boolean result = true;
+		int displayInstructions = database.wantInstructions(gameInstructions, ID);
+		System.out.println(result);
+		if(displayInstructions == 0)
+		{
+			result = false;
+		}
+		return result;
+	}
+	
+	public void setInstructionPreferences(String gameInstructions, boolean value)
+	{
+		database.setWantInstructions(gameInstructions, ID, value);
+	}
+	
+	public int getPersonalHighscore(int studentID, int gameID)
+	{
+		return database.getPersonalHighscore(studentID, gameID);
+	}
+	
+	public ResultSet getClassHighscore(int gameID)
+	{
+		return database.getClassHighscore(classID, gameID);
+	}
+	
+	public ResultSet getHighscore(int gameID)
+	{
+		return database.getHighscore(gameID);
 	}
 		
+	public ResultSet getGameRecords(int studentID)
+	{
+		return database.getGameRecords(studentID);
+	}
+	
+	public ResultSet getSessionRecords(int studentID)
+	{
+		return database.getSessionRecords(studentID);
+	}
+	
+	public ResultSet getStats(int studentID)
+	{
+		return database.getStats(studentID);
+	}
 }
 
 

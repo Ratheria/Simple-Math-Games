@@ -284,7 +284,7 @@ public class TeacherMenu extends JPanel implements ChangeListener
 		{
 			public void actionPerformed(ActionEvent onClick)
 			{
-				base.changeState(ViewStates.settings);
+				base.changeState(ViewStates.SETTINGS);
 			}
 		});
 
@@ -342,7 +342,7 @@ public class TeacherMenu extends JPanel implements ChangeListener
 		{
 			public void actionPerformed(ActionEvent onClick)
 			{
-				base.changeState(ViewStates.selectStudentRecords);
+				base.changeState(ViewStates.SELECTSTUDENTRECORDS);
 			}
 		});
 	}

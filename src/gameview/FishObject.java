@@ -3,7 +3,7 @@
 *	@author Jadie Adams
  */
 
-package view;
+package gameview;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -12,8 +12,8 @@ import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
-
 import adapter.Controller;
+import view.Frame;
 
 public class FishObject extends JButton implements ActionListener
 {
@@ -30,8 +30,8 @@ public class FishObject extends JButton implements ActionListener
 		super((answer + ""), icon);
 		this.panel = panel;
 		this.answer = answer;
-		movement = 2; // TODO
-		xValue = (50 - 25*Controller.rng.nextInt(10));
+		movement = 2; //TODO
+		xValue = (50 - 15 * Controller.rng.nextInt(4));
 		yValue = 100 + (numberFromTop * 70);
 		maxX = Frame.DIMENSIONS.width - 25;
 
@@ -50,33 +50,22 @@ public class FishObject extends JButton implements ActionListener
 	{
 		xValue += movement;
 		if (xValue >= maxX)
-		{
-			panel.fishWentOffScreen(this);
-		}
+		{	panel.fishWentOffScreen(this);	}
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
 		if (e.getSource().equals(this))
-		{
-			panel.fishWasSelected(this);
-		}
+		{	panel.fishWasSelected(this);	}
 	}
 
 	public int getAnswer()
-	{
-		return answer;
-	}
+	{	return answer;	}
 
 	public int getXValue()
-	{
-		return xValue;
-	}
+	{	return xValue;	}
 
 	public int getYValue()
-	{
-		return yValue;
-	}
-
+	{	return yValue;	}
 }

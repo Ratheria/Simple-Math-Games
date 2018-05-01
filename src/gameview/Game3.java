@@ -2,7 +2,7 @@
  *	@author Ariana Fairbanks
  */
 
-package view;
+package gameview;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 import javax.swing.border.LineBorder;
 import adapter.Controller;
+
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -31,10 +32,11 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
-public class Game3 extends JPanel implements KeyListener
+public class Game3 extends JPanel implements KeyListener, Game
 {
 	private static final long serialVersionUID = 8585306608329719982L;
 	private Controller base;
+	private Game thisGame;
 	private SpringLayout theLayout;
 	private JLabel shark;
 	private Image sharkImg;
@@ -73,30 +75,28 @@ public class Game3 extends JPanel implements KeyListener
 	private int answer;
 	private int randomPlacement;
 	private int score;
-	private static final int GAME_PERIOD = 40;
+	private static final int gamePeriod = 40;
 	private int sec;
-	private JLabel rightLabel;
-	private JLabel wrongLabel;
 	private JLabel feedbackLabel;
 	private int questionBase;
 	private int questionTypes; // TODO
 	private JButton menu;
 	private JButton help;
-	private boolean needsInstructions;
 	private JLabel questionLabel;
 	private boolean miss;
 	private int count;
 	private boolean reset;
+	private boolean focus;
 	private Image backgroundImg;
-	private ImageIcon backgroundIcon;
 	private JLabel background;
-	private JLabel g3instruct;
-	private ArrayList<Integer> answerOptions;
-	private Boolean needsHelp;
+	private int questionsAnswered;
+	private int questionsCorrect;
+	private int guesses;
 	
 	public Game3(Controller base)
 	{
 		this.base = base;
+		thisGame = this;
 		frequency = base.getFrequency();
 		questionList = base.getEquations();
 		theLayout = new SpringLayout();
@@ -104,7 +104,7 @@ public class Game3 extends JPanel implements KeyListener
 		answer = 0;
 		score = 0;
 		count = 0;
-		timerLabel = new JLabel("Time: " + (GAME_PERIOD / 60) + ":" + (GAME_PERIOD % 60));
+		timerLabel = new JLabel("Time: " + (gamePeriod / 60) + ":" + (gamePeriod % 60));
 		scoreLabel = new JLabel("Score: 0");
 		screenWidth = base.frame.getWidth();
 		screenHeight = base.frame.getHeight();
@@ -114,13 +114,11 @@ public class Game3 extends JPanel implements KeyListener
 		answerLabel2 = new JLabel();
 		answerLabel3 = new JLabel();
 		questionLabel = new JLabel(question);
-		movementSpeed = 3;
+		movementSpeed = 7;
 		questionBase = 15;
-		questionTypes = 0; // both, addition, subtraction
+		questionTypes = base.questionTypes; // both, addition, subtraction
 		menu = new JButton(" Exit ");
 		help = new JButton(" Help ");
-
-		setUpImages();
 		shark = new JLabel(sharkIcon);
 		up = false;
 		down = false;
@@ -130,17 +128,38 @@ public class Game3 extends JPanel implements KeyListener
 		guessed2 = false;
 		guessed3 = false;
 		playing = true;
-		needsHelp = false;
-		needsInstructions = base.getInstructionPreference("game3Instructions");
+		focus = true;
+		
+		try
+		{
+			backgroundImg = ImageIO.read(this.getClass().getResourceAsStream("background.jpg"));
+			sharkImg = ImageIO.read(this.getClass().getResourceAsStream("shark.png"));
+			fishImg = ImageIO.read(this.getClass().getResourceAsStream("fish.png"));
+		}
+		catch (IOException ex){}
+		backgroundImg = backgroundImg.getScaledInstance(base.frame.getWidth(), base.frame.getHeight(), java.awt.Image.SCALE_SMOOTH);
+		background = new JLabel(new ImageIcon(backgroundImg));
+		sharkWidth = (base.frame.getWidth() / 5);
+		sharkHeight = (base.frame.getHeight() / 6);
+		sharkImg = sharkImg.getScaledInstance(sharkWidth, sharkHeight, java.awt.Image.SCALE_SMOOTH);
+		sharkIcon = new ImageIcon(sharkImg);
+		fishWidth = (base.frame.getWidth() / 9);
+		fishHeight = (base.frame.getHeight() / 8);
+		fishImg = fishImg.getScaledInstance(fishWidth, fishHeight, java.awt.Image.SCALE_SMOOTH);
+		fishIcon = new ImageIcon(fishImg);
+		
+		questionsAnswered = 0;
+		questionsCorrect = 0;
+		guesses = 0;
 
-		setBackground();
 		addKeyListener(this);
 		setFocusable(true);
-		requestFocus();
+		focus();
 		setUpLayout();
 		setUpTimers();
 		setUpListeners();
 		playGame();
+		instructionsHandling();
 	}
 
 	private void setUpLayout()
@@ -215,12 +234,6 @@ public class Game3 extends JPanel implements KeyListener
 		theLayout.putConstraint(SpringLayout.NORTH, help, 0, SpringLayout.NORTH, menu);
 		theLayout.putConstraint(SpringLayout.EAST, help, -20, SpringLayout.WEST, menu);
 		
-		g3instruct = new JLabel("<html>To play use the arrow keys to help the <br/> shark swim to the correct fish. <br/> "
-				+ "<br/>The game ends when time runs out.</html>");
-		g3instruct.setFont(new Font("Arial", Font.PLAIN, 30));
-		g3instruct.setForeground(new Color(70, 130, 180));
-		g3instruct.setBackground(new Color(208, 243, 255));
-		
 		add(answerLabel1);
 		add(answerLabel2);
 		add(answerLabel3);
@@ -232,92 +245,13 @@ public class Game3 extends JPanel implements KeyListener
 		add(feedbackLabel);
 	}
 	
-	private void setBackground(){
-		try
-		{
-			backgroundImg = ImageIO.read(this.getClass().getResourceAsStream("background.jpg"));
-		}
-		catch (IOException ex)
-		{
-			System.out.println("File \"background.jpg\" is missing.");
-		}
-		backgroundImg = backgroundImg.getScaledInstance(base.frame.getWidth(), base.frame.getHeight(), java.awt.Image.SCALE_SMOOTH);
-		backgroundIcon = new ImageIcon(backgroundImg);
-		background = new JLabel(backgroundIcon);
-	}
-	
-	private void setUpImages()
-	{
-		sharkWidth = (base.frame.getWidth() / 5);
-		sharkHeight = (base.frame.getHeight() / 5);
-		try
-		{
-			sharkImg = ImageIO.read(this.getClass().getResourceAsStream("shark.png"));
-		}
-		catch (IOException ex)
-		{
-			System.out.println("File \"shark.png\" is missing.");
-		}
-
-		sharkImg = sharkImg.getScaledInstance(sharkWidth, sharkHeight, java.awt.Image.SCALE_SMOOTH);
-		sharkIcon = new ImageIcon(sharkImg);
-		fishWidth = (base.frame.getWidth() / 9);
-		fishHeight = (base.frame.getHeight() / 8);
-		try
-		{
-			fishImg = ImageIO.read(this.getClass().getResourceAsStream("fish.png"));
-		}
-		catch (IOException ex)
-		{
-			System.out.println("File fish.png is missing.");
-		}
-		fishImg = fishImg.getScaledInstance(fishWidth, fishHeight, java.awt.Image.SCALE_SMOOTH);
-		fishIcon = new ImageIcon(fishImg);
-	}
-	
-	private void setUpListeners()
-	{
-		menu.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent onClick)
-			{
-				stopTimers();
-				int dialogResult = JOptionPane.showConfirmDialog (null, "Your score is " + score + ".  Would you like to exit the game?","Exit game?",JOptionPane.OK_CANCEL_OPTION);
-				if(dialogResult == JOptionPane.OK_OPTION){
-					//add game record
-					remove(shark);
-					base.returnToMenu();
-				}
-				else{
-					startTimers();
-					playing = true;
-				}
-			}
-		});
-		help.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent onClick)
-			{
-				needsHelp = true;
-			}
-		});
-	}
-
 	private void setUpTimers()
 	{
-		sec = GAME_PERIOD - 1;
+		sec = gamePeriod - 1;
 		timeDisplayer = new ActionListener()
 		{
 			public void actionPerformed(ActionEvent evt)
 			{
-				if(needsInstructions){
-					showInstructions();
-					needsInstructions = false;
-				}
-				if(needsHelp){
-					JOptionPane.showMessageDialog(base.messagePanel, g3instruct, "Instructions",JOptionPane.INFORMATION_MESSAGE);
-					needsHelp = false;
-				}
 				if ((sec % 60) < 10)
 				{
 					timerLabel.setText("Time: " + (sec / 60) + ":0" + (sec % 60));
@@ -326,7 +260,8 @@ public class Game3 extends JPanel implements KeyListener
 				{
 					timerLabel.setText("Time: " + (sec / 60) + ":" + (sec % 60));
 				}
-				if(reset){
+				if(reset)
+				{
 					playGame();
 				}
 				if(!playing)
@@ -339,6 +274,10 @@ public class Game3 extends JPanel implements KeyListener
 					playing = false;
 					System.out.println("Time's up!");
 					JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "Time's up!", JOptionPane.PLAIN_MESSAGE);
+					if(questionsAnswered > 0)
+					{
+						base.addGameRecord(3, questionsAnswered, questionsCorrect, guesses, gamePeriod, score);
+					}
 					remove(shark);
 					base.returnToMenu();
 				}
@@ -353,18 +292,21 @@ public class Game3 extends JPanel implements KeyListener
 		{
 			public void actionPerformed(ActionEvent event)
 			{
-				if (playing && !needsInstructions && !needsHelp)
+				if (playing)
 				{
-					if(miss){
-						if(count >= 25){
+					if(miss)
+					{
+						if(count >= 15)
+						{
 							feedbackLabel.setText("");	
 							repaint();
 							count = 0;
 							miss = false;
 						}
-						count ++;
+						count++;
 					}
-					else{
+					else
+					{
 						moveShark();
 						repaint();
 					}
@@ -374,6 +316,39 @@ public class Game3 extends JPanel implements KeyListener
 		refreshTimer = new Timer(20, screenRefresh);
 		refreshTimer.start();
 		refreshTimer.setRepeats(true);
+	}
+	
+	private void setUpListeners()
+	{
+		menu.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent onClick)
+			{
+				stopTimers();
+				int dialogResult = JOptionPane.showConfirmDialog (null, "Your score is " + score + ".  Would you like to exit the game?","Exit game?",JOptionPane.OK_CANCEL_OPTION);
+				if(dialogResult == JOptionPane.OK_OPTION)
+				{
+					remove(shark);
+					if(questionsAnswered > 0)
+					{
+						base.addGameRecord(3, questionsAnswered, questionsCorrect, guesses, (int) (gamePeriod - sec), score);
+					}
+					base.returnToMenu();
+				}
+				else
+				{
+					startTimers();
+					playing = true;
+				}
+			}
+		});
+		help.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent onClick)
+			{
+				new InstructionPanel(base, 3, base.getInstructionPreference("game3Instructions"), thisGame);
+			}
+		});
 	}
 
 	private void playGame()
@@ -386,14 +361,14 @@ public class Game3 extends JPanel implements KeyListener
 		guessed1 = false;
 		guessed2 = false;
 		guessed3 = false;
-		answerOptions = new ArrayList<Integer>();
+		ArrayList<Integer> answerOptions = new ArrayList<Integer>();
 		randomPlacement = Controller.rng.nextInt(3);
 		for (int i = 0; i < 3; i++)
 		{
-			int randomAnswer = Controller.rng.nextInt(25);
+			int randomAnswer = Controller.rng.nextInt(questionBase);
 			while (randomAnswer == answer || answerOptions.contains(randomAnswer))
 			{
-				randomAnswer = Controller.rng.nextInt(25);
+				randomAnswer = Controller.rng.nextInt(questionBase);
 			}
 			if (i == randomPlacement)
 			{
@@ -419,6 +394,15 @@ public class Game3 extends JPanel implements KeyListener
 		add(background);
 		playing = true;
 		reset = false;
+	}
+	
+	private void instructionsHandling()
+	{
+		boolean showInstructions = base.getInstructionPreference("game2Instructions");
+		if(showInstructions)
+		{
+			new InstructionPanel(base, 2, showInstructions, this);
+		}
 	}
 
 	private void moveShark()
@@ -458,41 +442,6 @@ public class Game3 extends JPanel implements KeyListener
 		//checkAnswer();
 	}
 
-	public void resolveKeyEvent(KeyEvent e, boolean value)
-	{
-		if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W)
-		{
-			up = value;
-		}
-		if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S)
-		{
-			down = value;
-		}
-		if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A)
-		{
-			left = value;
-		}
-		if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D)
-		{
-			right = value;
-		}
-	}
-
-	public void keyPressed(KeyEvent e)
-	{
-		resolveKeyEvent(e, true);
-	}
-
-	@Override
-	public void keyReleased(KeyEvent e)
-	{
-		resolveKeyEvent(e, false);
-	}
-
-	@Override
-	public void keyTyped(KeyEvent e)
-	{}
-
 	private void getQuestion()
 	{
 		int random = Controller.rng.nextInt(10);
@@ -503,6 +452,16 @@ public class Game3 extends JPanel implements KeyListener
 		else
 		{
 			generateQuestion();
+		}
+		feedbackLabel.setText("");
+		feedbackLabel.setIcon(null);
+		while (question.contains("+") && questionTypes == 2)
+		{
+			generateSubtraction();
+		}
+		while( question.contains("-") && questionTypes == 1)
+		{
+			generateAddition();
 		}
 		while (answer < 0)
 		{
@@ -539,13 +498,9 @@ public class Game3 extends JPanel implements KeyListener
 			case 0:
 				int random = Controller.rng.nextInt(2);
 				if (random < 1)
-				{
-					generateAddition();
-				}
+				{	generateAddition();	}
 				else
-				{
-					generateSubtraction();
-				}
+				{	generateSubtraction();	}
 				break;
 			case 1:
 				generateAddition();
@@ -560,16 +515,16 @@ public class Game3 extends JPanel implements KeyListener
 	{
 		int firstInteger = Controller.rng.nextInt(questionBase);
 		int secondInteger = Controller.rng.nextInt(questionBase);
-		answer = firstInteger - secondInteger;
-		question = firstInteger + " - " + secondInteger + " = ? ";
+		answer = firstInteger + secondInteger;
+		question = firstInteger + " + " + secondInteger + " = ? ";
 	}
 
 	private void generateSubtraction()
 	{
 		int firstInteger = Controller.rng.nextInt(questionBase);
 		int secondInteger = Controller.rng.nextInt(questionBase);
-		answer = firstInteger + secondInteger;
-		question = firstInteger + " + " + secondInteger + " = ? ";
+		answer = firstInteger - secondInteger;
+		question = firstInteger + " - " + secondInteger + " = ? ";
 	}
 
 	private void addShark(){
@@ -610,6 +565,7 @@ public class Game3 extends JPanel implements KeyListener
 			guessed1 = true;
 			answerLabel1.setText("");
 			answerLabel1.setIcon(null);
+			questionsAnswered++;
 		}
 		else if (sharkBounds.intersects(answerLabel2.getBounds()) && !guessed2)
 		{
@@ -617,6 +573,7 @@ public class Game3 extends JPanel implements KeyListener
 			guessed2 = true;
 			answerLabel2.setText("");
 			answerLabel2.setIcon(null);
+			questionsAnswered++;
 		}
 		else if (sharkBounds.intersects(answerLabel3.getBounds()) && !guessed3)
 		{
@@ -624,10 +581,12 @@ public class Game3 extends JPanel implements KeyListener
 			guessed3 = true;
 			answerLabel3.setText("");
 			answerLabel3.setIcon(null);
+			questionsAnswered++;
 		}
 
 		if (intersect == randomPlacement)
 		{
+			questionsCorrect++;
 			System.out.println("Correct answer given.");
 			updateScore(true);
 			remove(shark);
@@ -640,6 +599,30 @@ public class Game3 extends JPanel implements KeyListener
 		}
 	}
 
+	private void focus()
+	{
+		if(focus)
+		{	
+			requestFocus();	
+		}
+	}
+	
+	public void stopTimers()
+	{
+		questionLabel.setVisible(false);
+		focus = false;
+		displayTime.stop();
+		refreshTimer.stop();
+	}
+	
+	public void startTimers()
+	{
+		questionLabel.setVisible(true);
+		focus = true;
+		displayTime.start();
+		refreshTimer.start();
+	}
+	
 	public void labelFlash(JLabel label)
 	{
 		final JLabel temp = label;
@@ -667,35 +650,48 @@ public class Game3 extends JPanel implements KeyListener
 		}).start();
 	}
 
+	public void resolveKeyEvent(KeyEvent e, boolean value)
+	{
+		if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W)
+		{
+			up = value;
+		}
+		if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S)
+		{
+			down = value;
+		}
+		if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A)
+		{
+			left = value;
+		}
+		if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D)
+		{
+			right = value;
+		}
+	}
+
+	public void keyPressed(KeyEvent e)
+	{
+		resolveKeyEvent(e, true);
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e)
+	{
+		resolveKeyEvent(e, false);
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e){}
+	
 	@Override
 	public void paint(Graphics g)
 	{
-		requestFocus();
+		focus();
 		answerLabel1.setLocation(screenWidth - 150, 100);
 		answerLabel2.setLocation(screenWidth - 150, 260);
 		answerLabel3.setLocation(screenWidth - 150, 420);
 		shark.setLocation(sharkLocation);
 		super.paint(g);
 	}
-	
-	private void stopTimers()
-	{
-		displayTime.stop();
-		refreshTimer.stop();
-	}
-	
-	private void startTimers()
-	{
-		displayTime.start();
-		refreshTimer.start();
-	}
-	
-	public void showInstructions(){
-		Object[] options = {"Okay", "Don't show again"};
-		int instructResult = JOptionPane.showOptionDialog(base.messagePanel, g3instruct, "Instructions",JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null, options, options[0]);
-		if(instructResult == 1){
-			base.setInstructionPreferences("game2Instructions");
-		}	
-	}
-
 }

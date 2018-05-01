@@ -6,8 +6,8 @@ package adapter;
 
 public enum ViewStates 
 {
-	login, settings, passwordChange,
-	rootMenu, addUsers,
-	teacherMenu, selectStudentRecords,
-	studentMenu, game1, game2, game3
+	LOGIN, SETTINGS, PASSWORDCHANGE, VIEWGAMERECORDS, VIEWSTUDENTSTATS,
+	ROOTMENU, ADDUSERS,
+	TEACHERMENU, SELECTSTUDENTRECORDS,
+	STUDENTMENU, GAME1, GAME2, GAME3
 }

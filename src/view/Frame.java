@@ -8,6 +8,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import adapter.Controller;
 import adapter.ViewStates;
+import gameview.Game1;
+import gameview.Game2;
+import gameview.Game3;
 
 public class Frame extends JFrame
 {
@@ -23,7 +26,7 @@ public class Frame extends JFrame
 		this.base = base;
 		login = new Login(base);
 		panel = login;
-		minSize = new Dimension(960, 600);
+		minSize = new Dimension(900, 600);
 		setName("My Parents Don't Know What I Do");
 		setTitle("My Parents Don't Know What I Do");
 		// setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -42,54 +45,65 @@ public class Frame extends JFrame
 		ViewStates state = base.getState();
 		switch (state)
 		{
-			case login:
+			case LOGIN:
 				panel.removeAll();
 				panel = new Login(base);
 				break;
-			case settings:
+			case SETTINGS:
 				panel.removeAll();
 				panel = new Settings(base);
 				break;
-			case passwordChange:
+			case PASSWORDCHANGE:
 				panel.removeAll();
 				panel = new PassChange(base);
 				break;
-			case rootMenu:
+			case ROOTMENU:
 				panel.removeAll();
 				panel = new RootMenu(base);
 				break;
-			case teacherMenu:
+			case TEACHERMENU:
 				panel.removeAll();
 				panel = new TeacherMenu(base);
 				break;
-			case selectStudentRecords:
+			case SELECTSTUDENTRECORDS:
 				panel.removeAll();
 				panel = new SelectStudentRecord(base);
 				break;
-			case studentMenu:
+			case STUDENTMENU:
 				panel.removeAll();
 				panel = new StudentMenu(base);
 				break;
-			case addUsers:
+			case ADDUSERS:
 				panel.removeAll();
 				panel = new AddUsers(base);
 				break;
-			case game1:
+			case GAME1:
 				panel.removeAll();
 				panel = new Game1(base);
 				break;
-			case game2:
+			case GAME2:
 				panel.removeAll();
 				panel = new Game2(base);
 				break;
-			case game3:
+			case GAME3:
 				panel.removeAll();
 				panel = new Game3(base);
+				break;
+			default:
+				System.out.println("Something went wrong when changing views.");
 				break;
 		}
 		setContentPane(panel);
 		panel.revalidate();
 		panel.repaint();
 	}
-
+	
+	public void updateState(int studentID, int value)
+	{
+		panel.removeAll();
+		panel = (value == -1) ? new ViewStudentStats(base, studentID) : new ViewRecords(base, studentID, value);
+		setContentPane(panel);
+		panel.revalidate();
+		panel.repaint();
+	}
 }

@@ -7,6 +7,7 @@ package view;
 import javax.swing.*;
 import adapter.Controller;
 import adapter.ViewStates;
+import gameview.InstructionPanel;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -15,7 +16,6 @@ import java.awt.Insets;
 import javax.swing.border.LineBorder;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import javax.swing.JOptionPane;
 
 public class Settings extends JPanel
 {
@@ -25,30 +25,20 @@ public class Settings extends JPanel
 	private JButton changePassButton;
 	private JButton logoutButton;
 	private JButton backButton;
-	private JButton game1instructions;
-	private JLabel g1instruct;
-	private JButton game2instructions;
-	private JLabel g2instruct;
-	private JButton game3instructions;
-	private JLabel g3instruct;
+	private JButton fishInstructions;
+	private JButton jellyInstructions;
+	private JButton sharkInstructions;
 
 	public Settings(Controller base)
 	{
 		this.base = base;
 		layout = new GridBagLayout();
+		backButton = new JButton(" BACK ");
+		fishInstructions = new JButton(" Fish Game Instructions ");
+		jellyInstructions = new JButton(" Jellyfish Game Instructions ");
+		sharkInstructions = new JButton(" Shark Game Instructions ");
 		changePassButton = new JButton(" Change Password ");
 		logoutButton = new JButton(" Log Out ");
-		backButton = new JButton(" BACK ");
-		game1instructions = new JButton("<html>   Fish Game<br/> Instructions   <html>");
-		g1instruct = new JLabel("<html>To play click on the fish that has the <br/> answer to the math question. <br/> "
-				+ "<br/>The game ends when time runs out or the <br/> correct fish swims off screen.</html>");
-		game2instructions = new JButton("<html> Jellyfish Game<br/> Instructions <html>");
-		g2instruct = new JLabel("<html>To play use the side arrow keys to help the <br/> jellyfish float down to the correct answer. <br/> "
-				+ "<br/>The down arrow will help the jellyfish go faster <br/> and the up arrow will slow it back down. <br/>"
-				+ " <br/>The game ends when time runs out. </html>");
-		game3instructions = new JButton("<html> Shark Game<br/> Instructions <html>");
-		g3instruct = new JLabel("<html>To play use the arrow keys to help the <br/> shark swim to the correct answer. <br/> "
-				+ "<br/>The game ends when time runs out.</html>");
 		setUpLayout();
 		setUpListeners();
 		setUpPanel();
@@ -65,51 +55,14 @@ public class Settings extends JPanel
 
 	private void setUpLayout()
 	{
-		layout.columnWidths = new int[]
-		{ 0, 0, 0 };
-		layout.rowHeights = new int[]
-		{ 0, 0, 0, 0, 20 };
-		layout.columnWeights = new double[]
-		{ 1.0, 0.0, 1.0 };
-		layout.rowWeights = new double[]
-		{ 1.0, 1.0, 1.0, 1.0, 1.0 };
 		setLayout(layout);
 		setBorder(new LineBorder(new Color(70, 130, 180), 10));
 		setForeground(new Color(135, 206, 235));
 		setBackground(new Color(245, 245, 245));
-		
-		g1instruct.setFont(new Font("Arial", Font.PLAIN, 30));
-		g1instruct.setForeground(new Color(70, 130, 180));
-		g1instruct.setBackground(new Color(208, 243, 255));
-		g2instruct.setFont(new Font("Arial", Font.PLAIN, 30));
-		g2instruct.setForeground(new Color(70, 130, 180));
-		g2instruct.setBackground(new Color(208, 243, 255));
-		g3instruct.setFont(new Font("Arial", Font.PLAIN, 30));
-		g3instruct.setForeground(new Color(70, 130, 180));
-		g3instruct.setBackground(new Color(208, 243, 255));
-
-		changePassButton.setFont(new Font("Arial", Font.PLAIN, 30));
-		changePassButton.setForeground(new Color(70, 130, 180));
-		changePassButton.setContentAreaFilled(false);
-		changePassButton.setFocusPainted(false);
-		changePassButton.setBorder(new LineBorder(new Color(70, 130, 180), 2, true));
-		GridBagConstraints gbc_changePassButton = new GridBagConstraints();
-		gbc_changePassButton.anchor = GridBagConstraints.NORTH;
-		gbc_changePassButton.insets = new Insets(20, 5, 5, 5);
-		gbc_changePassButton.gridwidth = 3;
-		gbc_changePassButton.gridx = 0;
-		gbc_changePassButton.gridy = 2;
-
-		logoutButton.setFont(new Font("Arial", Font.PLAIN, 30));
-		logoutButton.setForeground(new Color(70, 130, 180));
-		logoutButton.setBackground(new Color(240, 240, 245));
-		logoutButton.setBorder(new LineBorder(new Color(70, 130, 180), 2, true));
-		GridBagConstraints gbc_logoutButton = new GridBagConstraints();
-		gbc_logoutButton.anchor = GridBagConstraints.NORTH;
-		gbc_logoutButton.insets = new Insets(20, 5, 5, 5);
-		gbc_logoutButton.gridwidth = 3;
-		gbc_logoutButton.gridx = 0;
-		gbc_logoutButton.gridy = 3;
+		layout.columnWidths = new int[]{ 0, 0 };
+		layout.rowHeights = new int[]{ 0, 0, 0, 0, 0, 0, 0, 20 };
+		layout.columnWeights = new double[]{ 0.0, 1.0 };
+		layout.rowWeights = new double[]{ 1.0, 1.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0 };
 
 		backButton.setFont(new Font("Arial", Font.PLAIN, 25));
 		backButton.setForeground(new Color(70, 130, 180));
@@ -123,65 +76,90 @@ public class Settings extends JPanel
 		gbc_backButton.gridx = 0;
 		gbc_backButton.gridy = 0;
 		
-		game1instructions.setFont(new Font("Arial", Font.PLAIN, 25));
-		game1instructions.setForeground(new Color(70, 130, 180));
-		game1instructions.setBackground(new Color(0, 0, 0));
-		game1instructions.setFocusPainted(false);
-		game1instructions.setContentAreaFilled(false);
-		game1instructions.setBorder(new LineBorder(new Color(70, 130, 180), 2));
-		GridBagConstraints gbc_game1instructions = new GridBagConstraints();
-		gbc_game1instructions.insets = new Insets(20, 20, 5, 5);
-		gbc_game1instructions.anchor = GridBagConstraints.NORTH;
-		gbc_game1instructions.gridx = 0;
-		gbc_game1instructions.gridy = 4;
+		fishInstructions.setFont(new Font("Arial", Font.PLAIN, 28));
+		fishInstructions.setForeground(new Color(70, 130, 180));
+		fishInstructions.setBackground(new Color(0, 0, 0));
+		fishInstructions.setFocusPainted(false);
+		fishInstructions.setContentAreaFilled(false);
+		fishInstructions.setBorder(new LineBorder(new Color(70, 130, 180), 2));
+		GridBagConstraints gbc_fishInstructions = new GridBagConstraints();
+		gbc_fishInstructions.gridwidth = 2;
+		gbc_fishInstructions.insets = new Insets(20, 10, 10, 0);
+		gbc_fishInstructions.anchor = GridBagConstraints.NORTH;
+		gbc_fishInstructions.gridx = 0;
+		gbc_fishInstructions.gridy = 2;
 		
-		game2instructions.setFont(new Font("Arial", Font.PLAIN, 25));
-		game2instructions.setForeground(new Color(70, 130, 180));
-		game2instructions.setBackground(new Color(0, 0, 0));
-		game2instructions.setFocusPainted(false);
-		game2instructions.setContentAreaFilled(false);
-		game2instructions.setBorder(new LineBorder(new Color(70, 130, 180), 2));
-		GridBagConstraints gbc_game2instructions = new GridBagConstraints();
-		gbc_game2instructions.insets = new Insets(20, 20, 5, 5);
-		gbc_game2instructions.anchor = GridBagConstraints.NORTH;
-		gbc_game2instructions.gridx = 1;
-		gbc_game2instructions.gridy = 4;
+		jellyInstructions.setFont(new Font("Arial", Font.PLAIN, 28));
+		jellyInstructions.setForeground(new Color(70, 130, 180));
+		jellyInstructions.setBackground(new Color(0, 0, 0));
+		jellyInstructions.setFocusPainted(false);
+		jellyInstructions.setContentAreaFilled(false);
+		jellyInstructions.setBorder(new LineBorder(new Color(70, 130, 180), 2));
+		GridBagConstraints gbc_jellyInstructions = new GridBagConstraints();
+		gbc_jellyInstructions.gridwidth = 2;
+		gbc_jellyInstructions.insets = new Insets(20, 0, 10, 0);
+		gbc_jellyInstructions.anchor = GridBagConstraints.NORTH;
+		gbc_jellyInstructions.gridx = 0;
+		gbc_jellyInstructions.gridy = 3;
 		
-		game3instructions.setFont(new Font("Arial", Font.PLAIN, 25));
-		game3instructions.setForeground(new Color(70, 130, 180));
-		game3instructions.setBackground(new Color(0, 0, 0));
-		game3instructions.setFocusPainted(false);
-		game3instructions.setContentAreaFilled(false);
-		game3instructions.setBorder(new LineBorder(new Color(70, 130, 180), 2));
-		GridBagConstraints gbc_game3instructions = new GridBagConstraints();
-		gbc_game3instructions.insets = new Insets(20, 20, 5, 5);
-		gbc_game3instructions.anchor = GridBagConstraints.NORTH;
-		gbc_game3instructions.gridx = 2;
-		gbc_game3instructions.gridy = 4;
+		sharkInstructions.setFont(new Font("Arial", Font.PLAIN, 28));
+		sharkInstructions.setForeground(new Color(70, 130, 180));
+		sharkInstructions.setBackground(new Color(0, 0, 0));
+		sharkInstructions.setFocusPainted(false);
+		sharkInstructions.setContentAreaFilled(false);
+		sharkInstructions.setBorder(new LineBorder(new Color(70, 130, 180), 2));
+		GridBagConstraints gbc_sharkInstructions = new GridBagConstraints();
+		gbc_sharkInstructions.gridwidth = 2;
+		gbc_sharkInstructions.insets = new Insets(20, 5, 10, 10);
+		gbc_sharkInstructions.anchor = GridBagConstraints.NORTH;
+		gbc_sharkInstructions.gridx = 0;
+		gbc_sharkInstructions.gridy = 4;
 		
+		changePassButton.setFont(new Font("Arial", Font.PLAIN, 30));
+		changePassButton.setForeground(new Color(70, 130, 180));
+		changePassButton.setContentAreaFilled(false);
+		changePassButton.setFocusPainted(false);
+		changePassButton.setBorder(new LineBorder(new Color(70, 130, 180), 2, true));
+		GridBagConstraints gbc_changePassButton = new GridBagConstraints();
+		gbc_changePassButton.anchor = GridBagConstraints.SOUTH;
+		gbc_changePassButton.insets = new Insets(15, 5, 5, 0);
+		gbc_changePassButton.gridwidth = 2;
+		gbc_changePassButton.gridx = 0;
+		gbc_changePassButton.gridy = 5;
+
+		logoutButton.setFont(new Font("Arial", Font.PLAIN, 30));
+		logoutButton.setForeground(new Color(70, 130, 180));
+		logoutButton.setBackground(new Color(240, 240, 245));
+		logoutButton.setBorder(new LineBorder(new Color(70, 130, 180), 2, true));
+		GridBagConstraints gbc_logoutButton = new GridBagConstraints();
+		gbc_logoutButton.anchor = GridBagConstraints.NORTH;
+		gbc_logoutButton.insets = new Insets(15, 5, 5, 0);
+		gbc_logoutButton.gridwidth = 2;
+		gbc_logoutButton.gridx = 0;
+		gbc_logoutButton.gridy = 6;
+		
+		add(fishInstructions, gbc_fishInstructions);
+		add(jellyInstructions, gbc_jellyInstructions);
+		add(sharkInstructions, gbc_sharkInstructions);
+		add(backButton, gbc_backButton);
 		add(changePassButton, gbc_changePassButton);
 		add(logoutButton, gbc_logoutButton);
-		add(backButton, gbc_backButton);
-		add(game1instructions, gbc_game1instructions);
-		add(game2instructions, gbc_game2instructions);
-		add(game3instructions, gbc_game3instructions);
 	}
-
+	
 	private void setUpListeners()
 	{
-
 		changePassButton.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent onClick)
-			{
-				base.changeState(ViewStates.passwordChange);
+			{	
+				base.changeState(ViewStates.PASSWORDCHANGE);	
 			}
 		});
 
 		logoutButton.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent onClick)
-			{
+			{	
 				base.logout();
 			}
 		});
@@ -189,35 +167,34 @@ public class Settings extends JPanel
 		backButton.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent onClick)
-			{
+			{	
 				base.returnToMenu();
 			}
 		});
 		
-		game1instructions.addActionListener(new ActionListener()
+		fishInstructions.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent onClick)
 			{
-				JOptionPane.showMessageDialog(base.messagePanel, g1instruct, "Fish Game Instructions",JOptionPane.PLAIN_MESSAGE);
+				new InstructionPanel(base, 1, base.getInstructionPreference("game1Instructions"), null);
 			}
 		});
 		
-		game2instructions.addActionListener(new ActionListener()
+		jellyInstructions.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent onClick)
 			{
-				JOptionPane.showMessageDialog(base.messagePanel, g2instruct, "Jellyfish Game Instructions",JOptionPane.PLAIN_MESSAGE);
+				new InstructionPanel(base, 2, base.getInstructionPreference("game2Instructions"), null);
 			}
 		});
 		
-		game3instructions.addActionListener(new ActionListener()
+		sharkInstructions.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent onClick)
 			{
-				JOptionPane.showMessageDialog(base.messagePanel, g3instruct, "Shark Game Instructions",JOptionPane.PLAIN_MESSAGE);
+				new InstructionPanel(base, 3, base.getInstructionPreference("game3Instructions"), null);
 			}
 		});
-		
 	}
 
 }
