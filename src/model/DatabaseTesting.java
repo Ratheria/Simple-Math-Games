@@ -12,7 +12,7 @@ public class DatabaseTesting
 	public void testCorrectDatabase() 
 	{
 		Controller control = new Controller();
-		MySQLData database = new MySQLData(control);
+		OffSiteDatabaseData database = new OffSiteDatabaseData(control);
 
 		try 
 		{

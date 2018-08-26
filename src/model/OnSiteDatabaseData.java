@@ -1,3 +1,6 @@
+/**
+ *	@author Ariana Fairbanks
+ */
 
 package model;
 
@@ -14,14 +17,16 @@ import java.sql.Statement;
 import java.time.LocalDateTime;
 import adapter.Controller;
 
-public class MySQLData
+public class OnSiteDatabaseData
 {
 	private Controller base;
 	private static Connection con;
+	private static boolean hasData;
 
-	public MySQLData(Controller base)
+	public OnSiteDatabaseData(Controller base)
 	{
 		this.base = base;
+		hasData = false;
 		getConnection();
 	}
 	
@@ -70,7 +75,7 @@ public class MySQLData
 				PreparedStatement preparedStatement = con.prepareStatement(query);
 				preparedStatement.setInt(1, ID);
 				res = preparedStatement.executeQuery();
-				res.next();
+				//
 				String result = res.getString("pass");
 				if (pass.equals(result))
 				{
@@ -131,52 +136,46 @@ public class MySQLData
 		catch (SQLException e){ e.printStackTrace(); }
 	}
 	
-	public void loginFailure(int ID, String userName)
+	public void loginFailure(int ID) 
 	{
 		try
 		{
-			ResultSet res = null;
-			if (con == null)
-			{	getConnection();	}
-			System.out.println("userNameExists");
-			String getID = "SELECT ID from USER WHERE userName = ?";
-			PreparedStatement prepState = con.prepareStatement(getID);
-			prepState.setString(1, userName);
-			res = prepState.executeQuery();
-			res.next();
-			ID = res.getInt("ID");
-			System.out.println("ID: " + ID);
-
-			String query = "SELECT failedAttempts FROM USER WHERE ID = ?";
-			PreparedStatement preparedStatement = con.prepareStatement(query);
-			preparedStatement.setInt(1, ID);
-			res = preparedStatement.executeQuery();
-			res.next();
-			int result = res.getInt("failedAttempts");
-			System.out.println("failedAttempts: " + result);
-			result += 1;
-			if (ID != 0) {
-				query = "UPDATE USER SET failedAttempts = ? WHERE ID = ?";
-				preparedStatement = con.prepareStatement(query);
-				preparedStatement.setInt(1, result);
-				preparedStatement.setInt(2, ID);
-				preparedStatement.executeUpdate();
-				if (result > 5) {
-					System.out.println("should be checking if locked");
-					query = "UPDATE USER SET isLocked = ? WHERE ID = ?";
+			if(!isLocked(ID))
+			{
+				ResultSet res = null;
+				if (con == null)
+				{	getConnection();	}
+				String query = "SELECT failedAttempts FROM USER WHERE ID = ?";
+				PreparedStatement preparedStatement = con.prepareStatement(query);
+				preparedStatement.setInt(1, ID);
+				res = preparedStatement.executeQuery();
+				//
+				int result = res.getInt("failedAttempts");
+				result += 1;
+				if(ID != 0)
+				{
+					query = "UPDATE USER SET failedAttempts = ? WHERE ID = ?";
 					preparedStatement = con.prepareStatement(query);
-					preparedStatement.setInt(1, 1);
+					preparedStatement.setInt(1, result);
 					preparedStatement.setInt(2, ID);
 					preparedStatement.executeUpdate();
+					if (result > 5)
+					{
+						query = "UPDATE USER SET isLocked = ? WHERE ID = ?";
+						preparedStatement = con.prepareStatement(query);
+						preparedStatement.setBoolean(1, true);
+						preparedStatement.setInt(2, ID);
+						preparedStatement.executeUpdate();
+					}
 				}
 			}
 		}
 		catch (SQLException e){e.printStackTrace();}
 	}
 	
-	public int isLocked(int ID)
+	public boolean isLocked(int ID)
 	{
-		int result = 1;
+		boolean result = false;
 		ResultSet res = null;
 		PreparedStatement preparedStatement;
 		if (con == null)
@@ -187,15 +186,11 @@ public class MySQLData
 			preparedStatement = con.prepareStatement(query);
 			preparedStatement.setInt(1, ID);
 			res = preparedStatement.executeQuery();
-			
-			// isLocked is an Int, cosplaying as a boolean
-			// fix it
-//			System.out.println(res.getBoolean("isLocked"));
-//			result = res.getBoolean("isLocked");
-			res.next();
-			result = res.getInt("isLocked");
+			//
+			//
+			result = res.getBoolean("isLocked");
 		}		
-		catch (SQLException e){ e.printStackTrace(); }
+		catch (SQLException e){e.printStackTrace();}
 		return result;
 	}
 	
@@ -339,6 +334,23 @@ public class MySQLData
         }
         return currentLine;
     }
+
+	private void addCustomEquations(String classID, String questionList, int numberOfEquations, int frequency)
+	{
+		if (con == null)
+		{	getConnection();	}
+		try 
+		{
+			PreparedStatement preparedStatement;
+			preparedStatement = con.prepareStatement("INSERT INTO CUSTOM_EQUATIONS VALUES( ?, ?, ?, ?);");		
+			preparedStatement.setString(1, classID);
+			preparedStatement.setString(2, questionList);
+			preparedStatement.setInt(3, numberOfEquations);
+			preparedStatement.setInt(4, frequency);
+			preparedStatement.execute();
+		} 
+		catch (SQLException e) {e.printStackTrace();}
+	}
 	
 	public ResultSet getStudents(String classID)
 	{
@@ -375,24 +387,6 @@ public class MySQLData
 		return res;
 	}
 	
-	@SuppressWarnings("unused")
-	private void addCustomEquations(String classID, String questionList, int numberOfEquations, int frequency)
-	{
-		if (con == null)
-		{	getConnection();	}
-		try 
-		{
-			PreparedStatement preparedStatement;
-			preparedStatement = con.prepareStatement("INSERT INTO CUSTOM_EQUATIONS VALUES( ?, ?, ?, ?);");		
-			preparedStatement.setString(1, classID);
-			preparedStatement.setString(2, questionList);
-			preparedStatement.setInt(3, numberOfEquations);
-			preparedStatement.setInt(4, frequency);
-			preparedStatement.execute();
-		} 
-		catch (SQLException e) {e.printStackTrace();}
-	}
-	
 	private boolean userExists(int ID)
 	{
 		boolean result = false;
@@ -410,25 +404,6 @@ public class MySQLData
 		catch (SQLException e){}
 		return result;
 	}
-
-	private void getConnection()
-	{
-		String dbName = "smg";
-		String host = "smg-database.cxdny0vkhuno.us-west-2.rds.amazonaws.com";
-		String userName = "smg_database";
-		String password = "5mg.Pa55w0rd";
-        String jdbcUrl = "jdbc:mysql://" + host + ":" + "3306" + "/" + dbName + "?user=" + userName + "&password=" + password;
-		try 
-		{	con = DriverManager.getConnection(jdbcUrl);	}
-		catch(SQLException se)
-		{	se.printStackTrace();	}
-	}
-	
-	
-	
-	//TODO User high scores and general stats database (games played, total score(s))
-	//TODO overall high scores
-	
 	
 	public void addGameRecord(int studentID, int gameID, int questionsAnswered, int questionsCorrect, int guesses, int totalSeconds, int score, String classID, String firstName, String lastName)
 	{
@@ -457,7 +432,7 @@ public class MySQLData
 		}
 		catch (SQLException e) {e.printStackTrace();}
 	}
-	
+
 	public boolean addUser(int id, String userName, String pass, String firstName, String lastName, String classID, int permissions)
 	{
 		boolean result = false;
@@ -467,10 +442,6 @@ public class MySQLData
 		{
 			if(!userExists(id))
 			{
-				if(!classExists(classID))
-				{
-					addClass(classID);
-				}
 				PreparedStatement preparedStatement;
 				preparedStatement = con.prepareStatement("INSERT INTO USER VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
 				preparedStatement.setInt(1, id);
@@ -482,9 +453,9 @@ public class MySQLData
 				preparedStatement.setInt(7, permissions);
 				preparedStatement.setInt(8, 0);
 				preparedStatement.setBoolean(9, false);
-				preparedStatement.setInt(10, 1);
-				preparedStatement.setInt(11, 1);
-				preparedStatement.setInt(12, 1);
+				preparedStatement.setBoolean(10, true);
+				preparedStatement.setBoolean(11, true);
+				preparedStatement.setBoolean(12, true);
 				preparedStatement.execute();
 				result = true;
 			}
@@ -526,7 +497,6 @@ public class MySQLData
 		catch (SQLException e){}
 	}
 	
-	
 	private void insertGameHighscore(int studentID, int gameID, int score, String classID, String firstName, String lastName)
 	{
 		if (con == null)
@@ -566,7 +536,8 @@ public class MySQLData
 		return result;
 	}
 	
-	public boolean userNameExists(String userName) {
+	public boolean userNameExists(String userName) 
+	{
 		boolean result = false;
 		ResultSet res = null;
 		try
@@ -583,9 +554,10 @@ public class MySQLData
 		return result;
 	}
 	
-	public int getID(String userName) {
+	public int getID(String userName)
+	{
 		ResultSet res = null;
-		
+		int result = -1;
 		try
 		{
 			if (con == null)
@@ -595,12 +567,12 @@ public class MySQLData
 			preparedStatement.setString(1, userName);
 			res = preparedStatement.executeQuery();
 			res.next();
-			return res.getInt("ID");
+			result = res.getInt("ID");
 		}
 		catch (SQLException e){}
-		return -1;
+		return result;
 	}
-
+	
 	public ResultSet getClassHighscore(String classID, int gameID)
 	{
 		ResultSet res = null;
@@ -638,7 +610,7 @@ public class MySQLData
 			preparedStatement.setInt(1, gameID);
 			res = preparedStatement.executeQuery();
 			res.next();
-			int max = res.getInt("maxScore");
+			int max = res.getInt("maxScore"); //find the owner of the max score next
 			query = new String("SELECT score, firstName, lastName FROM GAME_HIGH_SCORES WHERE score = ? AND gameID = ?;");
 			preparedStatement = con.prepareStatement(query);
 			preparedStatement.setInt(1, max);
@@ -649,36 +621,36 @@ public class MySQLData
 		return res;
 	}
 	
-	public int wantInstructions(String gameID, int studentID)
+	public boolean wantInstructions(String gameInstructions, int studentID)
 	{
-		int result = 0;
+		boolean result = true;
 		try
 		{
 			ResultSet res = null;
 			if (con == null)
 			{	getConnection();	}
-			String query = "SELECT " + gameID + " FROM USER WHERE ID = ?;";
+			String query = "SELECT " + gameInstructions + " FROM USER WHERE ID = ?;";
 			PreparedStatement preparedStatement = con.prepareStatement(query);
 			preparedStatement.setInt(1, studentID);
 			res = preparedStatement.executeQuery();
 			if(res.next())
 			{
-				result = res.getInt(gameID);
+				result = res.getBoolean(gameInstructions);
 			}
 		}
 		catch (SQLException e){}
 		return result;
 	}
 	
-	public void setWantInstructions(String gameID, int studentID, boolean value)
+	public void setWantInstructions(String gameInstructions, int studentID, boolean value)
 	{
-		int valueAsInt = value ? 1 : 0;
+		//int valueAsInt = value ? 1 : 0;
 		try
 		{
 			if (con == null)
 			{	getConnection();	}
-			PreparedStatement preparedStatement = con.prepareStatement("UPDATE USER SET " + gameID + " = ? WHERE ID = ?;");
-			preparedStatement.setInt(1, valueAsInt);
+			PreparedStatement preparedStatement = con.prepareStatement("UPDATE USER SET " + gameInstructions + " = ? WHERE ID = ?;");
+			preparedStatement.setBoolean(1, value);
 			preparedStatement.setInt(2, studentID);
 			preparedStatement.executeUpdate();
 		}
@@ -787,7 +759,6 @@ public class MySQLData
 		}
 		catch (SQLException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -812,6 +783,7 @@ public class MySQLData
 		catch (SQLException e) {e.printStackTrace();}
 	}
 	
+	/*
 	public void addClass(String classID)
 	{
 		if (con == null)
@@ -843,8 +815,126 @@ public class MySQLData
 		catch (SQLException e){}
 		return result;
 	}
+	*/
 	
-	//preparedStatement = con.prepareStatement("INSERT INTO GAME_RECORDS(studentID, gameID, " +
-	//"questionsAnswered, questionsCorrect, guesses, totalSeconds, datePlayed, score) " +
-	
+	private void getConnection()
+	{
+		try
+		{
+			Class.forName("org.sqlite.JDBC");
+			String databaseFilePath = "jdbc:sqlite:C:/ProgramData/MPDKWID";
+			con = DriverManager.getConnection(databaseFilePath);
+		}
+		catch (SQLException | ClassNotFoundException e)
+		{
+			//TODO Mac?
+			try			
+			{
+				Class.forName("org.sqlite.JDBC");
+				File homedir = new File(System.getProperty("user.home"));
+				String databaseFilePath = "jdbc:sqlite:" + homedir + "/MPDKWID";
+				con = DriverManager.getConnection(databaseFilePath);
+			}
+			catch (SQLException | ClassNotFoundException e2)
+			{
+				e2.printStackTrace();
+				System.out.println("linux fix didn't work");
+			}
+		}
+
+		
+		if (!hasData)
+		{
+			hasData = true;
+			Statement state;
+			try
+			{
+				state = con.createStatement();
+				
+				// drop table if exists
+				state.execute("DROP TABLE IF EXISTS USER;");
+				
+				ResultSet res = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='USER'");
+				if (!res.next())
+				{
+					System.out.println("Building the User table.");
+					state = con.createStatement();
+					state.executeUpdate("CREATE TABLE USER("
+							+ "ID INTEGER," + "userName VARCHAR(15)," + "pass VARCHAR(15)," + "firstName VARCHAR(30)," + "lastName VARCHAR(30)," 
+							+ "classID VARCHAR(5)," + "permission INTEGER," + "failedAttempts INTEGER," + "isLocked BOOLEAN,"
+							+ "game1Instructions BOOLEAN," + "game2Instructions BOOLEAN," + "game3Instructions BOOLEAN,"
+							+ "PRIMARY KEY (ID));");
+					
+					addUser(000000, "root", "root", "Root", "User", "00", 0);
+					addUser(111111, "deft", "deft", "Default", "Teacher", "1A", 2);
+					addUser(222222, "defs", "defs", "Default", "Student", "1A", 3);
+				}
+				
+				//Drop table			
+				state.execute("DROP TABLE IF EXISTS CUSTOM_EQUATIONS;");
+				
+				ResultSet customEq = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='CUSTOM_EQUATIONS'");
+				if (!customEq.next())
+				{
+					System.out.println("Building the custom equations table.");
+					state = con.createStatement();
+					state.executeUpdate("CREATE TABLE CUSTOM_EQUATIONS("
+							+ "classID VARCHAR(5)," + "questionList VARCHAR(600)," + "numberOfEquations INTEGER," + "frequency INTEGER," 
+							+ "FOREIGN KEY (classID) REFERENCES USER(classID),"
+							+ "PRIMARY KEY (classID));");
+					
+					addCustomEquations("1A", "5+10:7-2", 2, 5);
+				}
+				
+				// drop table if exists
+				state.execute("DROP TABLE IF EXISTS GAME_RECORDS;");
+				ResultSet gameRecords = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='GAME_RECORDS'");
+				
+				if (!gameRecords.next())
+				{
+					System.out.println("Building Game Records table.");
+					state = con.createStatement();
+					state.executeUpdate("CREATE TABLE GAME_RECORDS("
+							+ "studentID INTEGER," + "gameID INTEGER," 
+							+ "questionsAnswered INTEGER," + "questionsCorrect INTEGER," + "guesses INTEGER," + "totalSeconds INTEGER,"
+							+ "datePlayed VARCHAR(19)," + "score INTEGER," + "classID VARCHAR(6),"
+							//+ "PRIMARY KEY (recordID),"  
+							+ "FOREIGN KEY (studentID) REFERENCES USER(ID));");
+				}
+				
+				//drop
+				state.execute("DROP TABLE IF EXISTS GAME_HIGH_SCORES");
+				ResultSet gameHighScores = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='GAME_HIGH_SCORES'");
+				
+				if(!gameHighScores.next())
+				{
+					System.out.println("Building Game High Scores Table");
+					state = con.createStatement();
+					state.executeUpdate("CREATE TABLE GAME_HIGH_SCORES("
+							+ "score INTEGER," + "studentID INTEGER," 
+							+ "firstName VARCHAR(30)," + "lastName VARCHAR(30)," + "classID VARCHAR(6)," 
+							+ "gameID INTEGER);");
+				}
+				
+				//drop
+				state.execute("DROP TABLE IF EXISTS SESSION_RECORDS");
+				ResultSet sessions = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='SESSION_RECORDS'");
+				
+				if(!sessions.next())
+				{
+					System.out.println("Building Session Records Table");
+					state = con.createStatement();
+					state.executeUpdate("CREATE TABLE SESSION_RECORDS("
+							+ "studentID INTEGER," + "datePlayed VARCHAR(19)," + "gamesPlayed INTEGER," + "questionsAnswered INTEGER," 
+							+ "questionsCorrect INTEGER,"
+							+ "score INTEGER);");
+				}
+				
+
+				
+			}
+			catch (SQLException e){ e.printStackTrace(); }
+		}
+	}
+
 }

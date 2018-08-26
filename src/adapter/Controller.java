@@ -14,8 +14,7 @@ import java.util.List;
 import java.util.Random;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-
-import model.MySQLData;
+import model.OnSiteDatabaseData;
 import view.Frame;
 
 public class Controller
@@ -29,8 +28,8 @@ public class Controller
 	public Frame frame;
 	public JPanel messagePanel;
 	public int questionTypes;
-//	private SQLiteData database;
-	private MySQLData database;
+	private OnSiteDatabaseData database;
+//	private MySQLData database;
 	private ViewStates state;
 	private ViewStates lastState;
 	private int ID;
@@ -47,8 +46,8 @@ public class Controller
 	{
 		rng = new Random();
 		messagePanel = new JPanel();
-//		database = new SQLiteData(this); 
-		database = new MySQLData(this);
+		database = new OnSiteDatabaseData(this); 
+//		database = new MySQLData(this);
 		    
 		frame = new Frame(this);
 		logout();
@@ -76,7 +75,8 @@ public class Controller
 		JPanel errorPanel = new JPanel();	
 		
 		// check if user exists here
-		if (database.userNameExists(userName)) {
+		if (database.userNameExists(userName)) 
+		{
 			ID = database.getID(userName);
 			// these two steps are basically the same, but it works
 			ResultSet res = database.compareLogin(userName, pass);
@@ -84,7 +84,7 @@ public class Controller
 			{
 				boolean hasRes = res.next();
 							
-				if ((database.isLocked(ID) != 0) && hasRes)
+				if (database.isLocked(ID) && hasRes)
 				{
 					JOptionPane.showMessageDialog(errorPanel, "This account has been locked due to too many failed login attempts.", "Error", JOptionPane.ERROR_MESSAGE);
 				}
@@ -116,7 +116,7 @@ public class Controller
 					JOptionPane.showMessageDialog(errorPanel, "Incorrect username or password.", "Error", JOptionPane.ERROR_MESSAGE);
 					if (!(userName.equals("root")))
 					{					
-						database.loginFailure(ID, userName);
+						database.loginFailure(ID);
 					}
 				}
 			}
@@ -194,7 +194,7 @@ public class Controller
 		{
 			database.loginSuccess(ID);
 		}
-		if (database.isLocked(ID) != 0)
+		if (database.isLocked(ID))
 		{
 			JOptionPane.showMessageDialog(errorPanel, "Failed to unlock account.", "Error", JOptionPane.ERROR_MESSAGE);
 		}
@@ -470,14 +470,7 @@ public class Controller
 	
 	public boolean getInstructionPreference(String gameInstructions)
 	{
-		boolean result = true;
-		int displayInstructions = database.wantInstructions(gameInstructions, ID);
-		System.out.println(result);
-		if(displayInstructions == 0)
-		{
-			result = false;
-		}
-		return result;
+		return database.wantInstructions(gameInstructions, ID);
 	}
 	
 	public void setInstructionPreferences(String gameInstructions, boolean value)
