@@ -398,10 +398,10 @@ public class Game3 extends JPanel implements KeyListener, Game
 	
 	private void instructionsHandling()
 	{
-		boolean showInstructions = base.getInstructionPreference("game2Instructions");
+		boolean showInstructions = base.getInstructionPreference("game3Instructions");
 		if(showInstructions)
 		{
-			new InstructionPanel(base, 2, showInstructions, this);
+			new InstructionPanel(base, 3, showInstructions, this);
 		}
 	}
 

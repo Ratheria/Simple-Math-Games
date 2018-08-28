@@ -427,7 +427,7 @@ public class OnSiteDatabaseData
 			preparedStatement.setString(9, classID);
 			preparedStatement.executeUpdate();
 			
-			updateGameHighscore(studentID, gameID, score, classID, firstName, lastName);
+			updateGameHighscore(score, studentID, firstName, lastName, classID, gameID);
 			updateSession(studentID, date, questionsAnswered, questionsCorrect, score);
 		}
 		catch (SQLException e) {e.printStackTrace();}
@@ -465,7 +465,7 @@ public class OnSiteDatabaseData
 		return result;
 	}
 	
-	public void updateGameHighscore(int studentID, int gameID, int score, String classID, String firstName, String lastName)
+	public void updateGameHighscore(int score, int studentID, String firstName, String lastName, String classID, int gameID)
 	{
 		try
 		{
@@ -491,13 +491,13 @@ public class OnSiteDatabaseData
 			}
 			else
 			{
-				insertGameHighscore(studentID, gameID, score, classID, firstName, lastName);
+				insertGameHighscore(score, studentID, firstName, lastName, classID, gameID);
 			}
 		}
 		catch (SQLException e){}
 	}
 	
-	private void insertGameHighscore(int studentID, int gameID, int score, String classID, String firstName, String lastName)
+	private void insertGameHighscore(int score, int studentID, String firstName, String lastName, String classID, int gameID)
 	{
 		if (con == null)
 		{	getConnection();	}
@@ -505,12 +505,12 @@ public class OnSiteDatabaseData
 		{
 			PreparedStatement preparedStatement;
 			preparedStatement = con.prepareStatement("INSERT INTO GAME_HIGH_SCORES VALUES(?, ?, ?, ?, ?, ?);");		
-			preparedStatement.setInt(1, studentID);
-			preparedStatement.setInt(2, gameID);
-			preparedStatement.setInt(3, score);
-			preparedStatement.setString(4, classID);
-			preparedStatement.setString(5, firstName);
-			preparedStatement.setString(6, lastName);
+			preparedStatement.setInt(1, score);
+			preparedStatement.setInt(2, studentID);
+			preparedStatement.setString(3, firstName);
+			preparedStatement.setString(4, lastName);
+			preparedStatement.setString(5, classID);
+			preparedStatement.setInt(6, gameID);
 			preparedStatement.execute();
 		} 
 		catch (SQLException e) {e.printStackTrace();}
@@ -852,7 +852,7 @@ public class OnSiteDatabaseData
 				state = con.createStatement();
 				
 				// drop table if exists
-				state.execute("DROP TABLE IF EXISTS USER;");
+				//state.execute("DROP TABLE IF EXISTS USER;");
 				
 				ResultSet res = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='USER'");
 				if (!res.next())
@@ -871,7 +871,7 @@ public class OnSiteDatabaseData
 				}
 				
 				//Drop table			
-				state.execute("DROP TABLE IF EXISTS CUSTOM_EQUATIONS;");
+				//state.execute("DROP TABLE IF EXISTS CUSTOM_EQUATIONS;");
 				
 				ResultSet customEq = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='CUSTOM_EQUATIONS'");
 				if (!customEq.next())
@@ -887,7 +887,7 @@ public class OnSiteDatabaseData
 				}
 				
 				// drop table if exists
-				state.execute("DROP TABLE IF EXISTS GAME_RECORDS;");
+				//state.execute("DROP TABLE IF EXISTS GAME_RECORDS;");
 				ResultSet gameRecords = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='GAME_RECORDS'");
 				
 				if (!gameRecords.next())
@@ -903,7 +903,7 @@ public class OnSiteDatabaseData
 				}
 				
 				//drop
-				state.execute("DROP TABLE IF EXISTS GAME_HIGH_SCORES");
+				//state.execute("DROP TABLE IF EXISTS GAME_HIGH_SCORES");
 				ResultSet gameHighScores = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='GAME_HIGH_SCORES'");
 				
 				if(!gameHighScores.next())
@@ -917,7 +917,7 @@ public class OnSiteDatabaseData
 				}
 				
 				//drop
-				state.execute("DROP TABLE IF EXISTS SESSION_RECORDS");
+				//state.execute("DROP TABLE IF EXISTS SESSION_RECORDS");
 				ResultSet sessions = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='SESSION_RECORDS'");
 				
 				if(!sessions.next())
