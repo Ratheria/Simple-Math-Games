@@ -32,8 +32,8 @@ public class Controller
 //	private MySQLData database;
 	private ViewStates state;
 	private ViewStates lastState;
+	private byte permission; // root, subroot, teacher, student
 	private int ID;
-	private int permission; // root, subroot, teacher, student
 	private int frequency;
 	private int numberOfEquations;
 	private String firstName;
@@ -47,8 +47,7 @@ public class Controller
 		rng = new Random();
 		messagePanel = new JPanel();
 		database = new OnSiteDatabaseData(this); 
-//		database = new MySQLData(this);
-		    
+//		database = new OffSiteData(this);
 		frame = new Frame(this);
 		logout();
 	}
@@ -72,21 +71,21 @@ public class Controller
 	
 	public void checkLogin(String userName, String pass)
 	{
-		JPanel errorPanel = new JPanel();	
-		
+		JPanel errorPanel = new JPanel();
+
 		// check if user exists here
-		if (database.userNameExists(userName)) 
+		if (database.userNameExists(userName))
 		{
 			ID = database.getID(userName);
-			// these two steps are basically the same, but it works
 			ResultSet res = database.compareLogin(userName, pass);
 			try
 			{
 				boolean hasRes = res.next();
-							
+
 				if (database.isLocked(ID) && hasRes)
 				{
-					JOptionPane.showMessageDialog(errorPanel, "This account has been locked due to too many failed login attempts.", "Error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(errorPanel, "This account has been locked due to too many failed login attempts.", "Error",
+							JOptionPane.ERROR_MESSAGE);
 				}
 				else if (hasRes)
 				{
@@ -94,7 +93,7 @@ public class Controller
 					res = database.getUserInfo(ID);
 					if (res.next())
 					{
-						permission = res.getInt("permission");
+						permission = res.getByte("permission");
 						firstName = res.getString("firstName");
 						lastName = res.getString("lastName");
 						classID = res.getString("classID");
@@ -114,19 +113,32 @@ public class Controller
 				else
 				{
 					JOptionPane.showMessageDialog(errorPanel, "Incorrect username or password.", "Error", JOptionPane.ERROR_MESSAGE);
-					if (!(userName.equals("root")))
-					{					
-						database.loginFailure(ID);
+					
+					ResultSet unlockedAdminSet = database.unlockedAdminCount();
+					if(unlockedAdminSet.next())
+					{
+						if(unlockedAdminSet.getInt("count") < 3)
+						{
+							//only lock an admin account if there is another admin who can unlock it for them
+							unlockedAdminSet = database.getUserInfo(ID);
+							if(unlockedAdminSet.next() && unlockedAdminSet.getInt("permission") != 0)
+							{
+								database.loginFailure(ID);
+							}
+						}
+						else
+						{
+							database.loginFailure(ID);
+						}
 					}
 				}
 			}
-			catch (SQLException e)
-			{
-				e.printStackTrace();
-			}
-			}
+			catch (SQLException e){	e.printStackTrace(); }
+		}
 		else
+		{
 			JOptionPane.showMessageDialog(errorPanel, "Incorrect username or password.", "Error", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	public void changePassword(String pass, String newPass)
@@ -464,8 +476,7 @@ public class Controller
 				this.numberOfEquations = res.getInt("numberOfEquations");
 			}
 		}
-		catch (SQLException e)
-		{}
+		catch (SQLException e) {e.printStackTrace();}
 	}
 	
 	public boolean getInstructionPreference(String gameInstructions)

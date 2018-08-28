@@ -30,20 +30,6 @@ public class OnSiteDatabaseData
 		getConnection();
 	}
 	
-	public ResultSet query(String SQLCommand)
-	{
-		ResultSet res = null;
-		try
-		{
-			if (con == null)
-			{	getConnection();	}
-			Statement statement = con.createStatement();
-			res = statement.executeQuery(SQLCommand);
-		}
-		catch (SQLException e){e.printStackTrace();}
-		return res;
-	}
-	
 	public ResultSet compareLogin(String userName, String pass)
 	{
 		ResultSet res = null;
@@ -57,7 +43,24 @@ public class OnSiteDatabaseData
 			preparedStatement.setString(2, pass);
 			res = preparedStatement.executeQuery();
 		}
-		catch (SQLException e){}
+		catch (SQLException e) {	e.printStackTrace();	}
+		return res;
+	}
+	
+	public ResultSet unlockedAdminCount()
+	{
+		ResultSet res = null;
+		try
+		{
+			if (con == null)
+			{	getConnection();	}
+			String query = "SELECT SUM(ID) AS adminCount FROM USER WHERE permission = ? AND isLocked = ?";
+			PreparedStatement preparedStatement = con.prepareStatement(query);
+			preparedStatement.setInt(1, 0);
+			preparedStatement.setBoolean(2, false);
+			res = preparedStatement.executeQuery();
+		}
+		catch (SQLException e) {	e.printStackTrace();	}
 		return res;
 	}
 	
@@ -317,10 +320,7 @@ public class OnSiteDatabaseData
                 }
                 currentLine = -1;
             } 
-            catch (IOException e) 
-            {
-                e.printStackTrace();
-            } 
+    		catch (IOException e) {	e.printStackTrace();	}
             finally 
             {
                 if (br != null) 
@@ -401,7 +401,7 @@ public class OnSiteDatabaseData
 			res = preparedStatement.executeQuery();
 			result = res.next();
 		}
-		catch (SQLException e){}
+		catch (SQLException e) {	e.printStackTrace();	}
 		return result;
 	}
 	
@@ -460,8 +460,7 @@ public class OnSiteDatabaseData
 				result = true;
 			}
 		} 
-		catch (SQLException e) 
-		{	e.printStackTrace();	}
+		catch (SQLException e) {e.printStackTrace();}
 		return result;
 	}
 	
@@ -494,7 +493,7 @@ public class OnSiteDatabaseData
 				insertGameHighscore(score, studentID, firstName, lastName, classID, gameID);
 			}
 		}
-		catch (SQLException e){}
+		catch (SQLException e) {e.printStackTrace();}
 	}
 	
 	private void insertGameHighscore(int score, int studentID, String firstName, String lastName, String classID, int gameID)
@@ -532,7 +531,7 @@ public class OnSiteDatabaseData
 			res.next();
 			result = res.getInt("score");
 		}
-		catch (SQLException e){}
+		catch (SQLException e) {e.printStackTrace();}
 		return result;
 	}
 	
@@ -550,7 +549,7 @@ public class OnSiteDatabaseData
 			res = preparedStatement.executeQuery();
 			result = res.next();
 		}
-		catch (SQLException e){}
+		catch (SQLException e) {e.printStackTrace();}
 		return result;
 	}
 	
@@ -569,7 +568,7 @@ public class OnSiteDatabaseData
 			res.next();
 			result = res.getInt("ID");
 		}
-		catch (SQLException e){}
+		catch (SQLException e) {e.printStackTrace();}
 		return result;
 	}
 	
@@ -594,7 +593,7 @@ public class OnSiteDatabaseData
 			preparedStatement.setString(3, classID);
 			res = preparedStatement.executeQuery();
 		}
-		catch (SQLException e){}
+		catch (SQLException e) {e.printStackTrace();}
 		return res;
 	}
 	
@@ -617,7 +616,7 @@ public class OnSiteDatabaseData
 			preparedStatement.setInt(2, gameID);
 			res = preparedStatement.executeQuery();
 		}
-		catch (SQLException e){}
+		catch (SQLException e) {e.printStackTrace();}
 		return res;
 	}
 	
@@ -638,7 +637,7 @@ public class OnSiteDatabaseData
 				result = res.getBoolean(gameInstructions);
 			}
 		}
-		catch (SQLException e){}
+		catch (SQLException e) {e.printStackTrace();}
 		return result;
 	}
 	
@@ -654,10 +653,7 @@ public class OnSiteDatabaseData
 			preparedStatement.setInt(2, studentID);
 			preparedStatement.executeUpdate();
 		}
-		catch (SQLException e)
-		{
-			e.printStackTrace();
-		}
+		catch (SQLException e) {e.printStackTrace();}
 	}
 	
 	public ResultSet getGameRecords(int studentID)
@@ -757,10 +753,7 @@ public class OnSiteDatabaseData
 				addSessionRecord(studentID, date, questionsAnswered, questionsCorrect, score);
 			}
 		}
-		catch (SQLException e)
-		{
-			e.printStackTrace();
-		}
+		catch (SQLException e) {e.printStackTrace();}
 	}
 	
 	public void addSessionRecord(int studentID, String date, int questionsAnswered, int questionsCorrect, int score)
@@ -812,7 +805,7 @@ public class OnSiteDatabaseData
 			res = preparedStatement.executeQuery();
 			result = res.next();
 		}
-		catch (SQLException e){}
+		catch (SQLException e) {e.printStackTrace();}
 		return result;
 	}
 	*/
@@ -853,7 +846,6 @@ public class OnSiteDatabaseData
 				
 				// drop table if exists
 				//state.execute("DROP TABLE IF EXISTS USER;");
-				
 				ResultSet res = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='USER'");
 				if (!res.next())
 				{
@@ -872,7 +864,6 @@ public class OnSiteDatabaseData
 				
 				//Drop table			
 				//state.execute("DROP TABLE IF EXISTS CUSTOM_EQUATIONS;");
-				
 				ResultSet customEq = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='CUSTOM_EQUATIONS'");
 				if (!customEq.next())
 				{
@@ -929,8 +920,6 @@ public class OnSiteDatabaseData
 							+ "questionsCorrect INTEGER,"
 							+ "score INTEGER);");
 				}
-				
-
 				
 			}
 			catch (SQLException e){ e.printStackTrace(); }

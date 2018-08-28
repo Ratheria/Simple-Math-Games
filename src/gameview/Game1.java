@@ -45,7 +45,7 @@ public class Game1 extends JPanel implements Game
 	private int fishImageHeight;
 	private int poleWidth;
 	private int poleHeight;
-	private int pause;
+	private byte pause;
 	private SpringLayout theLayout;
 	private String question;
 	private List<String> questionList;
