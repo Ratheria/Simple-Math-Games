@@ -214,6 +214,18 @@ public class OnSiteDatabaseData
 				preparedStatement = con.prepareStatement(query);
 				preparedStatement.setInt(1, ID);
 				preparedStatement.executeUpdate();
+				query = "DELETE FROM GAME_RECORDS WHERE studentID = ?";
+				preparedStatement = con.prepareStatement(query);
+				preparedStatement.setInt(1, ID);
+				preparedStatement.executeUpdate();				
+				query = "DELETE FROM SESSION_RECORDS WHERE studentID = ?";
+				preparedStatement = con.prepareStatement(query);
+				preparedStatement.setInt(1, ID);
+				preparedStatement.executeUpdate();				
+				query = "DELETE FROM GAME_HIGH_SCORES WHERE studentID = ?";
+				preparedStatement = con.prepareStatement(query);
+				preparedStatement.setInt(1, ID);
+				preparedStatement.executeUpdate();
 			}
 			catch (SQLException e)
 			{
@@ -528,8 +540,10 @@ public class OnSiteDatabaseData
 			preparedStatement.setInt(1, studentID);
 			preparedStatement.setInt(2, gameID);
 			res = preparedStatement.executeQuery();
-			res.next();
-			result = res.getInt("score");
+			if(res.next())
+			{
+				result = res.getInt("score");
+			}
 		}
 		catch (SQLException e) {e.printStackTrace();}
 		return result;
@@ -845,7 +859,7 @@ public class OnSiteDatabaseData
 				state = con.createStatement();
 				
 				// drop table if exists
-				//state.execute("DROP TABLE IF EXISTS USER;");
+				state.execute("DROP TABLE IF EXISTS USER;");
 				ResultSet res = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='USER'");
 				if (!res.next())
 				{
@@ -858,8 +872,10 @@ public class OnSiteDatabaseData
 							+ "PRIMARY KEY (ID));");
 					
 					addUser(000000, "root", "root", "Root", "User", "00", 0);
+					addUser(888888, "Rin", "root", "Rin", " ", "2F", 2);
 					addUser(111111, "deft", "deft", "Default", "Teacher", "1A", 2);
 					addUser(222222, "defs", "defs", "Default", "Student", "1A", 3);
+					addUser(131313, "Aaron", "0451", "Aaron", "Smith", "2F", 3);
 				}
 				
 				//Drop table			
@@ -896,7 +912,6 @@ public class OnSiteDatabaseData
 				//drop
 				//state.execute("DROP TABLE IF EXISTS GAME_HIGH_SCORES");
 				ResultSet gameHighScores = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='GAME_HIGH_SCORES'");
-				
 				if(!gameHighScores.next())
 				{
 					System.out.println("Building Game High Scores Table");
@@ -910,7 +925,6 @@ public class OnSiteDatabaseData
 				//drop
 				//state.execute("DROP TABLE IF EXISTS SESSION_RECORDS");
 				ResultSet sessions = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='SESSION_RECORDS'");
-				
 				if(!sessions.next())
 				{
 					System.out.println("Building Session Records Table");

@@ -49,7 +49,7 @@ public class ViewStudentStats extends JPanel
 			String statsString = "";
 			res.next();
 			statsString = statsString
-						+ "OVERALL\n"
+						+ "YOUR GENERAL STATS\n"
 						+ "    Total Score                    : " + res.getInt("scoreSum") + "\n"
 						+ "    Total Games Played      : " + res.getInt("gameSum") + "\n"
 						+ "    Total Correct Answers   : " + res.getInt("correctSum") + "\n\n";
@@ -88,7 +88,7 @@ public class ViewStudentStats extends JPanel
 			}
 			statsString = statsString
 						+ "FISH GAME HIGH SCORES\n"
-						+ "    Personal\t: " + base.getPersonalHighscore(studentID, 1) + "\n"
+						+ "    Yours\t: " + base.getPersonalHighscore(studentID, 1) + "\n"
 						+ "    Class\t: " + classHighScore + classHigh + "\n"
 						+ "    School\t: " + highScore + high + "\n\n";
 			
@@ -126,7 +126,7 @@ public class ViewStudentStats extends JPanel
 			}
 			statsString = statsString
 						+ "JELLYFISH GAME HIGH SCORES\n"
-						+ "    Personal\t: " + base.getPersonalHighscore(studentID, 2) + "\n"
+						+ "    Yours\t: " + base.getPersonalHighscore(studentID, 2) + "\n"
 						+ "    Class\t: " + classHighScore + classHigh + "\n"
 						+ "    School\t: " + highScore + high + "\n\n";
 			
@@ -164,7 +164,7 @@ public class ViewStudentStats extends JPanel
 			}
 			statsString = statsString
 						+ "SHARK GAME HIGH SCORES\n"
-						+ "    Personal\t: " + base.getPersonalHighscore(studentID, 3) + "\n"
+						+ "    Yours\t: " + base.getPersonalHighscore(studentID, 3) + "\n"
 						+ "    Class\t: " + classHighScore + classHigh + "\n"
 						+ "    School\t: " + highScore + high + "\n\n";
 			
