@@ -47,23 +47,6 @@ public class OnSiteDatabaseData
 		return res;
 	}
 	
-	public ResultSet unlockedAdminCount()
-	{
-		ResultSet res = null;
-		try
-		{
-			if (con == null)
-			{	getConnection();	}
-			String query = "SELECT SUM(ID) AS adminCount FROM USER WHERE permission = ? AND isLocked = ?";
-			PreparedStatement preparedStatement = con.prepareStatement(query);
-			preparedStatement.setInt(1, 0);
-			preparedStatement.setBoolean(2, false);
-			res = preparedStatement.executeQuery();
-		}
-		catch (SQLException e) {	e.printStackTrace();	}
-		return res;
-	}
-	
 	public boolean changeLogin(int ID, String pass, String newPass)
 	{
 		boolean match = false;
@@ -204,28 +187,31 @@ public class OnSiteDatabaseData
 		{
 			try
 			{
-				if (con == null)
-				{	getConnection();	}
-				String query = "DELETE FROM GAME_RECORDS WHERE studentID = ?";
-				PreparedStatement preparedStatement = con.prepareStatement(query);
-				preparedStatement.setInt(1, ID);
-				preparedStatement.executeUpdate();
-				query = "DELETE FROM USER WHERE ID = ?";
-				preparedStatement = con.prepareStatement(query);
-				preparedStatement.setInt(1, ID);
-				preparedStatement.executeUpdate();
-				query = "DELETE FROM GAME_RECORDS WHERE studentID = ?";
-				preparedStatement = con.prepareStatement(query);
-				preparedStatement.setInt(1, ID);
-				preparedStatement.executeUpdate();				
-				query = "DELETE FROM SESSION_RECORDS WHERE studentID = ?";
-				preparedStatement = con.prepareStatement(query);
-				preparedStatement.setInt(1, ID);
-				preparedStatement.executeUpdate();				
-				query = "DELETE FROM GAME_HIGH_SCORES WHERE studentID = ?";
-				preparedStatement = con.prepareStatement(query);
-				preparedStatement.setInt(1, ID);
-				preparedStatement.executeUpdate();
+				if(ID != 0)
+				{
+					if (con == null)
+					{	getConnection();	}
+					String query = "DELETE FROM GAME_RECORDS WHERE studentID = ?";
+					PreparedStatement preparedStatement = con.prepareStatement(query);
+					preparedStatement.setInt(1, ID);
+					preparedStatement.executeUpdate();				
+					query = "DELETE FROM SESSION_RECORDS WHERE studentID = ?";
+					preparedStatement = con.prepareStatement(query);
+					preparedStatement.setInt(1, ID);
+					preparedStatement.executeUpdate();				
+					query = "DELETE FROM GAME_HIGH_SCORES WHERE studentID = ?";
+					preparedStatement = con.prepareStatement(query);
+					preparedStatement.setInt(1, ID);
+					preparedStatement.executeUpdate();
+					query = "DELETE FROM USER WHERE ID = ?";
+					preparedStatement = con.prepareStatement(query);
+					preparedStatement.setInt(1, ID);
+					preparedStatement.executeUpdate();
+				}
+				else
+				{
+					result = false;
+				}
 			}
 			catch (SQLException e)
 			{

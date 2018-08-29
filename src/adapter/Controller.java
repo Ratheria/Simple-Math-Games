@@ -32,10 +32,10 @@ public class Controller
 	public JFileChooser fileChoose;
 	public int questionTypes;
 	private OnSiteDatabaseData database;
-//	private MySQLData database;
+//	private OffSiteDatabaseData database;
 	private ViewStates state;
 	private ViewStates lastState;
-	private byte permission; // root, subroot, teacher, student
+	private byte permission; // root, admin, teacher, student
 	private int ID;
 	private int frequency;
 	private int numberOfEquations;
@@ -92,7 +92,6 @@ public class Controller
 			try
 			{
 				boolean hasRes = res.next();
-
 				if (database.isLocked(ID) && hasRes)
 				{
 					JOptionPane.showMessageDialog(errorPanel, "This account has been locked due to too many failed login attempts.", "Error",
@@ -125,22 +124,9 @@ public class Controller
 				{
 					JOptionPane.showMessageDialog(errorPanel, "Incorrect username or password.", "Error", JOptionPane.ERROR_MESSAGE);
 					
-					ResultSet unlockedAdminSet = database.unlockedAdminCount();
-					if(unlockedAdminSet.next())
+					if(ID != 0)
 					{
-						if(unlockedAdminSet.getInt("count") < 3)
-						{
-							//only lock an admin account if there is another admin who can unlock it for them
-							unlockedAdminSet = database.getUserInfo(ID);
-							if(unlockedAdminSet.next() && unlockedAdminSet.getInt("permission") != 0)
-							{
-								database.loginFailure(ID);
-							}
-						}
-						else
-						{
-							database.loginFailure(ID);
-						}
+						database.loginFailure(ID);
 					}
 				}
 			}
@@ -531,4 +517,30 @@ public class Controller
 	}
 }
 
+//TODO general
+//question types
 
+//instruction/message panels centered
+
+//redo stats visual
+//add more stat info
+//most popular game, maybe
+
+
+
+//TODO root
+//general and specific data clear (all, by student, by table, by class, etc.)
+//view/change username generation process?
+//edit user (use adduser panel?)
+
+
+
+
+//TODO teacher
+//remove all custom questions
+//add questions via csv
+//questions for individual students?
+
+
+
+//TODO student

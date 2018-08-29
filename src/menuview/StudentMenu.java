@@ -1,7 +1,7 @@
 /**
  *	@author Ariana Fairbanks
  */
-package view;
+package menuview;
 
 import java.awt.Color;
 import javax.swing.JPanel;

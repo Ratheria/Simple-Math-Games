@@ -1,6 +1,6 @@
 /**
- *	@author Jadie Adams
  *	@author Ariana Fairbanks
+ *	@author Jadie Adams
  */
 
 package gameview;
@@ -82,7 +82,7 @@ public class Game2 extends JPanel implements KeyListener, Game
 	private Image backgroundImg;
 	private JLabel background;
 	private int questionsAnswered;
-	private int questionsCorrect; // TODO
+	private int questionsCorrect; 
 	private int guesses;
 	private boolean playing;
 	private boolean reset;

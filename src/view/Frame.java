@@ -11,6 +11,9 @@ import adapter.ViewStates;
 import gameview.Game1;
 import gameview.Game2;
 import gameview.Game3;
+import menuview.RootMenu;
+import menuview.StudentMenu;
+import menuview.TeacherMenu;
 
 public class Frame extends JFrame
 {
