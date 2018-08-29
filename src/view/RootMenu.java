@@ -64,7 +64,6 @@ public class RootMenu extends JPanel
 		displayName = new JLabel(" ");
 		displayName.setVerticalAlignment(SwingConstants.BOTTOM);
 		settingsButton = new JButton("     ");
-		// TODO update user
 		userOptions = new JComboBox<String>(new DefaultComboBoxModel<String>(new String[]
 		{ " Unlock User Account", " Reset Password", " Delete User" }));
 		userField = new JTextField();
@@ -310,28 +309,25 @@ public class RootMenu extends JPanel
 				if (inputText != null && inputText.length() > 0)
 				{
 					int id = Integer.parseInt(inputText);
+					int valueReturned;
 					switch (value)
 					{
 						case 0:
 							base.unlockAccount(id);
 							break;
 						case 1:
-							base.resetPassword(id);
+							valueReturned = JOptionPane.showConfirmDialog(base.messagePanel, "Are you sure you want to this user's password to be the same as their user ID?");
+							if (valueReturned == JOptionPane.OK_OPTION)
+							{
+								base.resetPassword(id);
+							}
 							break;
 						case 2:
-							if (id != 0)
+							valueReturned = JOptionPane.showConfirmDialog(base.messagePanel, "Are you sure you want to delete this user?");
+							if (valueReturned == JOptionPane.OK_OPTION)
 							{
-								int valueReturned = JOptionPane.showConfirmDialog(base.messagePanel, "Are you sure you want to delete this user?");
-								if (valueReturned == JOptionPane.OK_OPTION)
-								{
-									base.deleteUser(id);
-									setUpTable();
-								}
-							}
-							else
-							{
-								JOptionPane.showMessageDialog(base.messagePanel, "You can not delete the root user.", "",
-										JOptionPane.INFORMATION_MESSAGE);
+								base.deleteUser(id);
+								setUpTable();
 							}
 							break;
 					}

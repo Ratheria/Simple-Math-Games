@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import javax.swing.Action;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import model.OnSiteDatabaseData;
@@ -27,6 +29,7 @@ public class Controller
 	public static String[] sessionsHeader = { "Date", "Games Played", "Total Answers", "Correct Answers", "Total Score" };
 	public Frame frame;
 	public JPanel messagePanel;
+	public JFileChooser fileChoose;
 	public int questionTypes;
 	private OnSiteDatabaseData database;
 //	private MySQLData database;
@@ -50,6 +53,7 @@ public class Controller
 //		database = new OffSiteData(this);
 		frame = new Frame(this);
 		logout();
+		setUpFileChooser();
 	}
 
 	public void logout()
@@ -67,6 +71,13 @@ public class Controller
 		customEquations = null;
 		equationString = "";
 		frame.updateState();
+	}
+	
+	private void setUpFileChooser()
+	{
+		fileChoose = new JFileChooser(System.getProperty("user.home") + "/Desktop");
+		Action details = fileChoose.getActionMap().get("viewTypeDetails");
+		details.actionPerformed(null);
 	}
 	
 	public void checkLogin(String userName, String pass)

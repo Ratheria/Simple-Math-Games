@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
+import javax.swing.Action;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -52,7 +53,7 @@ public class AddUsers extends JPanel
 	public AddUsers(Controller base)
 	{
 		this.base = base;
-		fileChoose = new JFileChooser();
+		fileChoose = base.fileChoose;
 		layout = new GridBagLayout();
 		header = new JLabel(" Add Users ");
 		backButton = new JButton(" BACK ");

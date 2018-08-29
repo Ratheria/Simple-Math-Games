@@ -59,8 +59,9 @@ public class TeacherMenu extends JPanel implements ChangeListener
 	private TableRowSorter<TableModel> rowSorter;
 	private ListSelectionModel listSelectionModel;
 	private int baseFrequency;
-	private final String[] columnName =
-	{ "Current Problems" };
+	private final String[] columnName = { "Current Problems" };
+	
+	//TODO clear all data, import from csv
 
 	public TeacherMenu(Controller base)
 	{

@@ -859,7 +859,7 @@ public class OnSiteDatabaseData
 				state = con.createStatement();
 				
 				// drop table if exists
-				state.execute("DROP TABLE IF EXISTS USER;");
+				//state.execute("DROP TABLE IF EXISTS USER;");
 				ResultSet res = state.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='USER'");
 				if (!res.next())
 				{

@@ -21,7 +21,7 @@ import javax.swing.border.LineBorder;
 
 import adapter.Controller;
 
-public class ViewStudentStats extends JPanel
+public class ShowStudentStats extends JPanel
 {
 	private static final long serialVersionUID = 2146437373343203144L;
 	private Controller base;
@@ -30,7 +30,7 @@ public class ViewStudentStats extends JPanel
 	private JTextArea textArea;
 	private int studentID;
 
-	public ViewStudentStats(Controller base, int studentID)
+	public ShowStudentStats(Controller base, int studentID)
 	{
 		this.base = base;
 		this.studentID = studentID;

@@ -24,7 +24,7 @@ import javax.swing.table.TableRowSorter;
 import adapter.Controller;
 import model.CustomTableModel;
 
-public class ViewRecords extends JPanel
+public class ShowRecords extends JPanel
 {
 	private static final long serialVersionUID = 2146437373343203144L;
 	private Controller base;
@@ -34,7 +34,7 @@ public class ViewRecords extends JPanel
 	private JScrollPane scrollPane;
     private TableRowSorter<TableModel> rowSorter;
 	
-	public ViewRecords(Controller base, int studentID, int value)
+	public ShowRecords(Controller base, int studentID, int value)
 	{
 		this.base = base;
 		layout = new GridBagLayout();

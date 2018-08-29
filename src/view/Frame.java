@@ -101,7 +101,7 @@ public class Frame extends JFrame
 	public void updateState(int studentID, int value)
 	{
 		panel.removeAll();
-		panel = (value == -1) ? new ViewStudentStats(base, studentID) : new ViewRecords(base, studentID, value);
+		panel = (value == -1) ? new ShowStudentStats(base, studentID) : new ShowRecords(base, studentID, value);
 		setContentPane(panel);
 		panel.revalidate();
 		panel.repaint();
