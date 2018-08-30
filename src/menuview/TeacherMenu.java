@@ -78,6 +78,9 @@ public class TeacherMenu extends JPanel implements ChangeListener
 		removeEquationsButton = new JButton(" Remove Problem ");
 		baseFrequency = base.getFrequency();
 		dataSet = new JTable();
+		questionString = "";
+		questionList = new ArrayList<String>();
+		numberOfQuestions = 0;
 
 		setUpTable();
 	}
@@ -374,9 +377,12 @@ public class TeacherMenu extends JPanel implements ChangeListener
 
 	private void updateQuestionInfo()
 	{
-		questionString = base.getEquationString();
-		questionList = base.getEquations();
-		numberOfQuestions = questionList.size();
+		if(base.getEquations() != null)
+		{
+			questionString = base.getEquationString();
+			questionList = base.getEquations();
+			numberOfQuestions = questionList.size();
+		}
 	}
 
 	private void updateField()

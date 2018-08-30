@@ -64,6 +64,14 @@ public class Frame extends JFrame
 				panel.removeAll();
 				panel = new RootMenu(base);
 				break;
+			case MANAGEDATA:
+				panel.removeAll();
+				panel = new ManageData(base);
+				break;
+			case ADDUSERS:
+				panel.removeAll();
+				panel = new AddUsers(base);
+				break;
 			case TEACHERMENU:
 				panel.removeAll();
 				panel = new TeacherMenu(base);
@@ -75,10 +83,6 @@ public class Frame extends JFrame
 			case STUDENTMENU:
 				panel.removeAll();
 				panel = new StudentMenu(base);
-				break;
-			case ADDUSERS:
-				panel.removeAll();
-				panel = new AddUsers(base);
 				break;
 			case GAME1:
 				panel.removeAll();

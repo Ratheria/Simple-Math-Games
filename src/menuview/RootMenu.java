@@ -54,6 +54,7 @@ public class RootMenu extends JPanel
 	private TableRowSorter<TableModel> rowSorter;
 	private ListSelectionModel listSelectionModel;
 	private JScrollPane scrollPane;
+	private JButton clearDataButton;
 	private JButton addUsersButton;
 	private int value;
 
@@ -70,9 +71,10 @@ public class RootMenu extends JPanel
 		operationButton = new JButton(" UNLOCK ACCOUNT ");
 		searchField = new JTextField();
 		dataSet = new JTable();
+		clearDataButton = new JButton(" Clear Data ");
 		addUsersButton = new JButton(" Add Users ");
-		@SuppressWarnings("unused")
-		int value = 0;
+
+		value = 0;
 
 		setUpTable();
 	}
@@ -110,9 +112,9 @@ public class RootMenu extends JPanel
 		layout.rowWeights = new double[]
 		{ 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0 };
 		layout.columnWidths = new int[]
-		{ 0, 0, 0, 0, 0 };
+		{ 0, 0, 0, 0, 0, 0 };
 		layout.columnWeights = new double[]
-		{ 0.0, 0.0, 1.0, 1.0, 0.0 };
+		{ 0.0, 0.0, 1.0, 1.0, 0.0, 0.0 };
 		setLayout(layout);
 		setBorder(new LineBorder(new Color(128, 128, 128), 10));
 		setForeground(new Color(105, 105, 105));
@@ -122,8 +124,8 @@ public class RootMenu extends JPanel
 		displayName.setText(base.getFullName());
 		GridBagConstraints gbc_displayName = new GridBagConstraints();
 		gbc_displayName.anchor = GridBagConstraints.NORTHWEST;
-		gbc_displayName.gridwidth = 4;
-		gbc_displayName.insets = new Insets(20, 10, 5, 0);
+		gbc_displayName.gridwidth = 5;
+		gbc_displayName.insets = new Insets(20, 10, 5, 5);
 		gbc_displayName.gridx = 1;
 		gbc_displayName.gridy = 0;
 
@@ -166,6 +168,7 @@ public class RootMenu extends JPanel
 		operationButton.setContentAreaFilled(false);
 		operationButton.setBorder(new LineBorder(new Color(105, 105, 105), 2, true));
 		GridBagConstraints gbc_operationButton = new GridBagConstraints();
+		gbc_operationButton.gridwidth = 2;
 		gbc_operationButton.fill = GridBagConstraints.HORIZONTAL;
 		gbc_operationButton.insets = new Insets(10, 10, 10, 40);
 		gbc_operationButton.gridx = 4;
@@ -177,8 +180,8 @@ public class RootMenu extends JPanel
 		searchField.setToolTipText("Username");
 		searchField.setBorder(new CompoundBorder(new LineBorder(new Color(105, 105, 105)), new EmptyBorder(0, 10, 0, 0)));
 		GridBagConstraints gbc_searchField = new GridBagConstraints();
-		gbc_searchField.gridwidth = 5;
-		gbc_searchField.insets = new Insets(5, 40, 0, 40);
+		gbc_searchField.gridwidth = 6;
+		gbc_searchField.insets = new Insets(5, 40, 5, 40);
 		gbc_searchField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_searchField.gridx = 0;
 		gbc_searchField.gridy = 3;
@@ -201,23 +204,34 @@ public class RootMenu extends JPanel
 		scrollPane.setBorder(new LineBorder(new Color(128, 128, 128), 2));
 		GridBagConstraints gbc_dataSet = new GridBagConstraints();
 		gbc_dataSet.gridheight = 2;
-		gbc_dataSet.gridwidth = 5;
+		gbc_dataSet.gridwidth = 6;
 		gbc_dataSet.gridy = 4;
 		gbc_dataSet.insets = new Insets(15, 20, 15, 20);
 		gbc_dataSet.fill = GridBagConstraints.BOTH;
 		gbc_dataSet.gridx = 0;
 
-		addUsersButton.setFont(new Font("Arial", Font.PLAIN, 30));
+		clearDataButton.setFont(new Font("Arial", Font.PLAIN, 25));
+		clearDataButton.setForeground(new Color(105, 105, 105));
+		clearDataButton.setBackground(new Color(105, 105, 105));
+		clearDataButton.setFocusPainted(false);
+		clearDataButton.setContentAreaFilled(false);
+		clearDataButton.setBorder(new LineBorder(new Color(105, 105, 105), 2, true));
+		GridBagConstraints gbc_clearDataButton = new GridBagConstraints();
+		gbc_clearDataButton.anchor = GridBagConstraints.EAST;
+		gbc_clearDataButton.insets = new Insets(0, 0, 20, 20);
+		gbc_clearDataButton.gridx = 4;
+		gbc_clearDataButton.gridy = 6;
+		
+		addUsersButton.setFont(new Font("Arial", Font.PLAIN, 25));
 		addUsersButton.setForeground(new Color(105, 105, 105));
 		addUsersButton.setBackground(new Color(105, 105, 105));
 		addUsersButton.setFocusPainted(false);
 		addUsersButton.setContentAreaFilled(false);
 		addUsersButton.setBorder(new LineBorder(new Color(105, 105, 105), 2, true));
 		GridBagConstraints gbc_manageUsersButton = new GridBagConstraints();
-		gbc_manageUsersButton.gridwidth = 2;
 		gbc_manageUsersButton.anchor = GridBagConstraints.EAST;
 		gbc_manageUsersButton.insets = new Insets(0, 0, 20, 20);
-		gbc_manageUsersButton.gridx = 3;
+		gbc_manageUsersButton.gridx = 5;
 		gbc_manageUsersButton.gridy = 6;
 
 		add(displayName, gbc_displayName);
@@ -227,12 +241,12 @@ public class RootMenu extends JPanel
 		add(operationButton, gbc_operationButton);
 		add(searchField, gbc_searchField);
 		add(scrollPane, gbc_dataSet);
+		add(clearDataButton, gbc_clearDataButton);
 		add(addUsersButton, gbc_manageUsersButton);
 	}
 
 	private void setUpListeners()
 	{
-
 		settingsButton.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent onClick)
@@ -336,6 +350,14 @@ public class RootMenu extends JPanel
 			}
 		});
 
+		clearDataButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent onClick)
+			{
+				base.changeState(ViewStates.MANAGEDATA);
+			}
+		});
+		
 		addUsersButton.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent onClick)

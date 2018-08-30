@@ -86,11 +86,11 @@ public class Game1 extends JPanel implements Game
 		frequency = base.getFrequency();
 		answer = 0;
 		score = 0;
-		gamePeriod = 40; // seconds
+		gamePeriod = 41; // seconds
 		theLayout = new SpringLayout();
 		question = "Question";
 		questionList = base.getEquations();
-		timerLabel = new JLabel("Time: " + (gamePeriod / 60) + ":" + (gamePeriod % 60));
+		timerLabel = new JLabel("Time: " + (gamePeriod / 60) + ":" + ((gamePeriod % 60)-1));
 		questionLabel = new JLabel(question);
 		questionLabel.setBackground(new Color(245, 245, 245));
 		scoreLabel = new JLabel("Score: 0");
@@ -254,17 +254,17 @@ public class Game1 extends JPanel implements Game
 			{
 				if (playing)
 				{
-					if ((currentTime % 60) < 10)
-					{
-						timerLabel.setText("Time: " + (int) (currentTime / 60) + ":0" + (int) (currentTime % 60));
-					}
-					else
-					{
-						timerLabel.setText("Time: " + (int) (currentTime / 60) + ":" + (int) (currentTime % 60));
-					}
 					currentTime--;
 				}
-				else if (reset)
+				if ((currentTime % 60) < 10)
+				{
+					timerLabel.setText("Time: " + (int) (currentTime / 60) + ":0" + (int) (currentTime % 60));
+				}
+				else
+				{
+					timerLabel.setText("Time: " + (int) (currentTime / 60) + ":" + (int) (currentTime % 60));
+				}
+				if (!playing && reset)
 				{
 					playing = true;
 					clearCurrentFish();

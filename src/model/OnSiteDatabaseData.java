@@ -858,7 +858,7 @@ public class OnSiteDatabaseData
 							+ "PRIMARY KEY (ID));");
 					
 					addUser(000000, "root", "root", "Root", "User", "00", 0);
-					addUser(888888, "Rin", "root", "Rin", " ", "2F", 2);
+					addUser(888888, "Rin", "888888", "Rin", " ", "2F", 2);
 					addUser(111111, "deft", "deft", "Default", "Teacher", "1A", 2);
 					addUser(222222, "defs", "defs", "Default", "Student", "1A", 3);
 					addUser(131313, "Aaron", "0451", "Aaron", "Smith", "2F", 3);
