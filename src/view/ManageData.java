@@ -15,6 +15,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
@@ -38,9 +39,8 @@ public class ManageData extends JPanel
 		header = new JLabel("Manage Data");
 		backButton = new JButton(" BACK ");
 		userOptions = new JComboBox<String>(new DefaultComboBoxModel<String>(new String[]
-		{ " Remove All Students", " Remove All Teachers", " Remove Students and Teachers", " Remove All Users", 
-		  " Remove Game Records and Sessions", " Remove Game High Scores", "Remove All Game Data", 
-		  " Remove All Data"}));
+		{ " Remove All Students", " Remove All Teachers", " Remove Students and Teachers", " Remove All Users", " Remove Game Records and Sessions",
+				" Remove Game High Scores", "Remove All Game Data", " Remove All Data" }));
 		manageDataButton = new JButton(" REMOVE SPECIFIED DATA ");
 		value = 0;
 
@@ -146,14 +146,78 @@ public class ManageData extends JPanel
 				//" Remove Game High Scores", 
 				//"Remove All Game Data", 
 				//" Remove All Data"}));
-				
+				int valueReturned;
 				switch(value)
 				{
 					case 0:
-						base.deleteUserRange(3);
+						valueReturned = base.confirmationMessage("Delete students and their data?");
+						if (valueReturned == JOptionPane.OK_OPTION)
+						{
+							base.deleteUserRange(3);
+						}
 						break;
 					case 1:
-						base.deleteUserRange(2);
+						valueReturned = base.confirmationMessage("Delete teachers and their data?");
+						if (valueReturned == JOptionPane.OK_OPTION)
+						{
+							base.deleteUserRange(2);
+						}
+						break;
+					case 2:
+						valueReturned = base.confirmationMessage("Delete students, teachers, and their data?");
+						if (valueReturned == JOptionPane.OK_OPTION)
+						{
+							base.deleteUserRange(2, 3);
+						}
+						break;
+					case 3:
+						if(base.getPerms() == 0)
+						{
+							valueReturned = base.confirmationMessage("Delete all users save root and their data?");
+							if (valueReturned == JOptionPane.OK_OPTION)
+							{
+								base.deleteUserRange(1, 3);
+							}
+						}
+						else
+						{
+							base.informationMessage("Only root user can delete all other users.");
+						}
+						break;
+					case 4:
+						valueReturned = base.confirmationMessage("Delete game sessions and records?");
+						if (valueReturned == JOptionPane.OK_OPTION)
+						{
+							base.deleteGameData(0);
+						}
+						break;
+					case 5:
+						valueReturned = base.confirmationMessage("Delete game high scores?");
+						if (valueReturned == JOptionPane.OK_OPTION)
+						{
+							base.deleteGameData(2);
+						}
+						break;
+					case 6:
+						valueReturned = base.confirmationMessage("Delete game data?");
+						if (valueReturned == JOptionPane.OK_OPTION)
+						{
+							base.deleteGameData(1);
+						}
+						break;
+					case 7:
+						if(base.getPerms() == 0)
+						{
+							valueReturned = base.confirmationMessage("Delete all saved data?");
+							if (valueReturned == JOptionPane.OK_OPTION)
+							{
+								base.deleteData();
+							}
+						}
+						else
+						{
+							base.informationMessage("Only root user can delete all saved data.");
+						}
 						break;
 				}
 			}

@@ -486,6 +486,46 @@ public class Controller
 		database.deleteUserRange(low, high);
 	}
 	
+	public void deleteGameData(int range)
+	{
+		try
+		{
+			if(range < 2)
+			{
+				database.deleteGameRecordsAndSessions();
+			}
+			if(range > 0)
+			{
+				database.deleteGameHighScores();
+			}
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			errorMessage("There was a problem deleting the data.");
+		}
+	}
+	
+	public void deleteData()
+	{
+		boolean result;
+		try
+		{
+			database.deleteCustomEquations();
+			database.deleteGameHighScores();
+			result = database.deleteUserRange(1, 3);
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			result = false;
+		}
+		if(!result)
+		{
+			errorMessage("There was a problem deleting the data.");
+		}
+	}
+	
 	public boolean getInstructionPreference(String gameInstructions)
 	{
 		return database.wantInstructions(gameInstructions, ID);

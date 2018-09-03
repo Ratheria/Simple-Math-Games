@@ -238,15 +238,7 @@ public class OnSiteDatabaseData
 					PreparedStatement preparedStatement;
 					if(low <= 3 && 3 <= high)
 					{
-						query = "DELETE * FROM GAME_RECORDS";
-						preparedStatement = con.prepareStatement(query);
-						preparedStatement.executeUpdate();				
-						query = "DELETE * FROM SESSION_RECORDS";
-						preparedStatement = con.prepareStatement(query);
-						preparedStatement.executeUpdate();				
-						query = "DELETE * FROM GAME_HIGH_SCORES";
-						preparedStatement = con.prepareStatement(query);
-						preparedStatement.executeUpdate();
+						deleteGameRecordsAndSessions();
 					}
 					query = "DELETE FROM USER WHERE ? <= permission AND permission <= ?";
 					preparedStatement = con.prepareStatement(query);
@@ -266,6 +258,30 @@ public class OnSiteDatabaseData
 			}
 		}
 		return result;
+	}
+	
+	public void deleteGameHighScores() throws SQLException
+	{
+		String query = "DELETE * FROM GAME_HIGH_SCORES";
+		PreparedStatement preparedStatement = con.prepareStatement(query);
+		preparedStatement.executeUpdate();
+	}
+	
+	public void deleteGameRecordsAndSessions() throws SQLException
+	{
+		String query = "DELETE * FROM GAME_RECORDS";
+		PreparedStatement preparedStatement =  con.prepareStatement(query);
+		preparedStatement.executeUpdate();				
+		query = "DELETE * FROM SESSION_RECORDS";
+		preparedStatement = con.prepareStatement(query);
+		preparedStatement.executeUpdate();	
+	}
+	
+	public void deleteCustomEquations() throws SQLException
+	{
+		String query = "DELETE * FROM CUSTOM_EQUATIONS";
+		PreparedStatement preparedStatement = con.prepareStatement(query);
+		preparedStatement.executeUpdate();				
 	}
 	
 	public ResultSet getUserInfo(int id)
@@ -449,6 +465,24 @@ public class OnSiteDatabaseData
 		return result;
 	}
 	
+	private boolean classExists(String classID)
+	{
+		boolean result = false;
+		ResultSet res = null;
+		try
+		{
+			if (con == null)
+			{	getConnection();	}
+			String query = "SELECT classID FROM CUSTOM_EQUATIONS WHERE classID = ?";
+			PreparedStatement preparedStatement = con.prepareStatement(query);
+			preparedStatement.setString(1, classID);
+			res = preparedStatement.executeQuery();
+			result = res.next();
+		}
+		catch (SQLException e) {	e.printStackTrace();	}
+		return result;
+	}
+	
 	public void addGameRecord(int studentID, int gameID, int questionsAnswered, int questionsCorrect, int guesses, int totalSeconds, int score, String classID, String firstName, String lastName)
 	{
 		String date = Controller.dtf.format(LocalDateTime.now());
@@ -502,6 +536,11 @@ public class OnSiteDatabaseData
 				preparedStatement.setBoolean(12, true);
 				preparedStatement.execute();
 				result = true;
+				
+				if(!classExists(classID))
+				{
+					addCustomEquations(classID, "", 0, 0);
+				}
 			}
 		} 
 		catch (SQLException e) {e.printStackTrace();}
