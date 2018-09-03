@@ -153,7 +153,7 @@ public class ManageData extends JPanel
 						base.deleteUserRange(3);
 						break;
 					case 1:
-						
+						base.deleteUserRange(2);
 						break;
 				}
 			}

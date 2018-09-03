@@ -540,6 +540,16 @@ public class Controller
 	{
 		JOptionPane.showMessageDialog(messagePanel, message, header, JOptionPane.INFORMATION_MESSAGE);
 	}
+	
+	public int confirmationMessage(String message)
+	{
+		return confirmationMessage(message, "");
+	}
+	
+	public int confirmationMessage(String message, String header)
+	{
+		return JOptionPane.showConfirmDialog(messagePanel, message, header, JOptionPane.OK_CANCEL_OPTION);
+	}
 }
 
 //TODO general

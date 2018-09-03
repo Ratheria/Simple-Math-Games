@@ -336,6 +336,7 @@ public class OffSiteDatabaseData
         return currentLine;
     }
 	
+	@SuppressWarnings("unused")
 	private void addCustomEquations(String classID, String questionList, int numberOfEquations, int frequency)
 	{
 		if (con == null)

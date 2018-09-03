@@ -24,7 +24,6 @@ import adapter.Controller;
 import adapter.ViewStates;
 import model.CustomTableModel;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JButton;
 import java.awt.Font;
 import java.awt.GridBagConstraints;

@@ -330,14 +330,14 @@ public class RootMenu extends JPanel
 							base.unlockAccount(id);
 							break;
 						case 1:
-							valueReturned = JOptionPane.showConfirmDialog(base.messagePanel, "Are you sure you want to this user's password to be the same as their user ID?");
+							valueReturned = base.confirmationMessage("Are you sure you want to this user's password to be the same as their user ID?");
 							if (valueReturned == JOptionPane.OK_OPTION)
 							{
 								base.resetPassword(id);
 							}
 							break;
 						case 2:
-							valueReturned = JOptionPane.showConfirmDialog(base.messagePanel, "Are you sure you want to delete this user?");
+							valueReturned = base.confirmationMessage("Are you sure you want to delete this user?");
 							if (valueReturned == JOptionPane.OK_OPTION)
 							{
 								base.deleteUser(id);

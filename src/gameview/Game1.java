@@ -220,7 +220,7 @@ public class Game1 extends JPanel implements Game
 			{
 				stopTimers();
 				playing = false;
-				int dialogResult = JOptionPane.showConfirmDialog(null, "Your score is " + score + ". Would you like to exit the game?", "Exit game?", JOptionPane.OK_CANCEL_OPTION);
+				int dialogResult = base.confirmationMessage("Your score is " + score + ". Would you like to exit the game?", "Exit game?");
 				if(dialogResult == JOptionPane.OK_OPTION)
 				{
 					if(questionsAnswered > 0)
@@ -510,7 +510,7 @@ public class Game1 extends JPanel implements Game
 			{
 				base.addGameRecord(1, questionsAnswered, questionsCorrect, guesses, gamePeriod - currentTime, score);
 			}
-			JOptionPane.showMessageDialog(base.messagePanel, "The correct answer went off screen.\nYour score was " + score + ".", "Game Over", JOptionPane.INFORMATION_MESSAGE);
+			base.informationMessage("The correct answer went off screen.\nYour score was " + score + ".", "Game Over");
 			clearCurrentFish();
 			base.returnToMenu();
 		}

@@ -325,7 +325,7 @@ public class Game3 extends JPanel implements KeyListener, Game
 			public void actionPerformed(ActionEvent onClick)
 			{
 				stopTimers();
-				int dialogResult = JOptionPane.showConfirmDialog (null, "Your score is " + score + ".  Would you like to exit the game?","Exit game?",JOptionPane.OK_CANCEL_OPTION);
+				int dialogResult = base.confirmationMessage("Your score is " + score + ".  Would you like to exit the game?","Exit game?");
 				if(dialogResult == JOptionPane.OK_OPTION)
 				{
 					remove(shark);
