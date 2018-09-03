@@ -262,24 +262,24 @@ public class OnSiteDatabaseData
 	
 	public void deleteGameHighScores() throws SQLException
 	{
-		String query = "DELETE * FROM GAME_HIGH_SCORES";
+		String query = "DELETE FROM GAME_HIGH_SCORES";
 		PreparedStatement preparedStatement = con.prepareStatement(query);
 		preparedStatement.executeUpdate();
 	}
 	
 	public void deleteGameRecordsAndSessions() throws SQLException
 	{
-		String query = "DELETE * FROM GAME_RECORDS";
+		String query = "DELETE FROM GAME_RECORDS";
 		PreparedStatement preparedStatement =  con.prepareStatement(query);
 		preparedStatement.executeUpdate();				
-		query = "DELETE * FROM SESSION_RECORDS";
+		query = "DELETE FROM SESSION_RECORDS";
 		preparedStatement = con.prepareStatement(query);
 		preparedStatement.executeUpdate();	
 	}
 	
 	public void deleteCustomEquations() throws SQLException
 	{
-		String query = "DELETE * FROM CUSTOM_EQUATIONS";
+		String query = "DELETE FROM CUSTOM_EQUATIONS";
 		PreparedStatement preparedStatement = con.prepareStatement(query);
 		preparedStatement.executeUpdate();				
 	}

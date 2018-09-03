@@ -475,9 +475,9 @@ public class Controller
 	public void deleteUserRange(int level) 
 	{
 		boolean result = database.deleteUserRange(level, level);
-		if(result)
+		if(!result)
 		{
-			errorMessage("Invalid input or duplicate ID. User not added.");
+			errorMessage("There was a problem deleting the data.");
 		}
 	}
 	
@@ -606,7 +606,7 @@ public class Controller
 
 
 //TODO root
-//finish implementing general and specific data clear (all, by student, by table, by class, etc.)
+//add more general and specific data clear?
 //view/change username generation process?
 //edit user (use adduser panel?)
 
