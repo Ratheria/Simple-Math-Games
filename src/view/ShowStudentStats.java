@@ -50,7 +50,7 @@ public class ShowStudentStats extends JPanel
 			res.next();
 			statsString = statsString
 						+ "GENERAL STATS\n"
-						+ "    Total Score                    : " + res.getInt("scoreSum") + "\n"
+						+ "    Total Score             : " + res.getInt("scoreSum") + "\n"
 						+ "    Total Games Played      : " + res.getInt("gameSum") + "\n"
 						+ "    Total Correct Answers   : " + res.getInt("correctSum") + "\n\n";
 			

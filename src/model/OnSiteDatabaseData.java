@@ -17,6 +17,7 @@ import java.sql.Statement;
 import java.time.LocalDateTime;
 import adapter.Controller;
 
+//
 public class OnSiteDatabaseData
 {
 	private Controller base;
@@ -206,6 +207,51 @@ public class OnSiteDatabaseData
 					query = "DELETE FROM USER WHERE ID = ?";
 					preparedStatement = con.prepareStatement(query);
 					preparedStatement.setInt(1, ID);
+					preparedStatement.executeUpdate();
+				}
+				else
+				{
+					result = false;
+				}
+			}
+			catch (SQLException e)
+			{
+				e.printStackTrace(); 
+				result = false;
+			}
+		}
+		return result;
+	}
+	
+	public boolean deleteUserRange(int low, int high)
+	{
+		boolean result = true;
+		if(base.getPerms() < 2)
+		{
+			try
+			{
+				if(low > 0)
+				{
+					if (con == null)
+					{	getConnection();	}
+					String query;
+					PreparedStatement preparedStatement;
+					if(low <= 3 && 3 <= high)
+					{
+						query = "DELETE * FROM GAME_RECORDS";
+						preparedStatement = con.prepareStatement(query);
+						preparedStatement.executeUpdate();				
+						query = "DELETE * FROM SESSION_RECORDS";
+						preparedStatement = con.prepareStatement(query);
+						preparedStatement.executeUpdate();				
+						query = "DELETE * FROM GAME_HIGH_SCORES";
+						preparedStatement = con.prepareStatement(query);
+						preparedStatement.executeUpdate();
+					}
+					query = "DELETE FROM USER WHERE ? <= permission AND permission <= ?";
+					preparedStatement = con.prepareStatement(query);
+					preparedStatement.setInt(1, low);
+					preparedStatement.setInt(2, high);
 					preparedStatement.executeUpdate();
 				}
 				else

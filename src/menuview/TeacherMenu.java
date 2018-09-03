@@ -335,7 +335,7 @@ public class TeacherMenu extends JPanel implements ChangeListener
 					}
 					else
 					{
-						JOptionPane.showMessageDialog(base.messagePanel, "No such equation.", "", JOptionPane.INFORMATION_MESSAGE);
+						base.errorMessage("No such equation.");
 					}
 				}
 				removeEquationsTextField.setText("");

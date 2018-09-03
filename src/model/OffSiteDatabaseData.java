@@ -17,6 +17,7 @@ import java.sql.Statement;
 import java.time.LocalDateTime;
 import adapter.Controller;
 
+//Slightly outdated. Compare to OnSite
 public class OffSiteDatabaseData
 {
 	private Controller base;

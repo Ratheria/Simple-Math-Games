@@ -39,7 +39,8 @@ public class ManageData extends JPanel
 		backButton = new JButton(" BACK ");
 		userOptions = new JComboBox<String>(new DefaultComboBoxModel<String>(new String[]
 		{ " Remove All Students", " Remove All Teachers", " Remove Students and Teachers", " Remove All Users", 
-		  " Remove Game Records", " Remove Game High Scores", " Remove All Data"}));
+		  " Remove Game Records and Sessions", " Remove Game High Scores", "Remove All Game Data", 
+		  " Remove All Data"}));
 		manageDataButton = new JButton(" REMOVE SPECIFIED DATA ");
 		value = 0;
 
@@ -137,6 +138,24 @@ public class ManageData extends JPanel
 			public void actionPerformed(ActionEvent onClick)
 			{
 				//TODO
+				//{ " Remove All Students", 
+				//" Remove All Teachers", 
+				//" Remove Students and Teachers", 
+				//" Remove All Users", 
+				//" Remove Game Records and Sessions", 
+				//" Remove Game High Scores", 
+				//"Remove All Game Data", 
+				//" Remove All Data"}));
+				
+				switch(value)
+				{
+					case 0:
+						base.deleteUserRange(3);
+						break;
+					case 1:
+						
+						break;
+				}
 			}
 		});
 

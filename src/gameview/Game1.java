@@ -285,7 +285,7 @@ public class Game1 extends JPanel implements Game
 						base.addGameRecord(1, questionsAnswered, questionsCorrect, guesses, gamePeriod, score);
 					}
 					System.out.println("Time's up!");
-					JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "Time's up!", JOptionPane.PLAIN_MESSAGE);
+					base.informationMessage("Your score was " + score + ".", "Time's up!");
 					clearCurrentFish();
 					base.returnToMenu();
 				}

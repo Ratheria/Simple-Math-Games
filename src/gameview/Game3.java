@@ -273,7 +273,7 @@ public class Game3 extends JPanel implements KeyListener, Game
 					stopTimers();
 					playing = false;
 					System.out.println("Time's up!");
-					JOptionPane.showMessageDialog(base.messagePanel, "Your score was " + score + ".", "Time's up!", JOptionPane.PLAIN_MESSAGE);
+					base.informationMessage("Your score was " + score + ".", "Time's up!");
 					if(questionsAnswered > 0)
 					{
 						base.addGameRecord(3, questionsAnswered, questionsCorrect, guesses, gamePeriod, score);
