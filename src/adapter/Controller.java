@@ -606,6 +606,7 @@ public class Controller
 
 
 //TODO root
+//update manage data view
 //add more general and specific data clear?
 //view/change username generation process?
 //edit user (use adduser panel?)
