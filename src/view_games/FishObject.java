@@ -3,7 +3,7 @@
 *	@author Jadie Adams
  */
 
-package gameview;
+package view_games;
 
 import java.awt.Color;
 import java.awt.Font;

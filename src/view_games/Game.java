@@ -2,7 +2,7 @@
  *	@author Ariana Fairbanks
  */
 
-package gameview;
+package view_games;
 
 public interface Game
 {

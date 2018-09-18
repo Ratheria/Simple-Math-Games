@@ -8,12 +8,12 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import adapter.Controller;
 import adapter.ViewStates;
-import gameview.Game1;
-import gameview.Game2;
-import gameview.Game3;
-import menuview.RootMenu;
-import menuview.StudentMenu;
-import menuview.TeacherMenu;
+import view_games.Game1;
+import view_games.Game2;
+import view_games.Game3;
+import view_menus.RootMenu;
+import view_menus.StudentMenu;
+import view_menus.TeacherMenu;
 
 public class Frame extends JFrame
 {
